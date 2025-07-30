@@ -1,4 +1,5 @@
 <!-- Product Section -->
+
 <section class="product-section">
   <div class="product-details">
     <div class="product-header">
@@ -7,13 +8,13 @@
         <div class="menu-info">
           <p class="menu-description">Уникальное меню на 30 дней:</p>
           <div class="day-navigation">
-            <button class="nav-btn prev-btn">
+            <button class="nav-btn prev-btn" id="prev-btn">
               <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Previous" />
             </button>
             <div class="days-container">
                               <span class="day-item current-day">День 1</span>
             </div>
-            <button class="nav-btn next-btn">
+            <button class="nav-btn next-btn" id="next-btn">
               <img src="{{ 'arrow-1-1.svg' | asset_url }}" alt="Next" />
             </button>
           </div>
@@ -25,7 +26,7 @@
           <span class="nutrition-item">У 0</span>
         </div>
       </div>
-      <div class="dishes-gallery">
+      <div class="dishes-gallery" id="dishes-gallery">
         <!-- Блюда будут загружены динамически из sport-dishes-data.json -->
       </div>
     </div>
@@ -36,68 +37,69 @@
   </div>
 
   <!-- Settings Panel -->
-  <aside class="settings-panel">
-    <!-- Calorie Selection -->
-    <div class="setting-group">
-      <div class="setting-header">
-        <div class="info-icon">
-          <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
-          </svg>
-        </div>
-        <span>Выберите необходимую калорийность</span>
-      </div>
-      <div class="calorie-options">
-        <button class="calorie-option active">
-          <span class="calorie-value">2300</span>
-          <span class="calorie-unit">ккал</span>
-        </button>
-        <button class="calorie-option">
-          <span class="calorie-value">2500</span>
-          <span class="calorie-unit">ккал</span>
-        </button>
-        <button class="calorie-option">
-          <span class="calorie-value">3000</span>
-          <span class="calorie-unit">ккал</span>
-        </button>
-      </div>
-    </div>
+  <form action="{{ cart_url }}" method="post" data-product-id="{{ product.id }}" class="settings-panel">
 
-    <!-- Diet Type Selection -->
-    <div class="setting-group">
-      <div class="setting-header">
-        <div class="info-icon">
-          <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
-          </svg>
-        </div>
-        <span>Выберите тип питания</span>
-      </div>
-      <div class="diet-options">
-        <button class="diet-option active">Классика</button>
-        <button class="diet-option">Вегетарианство</button>
-        <button class="diet-option">Пескетарианство</button>
-        <button class="diet-option">Веганство</button>
-      </div>
-    </div>
+    {% if product.show_variants? %}
+        <select name="variant_id" data-product-variants='{"default": "option-radio"}'>
+            {% for variant in product.variants %}
+              <option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+            {% endfor %}
+          </select>
 
-    <hr class="separator-line" />
+        <hr class="separator-line" />
+    {% else %}
+        <input type="hidden" name="variant_id" value="{{product.variants.first.id}}" >
+    {% endif %}
 
-    <!-- Meal Options -->
-    <div class="meal-options">
-      <div class="meal-option">
-        <div class="toggle-switch">
-          <div class="toggle-circle"></div>
-        </div>
-        <span>Убрать завтрак и перекус</span>
-      </div>
-      <div class="meal-option">
-        <div class="toggle-switch">
-          <div class="toggle-circle"></div>
-        </div>
-        <span>Убрать ужин и перекус</span>
-      </div>
-    </div>
+    {% unless product.is_bundle %}
+        {% if product.accessories.size > 0 %}
+          <div class="">
+            <div data-product-accessories></div>
+          </div>
+    
+          <template data-product-accessories-template>
+            <div
+              class="accessory-item"
+              data-product-accessories-item
+            >
+              <div class="accessory-name" style="display: none;">
+                <strong>
+                  <span data-product-accessory-name></span>
+                </strong>
+    
+                <span data-product-accessory-minmax-count='{
+                  "minCountMessage": "{{ messages.from }}",
+                  "maxCountMessage": "{{ messages.to }}"
+                }'></span>
+              </div>
+    
+              <div class="accessory-values meal-options" data-product-accessory-values></div>
+    
+              <div
+                data-product-accessory-error='{
+                  "lessThenMinCount": "Выбрано меньше минимального количества",
+                  "moreThenMaxCount": "Выбрано больше максимального количества",
+                  "scrollEnabled": "true"
+                }'
+                class="accessory-item__error"
+              ></div>
+            </div>
+          </template>
+    
+          <template data-product-accessory-values-template>
+            <label
+              class="accessory-values__item meal-option"
+              data-product-accessory-values-item
+              data-product-accessory-values-item-id
+            >
+                <div class="toggle-switch">
+                    <div class="toggle-circle"></div>
+                </div>
+              <span data-product-accessory-values-item-name></span><span style="display: none;" data-product-accessory-values-item-price></span>
+            </label>
+          </template>
+        {% endif %}
+      {% endunless %}
 
     <hr class="separator-line" />
 
@@ -144,7 +146,7 @@
       <div class="price-info">
         <span class="price-label">Итого:</span>
         <div class="price-display">
-          <span class="total-price">8 000 ₽</span>
+          <span class="total-price" data-product-card-price></span>
           <span class="price-period">/ день</span>
         </div>
       </div>
@@ -153,5 +155,771 @@
         <p class="delivery-info">Ближайшая доставка: 19 марта с 6:00 до 10:00</p>
       </div>
     </div>
-  </aside>
-</section> 
+  </form>
+</section>
+
+<script>
+    var program = {
+        "programName": "СПОРТ",
+        "calorieOptions": [
+            2301,
+            2500,
+            3000
+        ],
+        "calorieOptionsCount": 3,
+        "startDate": "2025-01-01",
+        "dishesByDay": {
+            "day-1": {
+            "dayName": "День 1",
+            "dishes": [
+                {
+                "id": 1,
+                "name": "Утка с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Утка с киноа",
+                "nutrition": "580,52,38,16|650,58,43,18|720,64,48,20",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 2,
+                "name": "Сельдь с овощами",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Сельдь с овощами",
+                "nutrition": "270,30,14,6|300,33,16,7|330,36,18,8",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 3,
+                "name": "Омлет с грибами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Омлет с грибами",
+                "nutrition": "240,20,14,10|270,22,16,11|300,25,18,12",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 4,
+                "name": "Индейка с брокколи",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Индейка с брокколи",
+                "nutrition": "290,32,6,15|320,35,7,17|350,38,8,19",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 5,
+                "name": "Говядина с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Говядина с овощами",
+                "nutrition": "460,50,26,8|510,55,29,9|560,60,32,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 6,
+                "name": "Лосось с киноа",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Лосось с киноа",
+                "nutrition": "450,42,22,18|500,47,24,20|550,52,26,22",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 7,
+                "name": "Салат с креветками",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Салат с креветками",
+                "nutrition": "280,28,10,20|310,31,11,22|340,34,12,24",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-2": {
+            "dayName": "День 2",
+            "dishes": [
+                {
+                "id": 8,
+                "name": "Лосось с киноа",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Лосось с киноа",
+                "nutrition": "450,42,22,18|500,47,24,20|550,52,26,22",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 9,
+                "name": "Индейка с брокколи",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Индейка с брокколи",
+                "nutrition": "290,32,6,15|320,35,7,17|350,38,8,19",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 10,
+                "name": "Утка с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Утка с киноа",
+                "nutrition": "580,52,38,16|650,58,43,18|720,64,48,20",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 11,
+                "name": "Салат с креветками",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Салат с креветками",
+                "nutrition": "280,28,10,20|310,31,11,22|340,34,12,24",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 12,
+                "name": "Свиная вырезка с овощами",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Свиная вырезка с овощами",
+                "nutrition": "420,45,24,12|470,50,27,13|520,55,30,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 13,
+                "name": "Треска с картофелем",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Треска с картофелем",
+                "nutrition": "310,35,6,28|340,38,7,31|370,41,8,34",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 14,
+                "name": "Куриная грудка с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Куриная грудка с овощами",
+                "nutrition": "320,35,8,12|350,38,9,13|380,41,10,14",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-3": {
+            "dayName": "День 3",
+            "dishes": [
+                {
+                "id": 15,
+                "name": "Куриная грудка с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Куриная грудка с овощами",
+                "nutrition": "320,35,8,12|350,38,9,13|380,41,10,14",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 16,
+                "name": "Треска с картофелем",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Треска с картофелем",
+                "nutrition": "310,35,6,28|340,38,7,31|370,41,8,34",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 17,
+                "name": "Стейк из говядины",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Стейк из говядины",
+                "nutrition": "480,52,28,0|530,57,31,0|580,62,34,0",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 18,
+                "name": "Куриное филе с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Куриное филе с рисом",
+                "nutrition": "350,38,8,25|390,42,9,28|430,46,10,31",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 19,
+                "name": "Индейка с брокколи",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Индейка с брокколи",
+                "nutrition": "290,32,6,15|320,35,7,17|350,38,8,19",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 20,
+                "name": "Утка с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Утка с киноа",
+                "nutrition": "580,52,38,16|650,58,43,18|720,64,48,20",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 21,
+                "name": "Скумбрия с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Скумбрия с рисом",
+                "nutrition": "340,36,12,22|380,40,13,24|420,44,14,26",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-4": {
+            "dayName": "День 4",
+            "dishes": [
+                {
+                "id": 22,
+                "name": "Скумбрия с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Скумбрия с рисом",
+                "nutrition": "340,36,12,22|380,40,13,24|420,44,14,26",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 23,
+                "name": "Свиная вырезка с овощами",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Свиная вырезка с овощами",
+                "nutrition": "420,45,24,12|470,50,27,13|520,55,30,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 24,
+                "name": "Индейка с брокколи",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Индейка с брокколи",
+                "nutrition": "290,32,6,15|320,35,7,17|350,38,8,19",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 25,
+                "name": "Треска с картофелем",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Треска с картофелем",
+                "nutrition": "310,35,6,28|340,38,7,31|370,41,8,34",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 26,
+                "name": "Говядина с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Говядина с овощами",
+                "nutrition": "460,50,26,8|510,55,29,9|560,60,32,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 27,
+                "name": "Сельдь с овощами",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Сельдь с овощами",
+                "nutrition": "270,30,14,6|300,33,16,7|330,36,18,8",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 28,
+                "name": "Омлет с грибами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Омлет с грибами",
+                "nutrition": "240,20,14,10|270,22,16,11|300,25,18,12",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-5": {
+            "dayName": "День 5",
+            "dishes": [
+                {
+                "id": 29,
+                "name": "Скрэмбл с овощами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Скрэмбл с овощами",
+                "nutrition": "260,22,16,12|290,24,18,13|320,26,20,14",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 30,
+                "name": "Свиная вырезка с овощами",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Свиная вырезка с овощами",
+                "nutrition": "420,45,24,12|470,50,27,13|520,55,30,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 31,
+                "name": "Индейка с брокколи",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Индейка с брокколи",
+                "nutrition": "290,32,6,15|320,35,7,17|350,38,8,19",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 32,
+                "name": "Утка с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Утка с киноа",
+                "nutrition": "580,52,38,16|650,58,43,18|720,64,48,20",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 33,
+                "name": "Салат с креветками",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Салат с креветками",
+                "nutrition": "280,28,10,20|310,31,11,22|340,34,12,24",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 34,
+                "name": "Тунец с авокадо",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Тунец с авокадо",
+                "nutrition": "380,38,18,8|420,42,20,9|460,46,22,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 35,
+                "name": "Яичница с овощами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Яичница с овощами",
+                "nutrition": "220,18,12,8|240,20,13,9|260,22,14,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-6": {
+            "dayName": "День 6",
+            "dishes": [
+                {
+                "id": 36,
+                "name": "Тунец с авокадо",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Тунец с авокадо",
+                "nutrition": "380,38,18,8|420,42,20,9|460,46,22,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 37,
+                "name": "Лосось с киноа",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Лосось с киноа",
+                "nutrition": "450,42,22,18|500,47,24,20|550,52,26,22",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 38,
+                "name": "Треска с картофелем",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Треска с картофелем",
+                "nutrition": "310,35,6,28|340,38,7,31|370,41,8,34",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 39,
+                "name": "Яичница с овощами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Яичница с овощами",
+                "nutrition": "220,18,12,8|240,20,13,9|260,22,14,10",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 40,
+                "name": "Индейка с брокколи",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Индейка с брокколи",
+                "nutrition": "290,32,6,15|320,35,7,17|350,38,8,19",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 41,
+                "name": "Стейк из говядины",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Стейк из говядины",
+                "nutrition": "480,52,28,0|530,57,31,0|580,62,34,0",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 42,
+                "name": "Баранина с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Баранина с киноа",
+                "nutrition": "520,48,32,18|580,53,36,20|640,58,40,22",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-7": {
+            "dayName": "День 7",
+            "dishes": [
+                {
+                "id": 43,
+                "name": "Треска с картофелем",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Треска с картофелем",
+                "nutrition": "310,35,6,28|340,38,7,31|370,41,8,34",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 44,
+                "name": "Омлет с грибами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Омлет с грибами",
+                "nutrition": "240,20,14,10|270,22,16,11|300,25,18,12",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 45,
+                "name": "Утка с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Утка с киноа",
+                "nutrition": "580,52,38,16|650,58,43,18|720,64,48,20",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 46,
+                "name": "Говядина с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Говядина с овощами",
+                "nutrition": "460,50,26,8|510,55,29,9|560,60,32,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 47,
+                "name": "Куриное филе с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Куриное филе с рисом",
+                "nutrition": "350,38,8,25|390,42,9,28|430,46,10,31",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 48,
+                "name": "Телятина с картофелем",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Телятина с картофелем",
+                "nutrition": "390,44,18,20|430,48,20,22|470,52,22,24",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 49,
+                "name": "Сельдь с овощами",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Сельдь с овощами",
+                "nutrition": "270,30,14,6|300,33,16,7|330,36,18,8",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-8": {
+            "dayName": "День 8",
+            "dishes": [
+                {
+                "id": 50,
+                "name": "Лосось с киноа",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Лосось с киноа",
+                "nutrition": "450,42,22,18|500,47,24,20|550,52,26,22",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 51,
+                "name": "Салат с креветками",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Салат с креветками",
+                "nutrition": "280,28,10,20|310,31,11,22|340,34,12,24",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 52,
+                "name": "Сельдь с овощами",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Сельдь с овощами",
+                "nutrition": "270,30,14,6|300,33,16,7|330,36,18,8",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 53,
+                "name": "Телятина с картофелем",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Телятина с картофелем",
+                "nutrition": "390,44,18,20|430,48,20,22|470,52,22,24",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 54,
+                "name": "Яичница с овощами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Яичница с овощами",
+                "nutrition": "220,18,12,8|240,20,13,9|260,22,14,10",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 55,
+                "name": "Скрэмбл с овощами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Скрэмбл с овощами",
+                "nutrition": "260,22,16,12|290,24,18,13|320,26,20,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 56,
+                "name": "Куриная грудка с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Куриная грудка с овощами",
+                "nutrition": "320,35,8,12|350,38,9,13|380,41,10,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-9": {
+            "dayName": "День 9",
+            "dishes": [
+                {
+                "id": 57,
+                "name": "Куриное филе с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Куриное филе с рисом",
+                "nutrition": "350,38,8,25|390,42,9,28|430,46,10,31",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 58,
+                "name": "Яичница с овощами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Яичница с овощами",
+                "nutrition": "220,18,12,8|240,20,13,9|260,22,14,10",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 59,
+                "name": "Свиная вырезка с овощами",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Свиная вырезка с овощами",
+                "nutrition": "420,45,24,12|470,50,27,13|520,55,30,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 60,
+                "name": "Куриная грудка с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Куриная грудка с овощами",
+                "nutrition": "320,35,8,12|350,38,9,13|380,41,10,14",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 61,
+                "name": "Треска с картофелем",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Треска с картофелем",
+                "nutrition": "310,35,6,28|340,38,7,31|370,41,8,34",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 62,
+                "name": "Скумбрия с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Скумбрия с рисом",
+                "nutrition": "340,36,12,22|380,40,13,24|420,44,14,26",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 63,
+                "name": "Баранина с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Баранина с киноа",
+                "nutrition": "520,48,32,18|580,53,36,20|640,58,40,22",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            },
+            "day-10": {
+            "dayName": "День 10",
+            "dishes": [
+                {
+                "id": 64,
+                "name": "Баранина с киноа",
+                "image": "assets/dishes-5.jpg",
+                "alt": "Баранина с киноа",
+                "nutrition": "520,48,32,18|580,53,36,20|640,58,40,22",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": true
+                },
+                {
+                "id": 65,
+                "name": "Говядина с овощами",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Говядина с овощами",
+                "nutrition": "460,50,26,8|510,55,29,9|560,60,32,10",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 66,
+                "name": "Омлет с грибами",
+                "image": "assets/dishes-6.jpg",
+                "alt": "Омлет с грибами",
+                "nutrition": "240,20,14,10|270,22,16,11|300,25,18,12",
+                "isBreakfast": true,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 67,
+                "name": "Салат с креветками",
+                "image": "assets/dishes-1.jpg",
+                "alt": "Салат с креветками",
+                "nutrition": "280,28,10,20|310,31,11,22|340,34,12,24",
+                "isBreakfast": false,
+                "isSnack": true,
+                "isDinner": false
+                },
+                {
+                "id": 68,
+                "name": "Куриное филе с рисом",
+                "image": "assets/dishes-2.jpg",
+                "alt": "Куриное филе с рисом",
+                "nutrition": "350,38,8,25|390,42,9,28|430,46,10,31",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 69,
+                "name": "Сельдь с овощами",
+                "image": "assets/dishes-4.jpg",
+                "alt": "Сельдь с овощами",
+                "nutrition": "270,30,14,6|300,33,16,7|330,36,18,8",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                },
+                {
+                "id": 70,
+                "name": "Стейк из говядины",
+                "image": "assets/dishes-3.jpg",
+                "alt": "Стейк из говядины",
+                "nutrition": "480,52,28,0|530,57,31,0|580,62,34,0",
+                "isBreakfast": false,
+                "isSnack": false,
+                "isDinner": false
+                }
+            ]
+            }
+        },
+        "filename": "sport-dishes-data.json"
+    }
+</script>

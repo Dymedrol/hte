@@ -364,6 +364,10 @@
   gap: var(--spacing-15);
 }
 
+.meal-option input {
+  display: none;
+}
+
 .toggle-switch {
   display: flex;
   width: 45px;
@@ -371,28 +375,29 @@
   align-items: center;
   padding: 6px;
   background-color: var(--hte-white);
-  border: var(--border-width-normal) solid var(--hte-border);
   border-radius: var(--border-radius-xl);
   cursor: pointer;
   transition: border-color 0.3s ease, justify-content 0.3s ease;
-}
-
-.toggle-switch.active {
   border: var(--border-width-normal) solid var(--hte-black);
   justify-content: flex-end;
+}
+
+.meal-option input:checked ~ .toggle-switch {
+  border: var(--border-width-normal) solid var(--hte-border);
+  justify-content: flex-start;
 }
 
 .toggle-circle {
   width: 15px;
   height: 15px;
-  background-color: var(--hte-border);
   border-radius: var(--border-radius-xxl);
   transition: background-color 0.3s ease;
   flex-shrink: 0;
+  background-color: var(--hte-black);
 }
 
-.toggle-switch.active .toggle-circle {
-  background-color: var(--hte-black);
+.meal-option input:checked ~ .toggle-switch .toggle-circle {
+  background-color: var(--hte-border);
 }
 
 .meal-option span {
@@ -765,7 +770,109 @@
     width: 100%;
     max-width: 100%;
   }
-
 } 
+
+.settings-panel .option-selector {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--spacing-25);
+}
+
+.settings-panel .option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10);
+}
+
+.settings-panel .option-label {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-grey-text);
+}
+
+.settings-panel .option-kalorijnost_ .option-values {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: var(--hte-white);
+  border-radius: var(--border-radius-xxl);
+  overflow: visible;
+  width: fit-content;
+  position: relative;
+}
+
+.settings-panel .option-kalorijnost_ .option-value {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-5);
+  padding: 0 var(--spacing-15);
+  height: 42px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-xl);
+  position: relative;
+  z-index: 1;
+}
+
+.settings-panel .option-kalorijnost_ .option-value.is-active {
+  border: 1.5px solid var(--hte-black, #1A1A1A);
+}
+
+.settings-panel .option-kalorijnost_ .option-value span {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-5);
+  flex-shrink: 0;
+
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-black);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  line-height: var(--hte-body-18-line-height);
+  white-space: nowrap;
+}
+
+.settings-panel .option-value input {
+  display: none;
+}
+
+.settings-panel  .option-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8);
+}
+
+.settings-panel .option-value {
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 var(--spacing-20);
+  border: var(--border-width-normal) solid var(--hte-border);
+  border-radius: var(--border-radius-xl);
+  background-color: var(--hte-white);
+  cursor: pointer;
+}
+
+.settings-panel .option-value.is-active {
+  border: var(--border-width-normal) solid var(--hte-black);
+}
+
+.settings-panel .option-value span {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  color: var(--hte-black);
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+
 
  
