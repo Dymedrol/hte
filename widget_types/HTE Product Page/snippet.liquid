@@ -1,156 +1,157 @@
+<!-- Product Section -->
 <section class="product-section">
-    <div class="product-details">
-        <div class="product-header">
-            <h1 class="product-title">{{ product.title }}!</h1>
-            <div class="menu-selector">
-                <div class="menu-info">
-                    <p class="menu-description">Уникальное меню на 30 дней:</p>
-                    <div class="day-navigation">
-                        <button class="nav-btn prev-btn">
-                            <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Previous" />
-                        </button>
-                        <div class="days-container">
-                            <span class="day-item current-day">День 1</span>
-                        </div>
-                        <button class="nav-btn next-btn">
-                            <img src="{{ 'arrow-1-1.svg' | asset_url }}" alt="Next" />
-                        </button>
-                    </div>
-                </div>
-                <div class="nutrition-info">
-                    <span class="nutrition-item">К 0</span>
-                    <span class="nutrition-item">Б 0</span>
-                    <span class="nutrition-item">Ж 0</span>
-                    <span class="nutrition-item">У 0</span>
-                </div>
+  <div class="product-details">
+    <div class="product-header">
+      <h1 class="product-title">{{ product.title }}</h1>
+      <div class="menu-selector">
+        <div class="menu-info">
+          <p class="menu-description">Уникальное меню на 30 дней:</p>
+          <div class="day-navigation">
+            <button class="nav-btn prev-btn">
+              <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Previous" />
+            </button>
+            <div class="days-container">
+                              <span class="day-item current-day">День 1</span>
             </div>
-            <div class="dishes-gallery">
-                <!-- Блюда будут загружены динамически из sport-dishes-data.json -->
-            </div>
+            <button class="nav-btn next-btn">
+              <img src="{{ 'arrow-1-1.svg' | asset_url }}" alt="Next" />
+            </button>
+          </div>
         </div>
-        <div class="product-description">
-            <h2 class="description-title">{{ product.description }}</h2>
-            <p class="description-text">{{ product.short_description }}</p>
+        <div class="nutrition-info">
+          <span class="nutrition-item">К 0</span>
+          <span class="nutrition-item">Б 0</span>
+          <span class="nutrition-item">Ж 0</span>
+          <span class="nutrition-item">У 0</span>
         </div>
+      </div>
+      <div class="dishes-gallery">
+        <!-- Блюда будут загружены динамически из sport-dishes-data.json -->
+      </div>
+    </div>
+    <div class="product-description">
+      <h2 class="description-title">{{ product.description }}</h2>
+      <p class="description-text">{{ product.short_description }}</p>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <aside class="settings-panel">
+    <!-- Calorie Selection -->
+    <div class="setting-group">
+      <div class="setting-header">
+        <div class="info-icon">
+          <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
+          </svg>
+        </div>
+        <span>Выберите необходимую калорийность</span>
+      </div>
+      <div class="calorie-options">
+        <button class="calorie-option active">
+          <span class="calorie-value">2300</span>
+          <span class="calorie-unit">ккал</span>
+        </button>
+        <button class="calorie-option">
+          <span class="calorie-value">2500</span>
+          <span class="calorie-unit">ккал</span>
+        </button>
+        <button class="calorie-option">
+          <span class="calorie-value">3000</span>
+          <span class="calorie-unit">ккал</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Settings Panel -->
-    <aside class="settings-panel">
-        <!-- Calorie Selection -->
-        <div class="setting-group">
-            <div class="setting-header">
-                <div class="info-icon">
-                    <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
-                    </svg>
-                </div>
-                <span>Выберите необходимую калорийность</span>
-            </div>
-            <div class="calorie-options">
-                <button class="calorie-option active">
-                    <span class="calorie-value">2300</span>
-                    <span class="calorie-unit">ккал</span>
-                </button>
-                <button class="calorie-option">
-                    <span class="calorie-value">2500</span>
-                    <span class="calorie-unit">ккал</span>
-                </button>
-                <button class="calorie-option">
-                    <span class="calorie-value">3000</span>
-                    <span class="calorie-unit">ккал</span>
-                </button>
-            </div>
+    <!-- Diet Type Selection -->
+    <div class="setting-group">
+      <div class="setting-header">
+        <div class="info-icon">
+          <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
+          </svg>
         </div>
+        <span>Выберите тип питания</span>
+      </div>
+      <div class="diet-options">
+        <button class="diet-option active">Классика</button>
+        <button class="diet-option">Вегетарианство</button>
+        <button class="diet-option">Пескетарианство</button>
+        <button class="diet-option">Веганство</button>
+      </div>
+    </div>
 
-        <!-- Diet Type Selection -->
-        <div class="setting-group">
-            <div class="setting-header">
-                <div class="info-icon">
-                    <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
-                    </svg>
-                </div>
-                <span>Выберите тип питания</span>
-            </div>
-            <div class="diet-options">
-                <button class="diet-option active">Классика</button>
-                <button class="diet-option">Вегетарианство</button>
-                <button class="diet-option">Пескетарианство</button>
-                <button class="diet-option">Веганство</button>
-            </div>
+    <hr class="separator-line" />
+
+    <!-- Meal Options -->
+    <div class="meal-options">
+      <div class="meal-option">
+        <div class="toggle-switch">
+          <div class="toggle-circle"></div>
         </div>
-
-        <hr class="separator-line" />
-
-        <!-- Meal Options -->
-        <div class="meal-options">
-            <div class="meal-option">
-                <div class="toggle-switch">
-                    <div class="toggle-circle"></div>
-                </div>
-                <span>Убрать завтрак и перекус</span>
-            </div>
-            <div class="meal-option">
-                <div class="toggle-switch">
-                    <div class="toggle-circle"></div>
-                </div>
-                <span>Убрать ужин и перекус</span>
-            </div>
+        <span>Убрать завтрак и перекус</span>
+      </div>
+      <div class="meal-option">
+        <div class="toggle-switch">
+          <div class="toggle-circle"></div>
         </div>
+        <span>Убрать ужин и перекус</span>
+      </div>
+    </div>
 
-        <hr class="separator-line" />
+    <hr class="separator-line" />
 
-        <!-- Allergen Exclusions -->
-        <div class="allergen-section">
-            <div class="allergen-header">
-                <h3 class="allergen-trigger">Исключить аллергены</h3>
-                <p class="allergen-info">
-                    <span class="info-text">Первые 3 ингредиента — бесплатно<br />За каждое дополнительное исключение:</span>
-                    <span class="price">+300 ₽</span>
-                </p>
-            </div>
-
-            <!-- Allergen Dropdown -->
-            <div class="allergen-dropdown">
-                <div class="dropdown-header">
-                    <span>Выберите, что исключить:</span>
-                </div>
-                <div class="search-container">
-                    <div class="search-icon">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11.5 11.5L14 14M13 7.5C13 10.5376 10.5376 13 7.5 13C4.46243 13 2 10.5376 2 7.5C2 4.46243 4.46243 2 7.5 2C10.5376 2 13 4.46243 13 7.5Z" stroke="#D4D4CD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <input type="text" class="allergen-search" placeholder="Поиск" />
-                </div>
-                <div class="allergen-list">
-                </div>
-            </div>
-            <div class="allergen-tags">
-            </div>
-            <div class="allergen-note">
-                <div class="info-icon">
-                    <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
-                    </svg>
-                </div>
-                <span>Указанные продукты будут исключены из вашего меню</span>
-            </div>
+    <!-- Allergen Exclusions -->
+    <div class="allergen-section">
+      <div class="allergen-header">
+        <h3 class="allergen-trigger">Исключить аллергены</h3>
+        <p class="allergen-info">
+          <span class="info-text">Первые 3 ингредиента — бесплатно<br />За каждое дополнительное исключение:</span>
+          <span class="price">+300 ₽</span>
+        </p>
+      </div>
+      
+      <!-- Allergen Dropdown -->
+      <div class="allergen-dropdown">
+        <div class="dropdown-header">
+          <span>Выберите, что исключить:</span>
         </div>
-
-        <!-- Order Summary -->
-        <div class="order-summary">
-            <div class="price-info">
-                <span class="price-label">Итого:</span>
-                <div class="price-display">
-                    <span class="total-price">8 000 ₽</span>
-                    <span class="price-period">/ день</span>
-                </div>
-            </div>
-            <div class="order-actions">
-                <button class="add-to-cart-btn">Заказать доставку</button>
-                <p class="delivery-info">Ближайшая доставка: 19 марта с 6:00 до 10:00</p>
-            </div>
+        <div class="search-container">
+          <div class="search-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.5 11.5L14 14M13 7.5C13 10.5376 10.5376 13 7.5 13C4.46243 13 2 10.5376 2 7.5C2 4.46243 4.46243 2 7.5 2C10.5376 2 13 4.46243 13 7.5Z" stroke="#D4D4CD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <input type="text" class="allergen-search" placeholder="Поиск" />
         </div>
-    </aside>
-</section>
+        <div class="allergen-list">
+        </div>
+      </div>
+      <div class="allergen-tags">
+      </div>
+      <div class="allergen-note">
+        <div class="info-icon">
+          <svg width="2" height="10" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.400024 2.975H1.60002V9.18269H0.400024V2.975ZM0.400024 0.817307H1.60002V2.14423H0.400024V0.817307Z" fill="#D4D4CD"/>
+          </svg>
+        </div>
+        <span>Указанные продукты будут исключены из вашего меню</span>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <div class="price-info">
+        <span class="price-label">Итого:</span>
+        <div class="price-display">
+          <span class="total-price">8 000 ₽</span>
+          <span class="price-period">/ день</span>
+        </div>
+      </div>
+      <div class="order-actions">
+        <button class="add-to-cart-btn">Заказать доставку</button>
+        <p class="delivery-info">Ближайшая доставка: 19 марта с 6:00 до 10:00</p>
+      </div>
+    </div>
+  </aside>
+</section> 
