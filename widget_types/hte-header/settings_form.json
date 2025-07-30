@@ -1,0 +1,44 @@
+{
+  "content": [
+    {
+      "items": [
+        {
+          "name": "logo",
+          "label": "Logo",
+          "value": null,
+          "type": "file",
+          "general": true,
+          "help": "Recommended size: 200x60 px",
+          "general_position": 1
+        },
+        {
+          "class": "text",
+          "name": "logo_url",
+          "label": "Logo URL",
+          "value": "/",
+          "type": "text",
+          "general": true,
+          "general_position": 2
+        },
+        {
+          "class": "text",
+          "name": "left_menu_text",
+          "label": "Left Menu",
+          "value": "Home,Catalog",
+          "type": "text",
+          "general": true,
+          "general_position": 3
+        },
+        {
+          "class": "text",
+          "name": "right_menu_text",
+          "label": "Right Menu",
+          "value": "Search,Cart",
+          "type": "text",
+          "general": true,
+          "general_position": 4
+        }
+      ]
+    }
+  ]
+}

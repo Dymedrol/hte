@@ -1,0 +1,49 @@
+{
+  "logo-max-width": 180,
+  "header-top-pt": 0.5,
+  "header-top-pb": 0.5,
+  "header-main-pt": 1,
+  "header-main-pb": 1,
+  "menu-img-ratio": 1.5,
+  "subcollections-items-limit": 10,
+  "menu-grid-list-min-width": 220,
+  "menu-grid-list-row-gap": 3,
+  "menu-grid-list-column-gap": 3,
+  "working_hours": {
+    "ru": "Доставка с 8:00 до 23:00",
+    "en": "From 8 a.m. to 11 p.m.",
+    "ua": "З 8.00 до 23.00",
+    "es": "Entrega de 8:00 a 23:00"
+  },
+  "hide-mobile": false,
+  "hide-desktop": false,
+  "header-wide-bg": true,
+  "header-wide-content": false,
+  "hide-search": false,
+  "hide-language": false,
+  "hide-compare": true,
+  "favorite_enabled": true,
+  "hide-personal": false,
+  "menu-1": "footer-menu-1",
+  "menu-2": "main-menu",
+  "top_menu_heading": {
+    "ru": "Информация",
+    "en": "Information",
+    "ua": "Iнформація",
+    "es": "Información"
+  },
+  "bottom_menu_heading": {
+    "ru": "Сервис",
+    "en": "Service",
+    "ua": "Сервіс",
+    "es": "Servicio"
+  },
+  "hide-menu-photo": "true",
+  "bg-bottom": "#B79B7E",
+  "bage-bg": "#B79B7E",
+  "live-search": false,
+  "menu-img-fit": "cover",
+  "img-border-radius": 0,
+  "hide-counts": true
+}
+

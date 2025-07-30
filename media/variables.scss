@@ -1,0 +1,107 @@
+/* 02. CSS Variables */
+:root {
+  /* Border Radius Variables */
+  --border-radius-sm: 10px;     /* Для небольших кнопок и элементов */
+  --border-radius-md: 20px;     /* Для карточек и основных блоков */
+  --border-radius-xl: 30px;     /* Для кнопок, интерактивных элементов и переключателей */
+  --border-radius-xxl: 100px;   /* Для кнопок и круглых элементов */
+
+  /* Border Width Variables */
+  --border-width-thin: 1px;     /* Тонкая граница для разделителей и легких элементов */
+  --border-width-normal: 1.5px; /* Обычная граница для кнопок и интерактивных элементов */
+
+  /* Opacity Variables */
+  --opacity-low: 0.3;           /* Для второстепенных элементов (ссылки в футере, юридическая информация) */
+  --opacity-medium: 0.5;        /* Для описательного текста, для ховеров */
+  --opacity-high: 0.6;          /* Для важного, но не основного текста */
+
+  /* Layout Variables */
+
+  --max-width-content: 1280px;   /* Контентные секции (features, additional-products) */
+  --max-width-panel: 800px;      /* Панели настроек и форм */
+  --max-width-product: 1280px;   /* Основная секция продукта */
+  --max-width-section: 1360px;   /* Секции с расширенной шириной (product-section, features, additional-products) */
+  --width-details: 800px;        /* Детали продукта */
+  --max-width-settings: 420px;   /* Панель настроек */
+  --min-width-feature: 390px;    /* Минимальная ширина feature-content */
+
+  /* Breakpoint Variables */
+  --breakpoint-tablet: 1279px;   /* Планшеты (header, product-section, additional-products) */
+
+  --breakpoint-mobile: 720px;    /* Мобильные (features-section, additional-products, product-section) */
+  --breakpoint-mobile-alt: 719px; /* Мобильные (header) */
+
+  /* Spacing Variables */
+  --spacing-5: 5px;             /* Маленькие отступы */
+  --spacing-8: 8px;             /* Базовые отступы */
+  --spacing-10: 10px;           /* Стандартные отступы */
+  --spacing-15: 15px;           /* Средние отступы */
+  --spacing-20: 20px;           /* Большие отступы */
+  --spacing-25: 25px;           /* Отступы для секций */
+  --spacing-30: 30px;           /* Отступы для заголовков */
+  --spacing-40: 40px;           /* Отступы для контейнеров */
+  --spacing-60: 60px;           /* Отступы для продуктовых секций */
+  --spacing-80: 80px;           /* Основные отступы страницы */
+  --spacing-120: 120px;         /* Большие отступы страницы */
+
+  /* Color Variables */
+  --hte-white: #ffffff;
+  --hte-black: #1a1a1a;
+  --hte-bg-fill: #f9f9f4;
+  --hte-border: #cacaca;
+  --hte-grey-text: #9d9d9d;
+  --hte-dark-accent: #ebebe3;
+  --hte-super-dark-accent: #d4d4cd;
+
+  /* Typography Variables */
+  --hte-font-family: "Futura PT", Helvetica, Arial, sans-serif;
+  
+  /* HTE - micro text 14 */
+  --hte-micro-text-14-font-family: var(--hte-font-family);
+  --hte-micro-text-14-font-size: 14px;
+  --hte-micro-text-14-font-style: normal;
+  --hte-micro-text-14-font-weight: 400;
+  --hte-micro-text-14-line-height: 100%;
+  
+  /* HTE - small text 16 */
+  --hte-small-text-16-font-family: var(--hte-font-family);
+  --hte-small-text-16-font-size: 16px;
+  --hte-small-text-16-font-style: normal;
+  --hte-small-text-16-font-weight: 400;
+  --hte-small-text-16-line-height: 100%;
+  --hte-small-text-16-letter-spacing: -0.16px;
+  
+  /* HTE - body 18 */
+  --hte-body-18-font-family: var(--hte-font-family);
+  --hte-body-18-font-size: 18px;
+  --hte-body-18-font-style: normal;
+  --hte-body-18-font-weight: 400;
+  --hte-body-18-line-height: 120%;
+  --hte-body-18-letter-spacing: -0.18px;
+  
+  /* HTE - H4 */
+  --hte-h4-font-family: var(--hte-font-family);
+  --hte-h4-font-size: 18px;
+  --hte-h4-font-style: normal;
+  --hte-h4-font-weight: 400;
+  --hte-h4-line-height: 110%;
+  --hte-h4-text-transform: uppercase;
+  
+  /* HTE - H2 */
+  --hte-h2-font-family: var(--hte-font-family);
+  --hte-h2-font-size: 30px;
+  --hte-h2-font-style: normal;
+  --hte-h2-font-weight: 400;
+  --hte-h2-line-height: 100%;
+  --hte-h2-letter-spacing: -0.6px;
+  --hte-h2-text-transform: uppercase;
+  
+  /* HTE - H1 */
+  --hte-h1-font-family: var(--hte-font-family);
+  --hte-h1-font-size: 35px;
+  --hte-h1-font-style: normal;
+  --hte-h1-font-weight: 400;
+  --hte-h1-line-height: 100%;
+  --hte-h1-letter-spacing: -0.7px;
+  --hte-h1-text-transform: uppercase;
+} 

@@ -1,0 +1,108 @@
+{
+  "product": {
+    "id": 12345,
+    "title": "Спортивное питание Premium",
+    "description": "Профессиональное спортивное питание для достижения максимальных результатов",
+    "short_description": "Сбалансированное питание для спортсменов с учетом индивидуальных потребностей",
+    "variants": [
+      {
+        "id": 1,
+        "title": "Базовый план",
+        "price": 8000,
+        "compare_at_price": 10000,
+        "available": true,
+        "option1": "Базовый",
+        "option2": null,
+        "option3": null
+      },
+      {
+        "id": 2,
+        "title": "Премиум план",
+        "price": 12000,
+        "compare_at_price": 15000,
+        "available": true,
+        "option1": "Премиум",
+        "option2": null,
+        "option3": null
+      },
+      {
+        "id": 3,
+        "title": "VIP план",
+        "price": 18000,
+        "compare_at_price": 22000,
+        "available": true,
+        "option1": "VIP",
+        "option2": null,
+        "option3": null
+      }
+    ]
+  },
+  "nutrition": {
+    "2300": {
+      "calories": 2300,
+      "protein": 180,
+      "fat": 80,
+      "carbs": 200
+    },
+    "2500": {
+      "calories": 2500,
+      "protein": 200,
+      "fat": 90,
+      "carbs": 220
+    },
+    "3000": {
+      "calories": 3000,
+      "protein": 240,
+      "fat": 110,
+      "carbs": 260
+    }
+  },
+  "allergens": [
+    {"id": 1, "name": "Глютен", "price": 0},
+    {"id": 2, "name": "Лактоза", "price": 0},
+    {"id": 3, "name": "Орехи", "price": 0},
+    {"id": 4, "name": "Морепродукты", "price": 300},
+    {"id": 5, "name": "Яйца", "price": 300},
+    {"id": 6, "name": "Соя", "price": 300},
+    {"id": 7, "name": "Рыба", "price": 300},
+    {"id": 8, "name": "Молоко", "price": 300},
+    {"id": 9, "name": "Мед", "price": 300},
+    {"id": 10, "name": "Грибы", "price": 300}
+  ],
+  "dishes": {
+    "day1": [
+      {
+        "name": "Овсянка с ягодами",
+        "image": "oatmeal.jpg",
+        "calories": 350,
+        "protein": 12,
+        "fat": 8,
+        "carbs": 55
+      },
+      {
+        "name": "Куриная грудка с овощами",
+        "image": "chicken.jpg",
+        "calories": 450,
+        "protein": 35,
+        "fat": 15,
+        "carbs": 25
+      },
+      {
+        "name": "Творожная запеканка",
+        "image": "cottage-cheese.jpg",
+        "calories": 280,
+        "protein": 20,
+        "fat": 12,
+        "carbs": 18
+      },
+      {
+        "name": "Салат с тунцом",
+        "image": "tuna-salad.jpg",
+        "calories": 320,
+        "protein": 28,
+        "fat": 18,
+        "carbs": 12
+      }
+    ]
+  }
+} 

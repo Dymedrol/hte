@@ -1,0 +1,21 @@
+{
+  "layout-wide-bg": true,
+  "layout-wide-content": true,
+  "layout-edge": true,
+  "layout-pt": 0,
+  "layout-pb": 0,
+  "banner-overlay-opacity": 0.4,
+  "hide-mobile": false,
+  "hide-desktop": false,
+  "banner-overlay-color": "#000000",
+  "offset-h": 1.5,
+  "padding-button-vert": "0",
+  "padding-button-hor": "16",
+  "font-size-button": "14",
+  "align-content": "center",
+  "height-block": 500,
+  "height-block-mobile": 375,
+  "banner-text-color": "#FFFFFF",
+  "off-parallax-mobile": false,
+  "open-link": "normal"
+}

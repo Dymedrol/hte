@@ -1,0 +1,20 @@
+{
+  "type": "BlockListWidgetType",
+  "name": {
+    "ru": "HTE Cover Image"
+  },
+  "handle": "hte-cover-image",
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "jquery",
+    "my-layout"
+  ],
+  "block_template_handle": "system-banner-block"
+}

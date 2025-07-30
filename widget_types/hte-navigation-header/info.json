@@ -1,0 +1,23 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Navigation Header"
+  },
+  "handle": "hte-navigation-header",
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "header"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "vanilla-lazyload",
+    "cut-list",
+    "jquery",
+    "commonjs_v2",
+    "body-scroll-lock",
+    "my-layout"
+  ]
+}

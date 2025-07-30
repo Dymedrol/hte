@@ -1,0 +1,45 @@
+{% assign img_width = widget_settings.layout-content-max-width | default: settings.layout-content-max-width | default: settings.layout_content_max_width %}
+{% if widget_settings.layout-wide-content %}
+  {% assign img_width = 1920 %}
+{% endif %}
+{% unless  data.blocks.first.image == blank and data.blocks.first.name == blank and data.blocks.first.content == blank and data.blocks.first.link == blank %}
+  {% for block in data.blocks %}
+
+    <div class="banner-list__item">
+      <div class="banner-list__item-image {% if editor_mode? %}no-transition{% endif %}" data-off-parallax-mobile="{{ widget_settings.off-parallax-mobile }}">
+
+        {% if block.image %}
+          {% assign img_width = widget_settings.layout-content-max-width | default: settings.layout-content-max-width | default: settings.layout_content_max_width %}
+          {% if widget_settings.layout-wide-content %}
+            {% assign img_width = 1920 %}
+          {% endif %}
+          <picture>
+            <source media="(min-width:769px)" srcset="{{ block.image | image_url: img_width, format: 'webp', resizing_type: 'fit_width', quality: 100 }}" type="image/webp" loading="lazy">
+            <source media="(max-width:480px)" srcset="{{ block.image | image_url: 640, format: 'webp', resizing_type: 'fit_width', quality: 100 }}" type="image/webp" loading="lazy">
+            <source media="(max-width:768px)" srcset="{{ block.image | image_url: 768, format: 'webp', resizing_type: 'fit_width', quality: 100 }}" type="image/webp" loading="lazy">
+
+            <img src="{{ block.image | image_url: img_width, resizing_type: 'fit_width', quality: 100 }}" loading="lazy" alt="{{block.name | escape}}">
+          </picture>
+        {% endif %}
+
+      </div>
+      <div class="banner-list__item-text">
+        {% if block.name != null %}
+          <div class="banner-list__item-title">
+            {{ block.name | editable }}
+          </div>
+        {% endif %}
+        {% if block.content != null %}
+          <div class="banner-list__item-subtitle">
+            {{ block.content | editable}}
+          </div>
+        {% endif %}
+        {% unless block.link == blank or editor_mode? == false or widget_settings.hide-button %}
+          <div class="banner-list__item-button">
+            <a href="{{ block.link }}" {% if widget_settings.open-link == 'new-window'%}target="_blank"{% endif %} class="button button_size-m {% if block.button_text == null or block.link == null %}no-text{% endif %}">{{ block.button_text }}</a>
+          </div>
+        {% endunless %}
+      </div>
+    </div>
+  {% endfor %}
+{% endunless %}

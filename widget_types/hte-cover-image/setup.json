@@ -1,0 +1,26 @@
+{
+  "blocks": [
+    {
+      "name": {
+        "ru": "Заголовок",
+        "en": "Title",
+        "ua": "Заголовок",
+        "es": "Título"
+      },
+      "content": {
+        "ru": "Подзаголовок",
+        "en": "Subtitle",
+        "ua": "Підзаголовок",
+        "es": "Subtitular"
+      },
+      "link": "",
+      "image": "22419228",
+      "button_text": {
+        "ru": "Текст кнопки",
+        "en": "Button text",
+        "ua": "Текст кнопки",
+        "es": "Botón de texto"
+      }
+    }
+  ]
+}

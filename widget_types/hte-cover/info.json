@@ -1,0 +1,24 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Cover"
+  },
+  "handle": "hte-cover",
+  "description": {
+    "ru": " Обложка сайта"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content",
+    "before_content",
+    "after_content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "jquery",
+    "my-layout"
+  ]
+}

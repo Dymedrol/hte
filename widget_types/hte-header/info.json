@@ -1,0 +1,41 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Header"
+  },
+  "handle": "hte-header",
+  "description": {
+    "ru": "Header"
+  },
+  "page_kinds": [
+    "all",
+    "index",
+    "collection",
+    "cart",
+    "product",
+    "page",
+    "search",
+    "blog",
+    "compare",
+    "favorite",
+    "article",
+    "multilink.all",
+    "shared_cart"
+  ],
+  "widget_list_kinds": [
+    "header",
+    "before_content",
+    "content",
+    "sidebar",
+    "after_content",
+    "footer",
+    "outside",
+    "bottom_panel",
+    "top_panel"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "jquery"
+  ]
+}

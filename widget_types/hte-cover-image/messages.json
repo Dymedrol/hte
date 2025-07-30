@@ -1,0 +1,15 @@
+{
+  "ru": {
+    "block_field_image_help": "Рекомендуемая ширина изображения: 1920 px. Минимальная рекомендуемая высота: 900 px."
+  },
+  "ua": {
+    "block_field_image_help": "Рекомендована ширина зображення: 1920 px. Мінімальна рекомендована висота: 900 px."
+  },
+  "en": {
+    "block_field_image_help": "Recommended image width: 1920 px. Minimum recommended height: 900 px."
+  },
+  "es": {
+    "block_field_image_help": "Ancho de imagen recomendado: 1920 px. Alto mínimo recomendado: 900 px."
+  }
+}
+

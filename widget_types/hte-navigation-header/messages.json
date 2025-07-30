@@ -1,0 +1,22 @@
+{
+  "ru": {
+    "image_ratio_cat": "Пропорции изображения категории",
+    "rounding_corners_image_cat": "Скругление углов изображения категории",
+    "logo_recommended_width": "Рекомендуемая ширина изображения: 512 px"
+  },
+  "ua": {
+    "image_ratio_cat": "Пропорції зображення категорії",
+    "rounding_corners_image_cat": "Заокруглення кутів зображення категорії",
+    "logo_recommended_width": "Рекомендована ширина зображення: 512 px"
+  },
+  "en": {
+    "image_ratio_cat": "Category Image Proportions",
+    "rounding_corners_image_cat": "Rounding category image corners",
+    "logo_recommended_width": "Recommended image width: 512 px"
+  },
+  "es": {
+    "image_ratio_cat": "Categoría Imagen Proporciones",
+    "rounding_corners_image_cat": "Redondeo de esquinas de imagen de categoría",
+    "logo_recommended_width": "Ancho de imagen recomendado: 512 px"
+  }
+}

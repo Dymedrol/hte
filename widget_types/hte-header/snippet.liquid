@@ -1,0 +1,40 @@
+<div class="hte-header-widget">
+  <div class="hte-header-container">
+    <!-- Left Menu -->
+    <div class="hte-header-left-menu">
+      {% if widget_settings.left_menu_text %}
+        {% assign items = widget_settings.left_menu_text | split: ',' %}
+        <ul class="hte-nav-menu">
+          {% for item in items %}
+            <li><a href="/" class="hte-nav-item">{{ item | strip }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <!-- Logo -->
+    <div class="hte-header-logo">
+      {% if widget_settings.logo %}
+        <a href="{{ widget_settings.logo_url | default: '/' }}" class="hte-logo-link">
+          <img src="{{ widget_settings.logo }}" alt="{{ shop.name }}" class="hte-logo-image">
+        </a>
+      {% else %}
+        <a href="{{ widget_settings.logo_url | default: '/' }}" class="hte-logo-link">
+          <span class="hte-logo-text">{{ shop.name }}</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Right Menu -->
+    <div class="hte-header-right-menu">
+      {% if widget_settings.right_menu_text %}
+        {% assign items = widget_settings.right_menu_text | split: ',' %}
+        <ul class="hte-nav-menu">
+          {% for item in items %}
+            <li><a href="/" class="hte-nav-item">{{ item | strip }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</div> 

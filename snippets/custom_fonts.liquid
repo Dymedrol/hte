@@ -1,0 +1,38 @@
+<style>
+/* Подключение локального шрифта */
+@font-face {
+  font-family: 'Futura PT Book';
+  src: url('{{ 'futura-pt-book.woff' | asset_url }}') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* CSS переменные для шрифтов и цветов */
+:root {
+  /* Фирменный шрифт */
+  --font-hte: 'Futura PT Book', sans-serif;
+  
+  /* Веса шрифта */
+  --font-weight-hte: 400;
+  
+  /* Размеры текста */
+  --font-size-hte-h1: 35px;
+  --font-size-hte-body: 18px;
+  
+  /* Цвета */
+  --how---black: #1A1A1A;
+  --how---white: #FFF;
+}
+
+/* Принудительное применение шрифта */
+.hte-cover {
+  font-family: var(--font-hte) !important;
+}
+
+.hte-cover__title,
+.hte-cover__subtitle,
+.hte-cover__button {
+  font-family: var(--font-hte) !important;
+}
+</style> 

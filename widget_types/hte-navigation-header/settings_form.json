@@ -1,0 +1,434 @@
+{
+  "content": [
+    {
+      "group_name":"{{ messages.logo_img }}",
+      "items": [
+        {
+          "name": "logo-img",
+          "label": "{{ messages.logo_img }}",
+          "value": null,
+          "type": "file",
+          "general": true,
+          "general_position": 1,
+          "with_generate_logo": true,
+          "only_images": true,
+          "branding_field": "logo",
+          "help": "{{ messages.logo_recommended_width }}"
+        },
+        {
+          "class": "range",
+          "name": "logo-max-width",
+          "min": 100,
+          "max": 300,
+          "step": 20,
+          "label": "{{ messages.logo_max_width }} (px)",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.px_helper }}",
+"unit": "px",
+          "general": true,
+          "general_position": 1,
+          "enable_server_reload": true
+        }
+      ]
+    },
+    {
+      "group_name":"{{ messages.menu }}",
+      "items": [
+        {
+          "class": "text",
+          "name": "menu-1",
+          "label": "{{ messages.menu }} 1",
+          "type": "navigation",
+          "placeholder": null,
+          "general": true,
+          "general_position": 1
+        },
+        {
+          "class": "text",
+          "name": "top_menu_heading",
+          "label": "{{ messages.menu_heading_mobile }}",
+          "type": "text",
+          "placeholder": null,
+          "general": true,
+          "general_position": 1
+        },
+        {
+          "class": "text",
+          "name": "menu-2",
+          "label": "{{ messages.menu }} 2",
+          "type": "navigation",
+          "placeholder": null,
+          "general": true,
+          "general_position": 1
+        },
+        {
+          "class": "text",
+          "name": "bottom_menu_heading",
+          "label": "{{ messages.menu_heading_mobile }}",
+          "type": "text",
+          "placeholder": null,
+          "general": true,
+          "general_position": 1
+        }
+      ]
+    },
+    {
+      "group_name":"{{ messages.contacts }}",
+      "items": [
+        {
+          "class": "text",
+          "name": "phone_number",
+          "label": "{{ messages.phone }}",
+          "value": "",
+          "type": "text",
+          "placeholder": null,
+          "general": true,
+          "general_position": 1,
+          "branding_field": "account_contact_phone"
+        },
+        {
+          "class": "text",
+          "name": "phone_number_2",
+          "label": "{{ messages.phone }} 2",
+          "value": "",
+          "type": "text",
+          "placeholder": null,
+          "branding_field": "account_contact_phone2"
+        },
+        {
+          "class": "text",
+          "name": "working_hours",
+          "label": "{{ messages.working_hours }}",
+          "value": "",
+          "type": "text",
+          "placeholder": null,
+          "general": true,
+          "general_position": 1
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "{{ messages.live_search }}",
+      "items": [
+        {
+          "name": "live-search",
+          "label": "{{ messages.enable_live_search }}",
+          "enable_server_reload": true,
+          "value": null,
+          "help": "{{ messages.help_live_search }}",
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "group_name":"{{ messages.elements }}",
+      "items": [
+        {
+          "class": "checkbox",
+          "name": "hide-search",
+          "label": "{{ messages.hide_search }}",
+          "value": null,
+          "type": "checkbox",
+          "general": true,
+          "general_position": 100
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-language",
+          "label": "{{ messages.hide_language }}",
+          "value": null,
+          "type": "checkbox",
+          "help": "{{ messages.hide_language_help }}",
+          "general": true,
+          "general_position": 100
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-personal",
+          "label": "{{ messages.hide_personal }}",
+          "value": null,
+          "type": "checkbox",
+          "general": true,
+          "general_position": 100
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-compare",
+          "label": "{{ messages.hide_comparison }}",
+          "value": null,
+          "type": "checkbox",
+          "general": true,
+          "general_position": 100,
+          "help": "{{ messages.hide_compare_help }}",
+          "enable_server_reload": true
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-favorite",
+          "label": "{{ messages.hide_favorites }}",
+          "value": null,
+          "type": "checkbox",
+          "general": true,
+          "general_position": 100,
+          "enable_server_reload": true,
+          "help": "{{ messages.hide_favorite_help }}"
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-menu-photo",
+          "label": "{{ messages.hide_menu_photo }}",
+          "value": null,
+          "type": "checkbox",
+          "general": true,
+          "general_position": 100
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-counts",
+          "label": "{{ messages.hide_counts }}",
+          "value": null,
+          "type": "checkbox",
+          "general": true,
+          "general_position": 100
+        }
+      ]
+    }
+  ],
+  "design": [
+    {
+      "type": "group",
+      "name": "{{ messages.stylization }}",
+      "items": [
+        {
+          "name": "bage-bg",
+          "label": "{{ messages.bages_background_color }}",
+          "value": "",
+          "type": "color",
+          "clearable": true,
+          "fallback": "color-btn-bg"
+        },
+        {
+          "name": "bg-bottom",
+          "label": "{{ messages.background_bottom_menu }}",
+          "value": "",
+          "type": "color",
+          "clearable": true,
+          "fallback": "color-btn-bg"
+        },
+        {
+          "name": "color-active-link",
+          "label": "{{ messages.color_active_link}}",
+          "value": "",
+          "type": "color",
+          "clearable": true
+        },
+        {
+          "name": "bg",
+          "label": "{{ messages.widget_background_color }}",
+          "value": "",
+          "type": "color",
+          "clearable": true
+        },
+        {
+          "class": "checkbox",
+          "name": "header-wide-bg",
+          "label": "{{ messages.wide_background }}",
+          "value": null,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "{{ messages.collections_menu }}",
+      "items": [
+        {
+          "class": "range",
+          "name": "menu-grid-list-min-width",
+          "label": "{{ messages.menu_item_min_width }} (px)",
+          "min": 150,
+          "max": 500,
+          "step": 10,
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.px_helper }}",
+"unit": "px"
+        },
+        {
+          "class": "range",
+          "name": "subcollections-items-limit",
+          "min": 1,
+          "max": 100,
+          "step": 1,
+          "label": "{{ messages.subcollections_items_limit }}",
+          "type": "number",
+          "with_btns": true,
+          "enable_server_reload": true
+        },
+        {
+          "class": "range",
+          "name": "menu-grid-list-row-gap",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "label": "{{ messages.menu_row_gap }} (rem)",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.rem_helper }}",
+"unit": "rem"
+        },
+        {
+          "class": "range",
+          "name": "menu-grid-list-column-gap",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "label": "{{ messages.menu_column_gap }} (rem)",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.rem_helper }}",
+"unit": "rem"
+        },
+        {
+          "class": "range",
+          "name": "img-border-radius",
+          "label": "{{ messages.rounding_corners_image_cat }} (px)",
+          "min": 0,
+          "max": 50,
+          "help": "{{ messages.px_helper }}",
+"unit": "px",
+          "step": 1,
+          "type": "number",
+          "with_btns": true
+        },
+        {
+          "class": "range",
+          "name": "menu-img-ratio",
+          "label": "{{ messages.image_ratio }}",
+          "min": 0.5,
+          "max": 2,
+          "step": 0.1,
+          "type": "number",
+          "with_btns": true
+        },
+        {
+          "class": "select",
+          "name": "menu-img-fit",
+          "options": [
+            [
+              "{{ messages.maintain_proportions }}",
+              "contain"
+            ],
+            [
+              "{{ messages.stretch_entire_block }}",
+              "cover"
+            ]
+          ],
+          "label": "{{ messages.image_size }}",
+          "type": "select"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "{{ messages.indentation }}",
+      "items": [
+        {
+          "class": "range",
+          "name": "header-top-pt",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "label": "{{ messages.header_top_padding_top }}",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.vw_helper }}",
+"unit": "vw"
+        },
+        {
+          "class": "range",
+          "name": "header-top-pb",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "label": "{{ messages.header_top_padding_bottom }}",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.vw_helper }}",
+"unit": "vw"
+        },
+        {
+          "class": "range",
+          "name": "header-main-pt",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "label": "{{ messages.header_main_padding_top }}",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.vw_helper }}",
+"unit": "vw"
+        },
+        {
+          "class": "range",
+          "name": "header-main-pb",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "label": "{{ messages.header_main_padding_bottom }}",
+          "type": "number",
+          "with_btns": true,
+          "help": "{{ messages.vw_helper }}",
+"unit": "vw"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "{{ messages.content }}",
+      "items": [
+        {
+          "class": "number",
+          "name": "layout-content-max-width",
+          "min": 1060,
+          "max": 2000,
+          "label": "{{ messages.content_max_width }} (px)",
+          "type": "number",
+          "help": "{{ messages.px_helper }}",
+"unit": "px",
+          "hide_mobile": true
+        },
+        {
+          "class": "checkbox",
+          "name": "header-wide-content",
+          "label": "{{ messages.wide_content }}",
+          "value": null,
+          "type": "checkbox",
+          "hide_mobile": true
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "{{ messages.adaptive }}",
+      "items": [
+        {
+          "class": "checkbox",
+          "name": "hide-desktop",
+          "label": "{{ messages.hide_desktop }}",
+          "value": null,
+          "type": "checkbox"
+        },
+        {
+          "class": "checkbox",
+          "name": "hide-mobile",
+          "label": "{{ messages.hide_mobile }}",
+          "value": null,
+          "type": "checkbox"
+        }
+      ]
+    }
+  ]
+}
