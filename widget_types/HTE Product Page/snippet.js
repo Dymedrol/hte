@@ -1,7 +1,11 @@
 
 EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data) {
+    console.log(data);
     const gallery = $('#dishes-gallery');
     let currentVariantOptions = [];
+    const accessories = data.productJSON.accessories;
+    
+    
 
     for (let index = 0; index < data.productJSON.option_names.length; index++) {
         const obj = {
@@ -12,9 +16,31 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
         currentVariantOptions.push(obj);
     }
 
-    // Костыль чтобы опции были выбраны по умолчанию
-    $('.accessory-values__item input').click();
+    function findByPermalink(obj, target) {
+        if (typeof obj !== 'object' || obj === null) return null;
+      
+        if (obj.permalink === target) return obj;
+      
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            const value = obj[key];
+            if (typeof value === 'object') {
+              const found = findByPermalink(value, target);
+              if (found) return found;
+            }
+          }
+        }
+        return null;
+      }
 
+
+    // Костыль чтобы опции были выбраны по умолчанию
+    const productTypeAccessories = findByPermalink(accessories, 'remove_breakfast');
+    $(`*[data-product-accessories-item-id="${productTypeAccessories.id}"] input`).click();
+
+    // Прячем инпуты с исключаемыми алергенами
+    const excludeProductAccessories = findByPermalink(accessories, 'exclude_product');
+    $(`*[data-product-accessories-item-id="${excludeProductAccessories.id}"]`).hide();
 
     // Показать/скрыть карточки завтрак/ужин
     $(".settings-panel input").change(function() {
@@ -36,7 +62,6 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
     EventBus.subscribe('update_variant:insales:product', function (data) {
         // data.option_values — массив новых значений опций
         let changed = false;
-        console.log(data)
 
         if (data.option_values && Array.isArray(data.option_values)) {
             data.option_values.forEach((option, idx) => {
