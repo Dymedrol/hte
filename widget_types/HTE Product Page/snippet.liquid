@@ -20,10 +20,10 @@
           </div>
         </div>
         <div class="nutrition-info">
-          <span class="nutrition-item">К 0</span>
-          <span class="nutrition-item">Б 0</span>
-          <span class="nutrition-item">Ж 0</span>
-          <span class="nutrition-item">У 0</span>
+          <span class="nutrition-item" id="data-k">К 0</span>
+          <span class="nutrition-item" id="data-b">Б 0</span>
+          <span class="nutrition-item" id="data-j">Ж 0</span>
+          <span class="nutrition-item" id="data-u">У 0</span>
         </div>
       </div>
       <div class="dishes-gallery" id="dishes-gallery">
@@ -99,7 +99,7 @@
             </label>
           </template>
         {% endif %}
-      {% endunless %}
+    {% endunless %}
 
     <hr class="separator-line" />
 
@@ -151,7 +151,7 @@
         </div>
       </div>
       <div class="order-actions">
-        <button class="add-to-cart-btn">Заказать доставку</button>
+        <button type="submit" data-item-add class="add-to-cart-btn">Заказать доставку</button>
         <p class="delivery-info">Ближайшая доставка: 19 марта с 6:00 до 10:00</p>
       </div>
     </div>
@@ -922,84 +922,4 @@
         },
         "filename": "sport-dishes-data.json"
     }
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Получаем элементы навигации!
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const daysContainer = document.querySelector('.days-container');
-    const dishesGallery = document.getElementById('dishes-gallery');
-    
-    // Получаем данные программы
-    const dishesByDay = program.dishesByDay;
-    const dayKeys = Object.keys(dishesByDay);
-    let currentDayIndex = 0;
-    
-    // Функция для обновления отображения дня
-    function updateDayDisplay() {
-        const currentDayKey = dayKeys[currentDayIndex];
-        const currentDay = dishesByDay[currentDayKey];
-        
-        // Обновляем текст дня
-        const dayItem = daysContainer.querySelector('.day-item');
-        dayItem.textContent = currentDay.dayName;
-        
-        // Очищаем галерею блюд
-        dishesGallery.innerHTML = '';
-        
-        // Добавляем блюда текущего дня
-        currentDay.dishes.forEach(dish => {
-            const dishElement = document.createElement('div');
-            dishElement.className = 'dish-item';
-            
-            // Добавляем классы в зависимости от свойств блюда
-            if (dish.isSnack) {
-                dishElement.classList.add('isSnack');
-            }
-            if (dish.isDinner) {
-                dishElement.classList.add('isDinner');
-            }
-            if (dish.isBreakfast) {
-                dishElement.classList.add('isBreakfast');
-            }
-            
-            dishElement.innerHTML = `
-                <img src="${dish.image}" alt="${dish.alt}">
-                <div class="dish-overlay">
-                    <span>${dish.name}</span>
-                </div>
-            `;
-            dishesGallery.appendChild(dishElement);
-        });
-        
-        // Обновляем состояние кнопок
-        prevBtn.disabled = currentDayIndex === 0;
-        nextBtn.disabled = currentDayIndex === dayKeys.length - 1;
-        
-        // Добавляем визуальные классы для неактивных кнопок
-        prevBtn.classList.toggle('disabled', currentDayIndex === 0);
-        nextBtn.classList.toggle('disabled', currentDayIndex === dayKeys.length - 1);
-    }
-    
-    // Обработчик для кнопки "Предыдущий день"
-    prevBtn.addEventListener('click', function() {
-        if (currentDayIndex > 0) {
-            currentDayIndex--;
-            updateDayDisplay();
-        }
-    });
-    
-    // Обработчик для кнопки "Следующий день"
-    nextBtn.addEventListener('click', function() {
-        if (currentDayIndex < dayKeys.length - 1) {
-            currentDayIndex++;
-            updateDayDisplay();
-        }
-    });
-    
-    // Инициализация: отображаем первый день
-    updateDayDisplay();
-});
 </script>
