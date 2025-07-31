@@ -237,10 +237,20 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
     // Функция для обновления значения инпута
     function updateAllergenInputAndTags() {
         const allergenTags = document.getElementById('allergen-tags');
+        const allergenNote = document.getElementById('allergen-note');
         const selectedItems = Array.from(document.querySelectorAll('.allergen-item.selected'));
         const input = document.getElementById('allergen-input');
         if (input) {
             input.value = selectedItems.map(item => item.getAttribute('data-allergen')).join(',');
+        }
+
+        // Показываем/скрываем блок allergen-note в зависимости от выбранных аллергенов
+        if (allergenNote) {
+            if (selectedItems.length > 0) {
+                allergenNote.style.display = 'flex';
+            } else {
+                allergenNote.style.display = 'none';
+            }
         }
 
         // Обновляем теги
@@ -272,6 +282,25 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
                 item.classList.toggle('selected');
                 updateAllergenInputAndTags();
             }
+        });
+    }
+
+    // Поиск аллергенов
+    const allergenSearch = document.getElementById('allergen-search');
+    if (allergenSearch && allergenList) {
+        allergenSearch.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const allergenItems = allergenList.querySelectorAll('.allergen-item');
+            
+            allergenItems.forEach(item => {
+                const allergenName = item.querySelector('.allergen-name').textContent.toLowerCase();
+                
+                if (searchTerm === '' || allergenName.startsWith(searchTerm)) {
+                    item.style.display = 'flex'; // или 'block', в зависимости от CSS
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
     }
 });

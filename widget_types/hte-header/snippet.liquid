@@ -1,40 +1,124 @@
-<div class="hte-header-widget">
-  <div class="hte-header-container">
-    <!-- Left Menu -->
-    <div class="hte-header-left-menu">
-      {% if widget_settings.left_menu_text %}
-        {% assign items = widget_settings.left_menu_text | split: ',' %}
-        <ul class="hte-nav-menu">
-          {% for item in items %}
-            <li><a href="/" class="hte-nav-item">{{ item | strip }}</a></li>
-          {% endfor %}
-        </ul>
-      {% endif %}
+<!-- Header -->
+<header class="header">
+  <nav class="main-nav">
+    <div class="nav-dropdown programs-dropdown">
+      <a href="#" class="nav-link">Программы питания</a>
+      <img class="nav-arrow" src="{{ 'arrow-4.svg' | asset_url }}" alt="Arrow" />
+      
+      <!-- Dropdown Menu -->
+      <div class="dropdown-menu programs-dropdown-menu">
+        <div class="dropdown-header">
+          <span class="dropdown-title">Программы питания</span>
+          <a href="#" class="dropdown-view-all">Посмотреть все</a>
+        </div>
+        
+        <div class="programs-grid">
+          <!-- First Row -->
+          <div>
+            <div class="program-card dropdown-premium">
+              <span class="program-name">Премиум</span>
+            </div>
+            
+            <div class="program-card dropdown-base">
+              <span class="program-name">База</span>
+            </div>
+            
+            <div class="program-card dropdown-start">
+              <span class="program-name">Старт</span>
+            </div>
+          </div>
+          
+          <!-- Second Row -->
+          <div>
+            <a href="sport.html" class="program-card dropdown-sport">
+              <span class="program-name">Спорт</span>
+            </a>
+            
+            <div class="program-card dropdown-detox">
+              <span class="program-name">Детокс</span>
+            </div>
+            
+            <div class="program-card dropdown-reload">
+              <span class="program-name">Перезагрузка</span>
+            </div>
+          </div>
+          
+          <!-- Individual Program Card -->
+          <div class="program-card individual-card">
+            <span class="program-name">Индивидуальная программа</span>
+            <p class="program-description">Программа питания специально для вас, с учетом всех потребностей</p>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Logo -->
-    <div class="hte-header-logo">
-      {% if widget_settings.logo %}
-        <a href="{{ widget_settings.logo_url | default: '/' }}" class="hte-logo-link">
-          <img src="{{ widget_settings.logo }}" alt="{{ shop.name }}" class="hte-logo-image">
-        </a>
-      {% else %}
-        <a href="{{ widget_settings.logo_url | default: '/' }}" class="hte-logo-link">
-          <span class="hte-logo-text">{{ shop.name }}</span>
-        </a>
-      {% endif %}
+    <a href="#" class="nav-link">Полезный магазин</a>
+    <a href="#" class="nav-link">Для Питомцев</a>
+  </nav>
+  <a href="index.html" class="logo-link">
+    <img class="logo" src="{{ 'logo-Union.svg' | asset_url }}" alt="How To Eat" />
+  </a>
+  <div class="user-nav">
+    <div class="user-links">
+      <a href="#" class="nav-link">Корзина (2)</a>
+      <a href="#" class="nav-link">Личный кабинет</a>
     </div>
+  </div>
+  <button class="menu-toggle">
+    <img src="{{ 'burger.svg' | asset_url }}" alt="Menu" />
+  </button>
+</header>
 
-    <!-- Right Menu -->
-    <div class="hte-header-right-menu">
-      {% if widget_settings.right_menu_text %}
-        {% assign items = widget_settings.right_menu_text | split: ',' %}
-        <ul class="hte-nav-menu">
-          {% for item in items %}
-            <li><a href="/" class="hte-nav-item">{{ item | strip }}</a></li>
-          {% endfor %}
-        </ul>
-      {% endif %}
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay">
+  <button class="mobile-menu-close">
+    ×
+  </button>
+  <div class="mobile-menu-content">
+    <nav class="mobile-menu-nav">
+      <div class="nav-dropdown">
+        <div class="nav-dropdown-header">
+          <a href="#" class="nav-link">ПРОГРАММЫ ПИТАНИЯ</a>
+          <img class="nav-arrow" src="{{ 'arrow-4.svg' | asset_url }}" alt="Arrow" />
+        </div>
+        
+        <!-- Mobile Programs Grid -->
+        <div class="mobile-programs-grid">
+          <a href="#" class="program-card dropdown-premium">
+            <span class="program-name">Премиум</span>
+          </a>
+          
+          <a href="#" class="program-card dropdown-base">
+            <span class="program-name">База</span>
+          </a>
+          
+          <a href="#" class="program-card dropdown-start">
+            <span class="program-name">Старт</span>
+          </a>
+          
+          <a href="sport.html" class="program-card dropdown-sport">
+            <span class="program-name">Спорт</span>
+          </a>
+          
+          <a href="#" class="program-card dropdown-detox">
+            <span class="program-name">Детокс</span>
+          </a>
+          
+          <a href="#" class="program-card dropdown-reload">
+            <span class="program-name">Перезагрузка</span>
+          </a>
+          
+          <div class="program-card individual-card">
+            <span class="program-name">Индивидуальная программа</span>
+            <p class="program-description">Программа питания специально для вас, с учетом всех потребностей</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" class="nav-link">ПОЛЕЗНЫЙ МАГАЗИН</a>
+      <a href="#" class="nav-link">ДЛЯ ПИТОМЦЕВ</a>
+    </nav>
+    <div class="mobile-menu-user">
+      <a href="#" class="nav-link">КОРЗИНА (2)</a>
+      <a href="#" class="nav-link">ЛИЧНЫЙ КАБИНЕТ</a>
     </div>
   </div>
 </div> 
