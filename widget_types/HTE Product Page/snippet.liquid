@@ -106,7 +106,7 @@
     <!-- Allergen Exclusions -->
     <div class="allergen-section">
       <div class="allergen-header">
-        <h3 class="allergen-trigger">Исключить аллергены</h3>
+        <h3 class="allergen-trigger" id="allergen-trigger">Исключить аллергены</h3>
         <p class="allergen-info">
           <span class="info-text">Первые 3 ингредиента — бесплатно<br />За каждое дополнительное исключение:</span>
           <span class="price">+300 ₽</span>
@@ -114,7 +114,7 @@
       </div>
       
       <!-- Allergen Dropdown -->
-      <div class="allergen-dropdown">
+      <div class="allergen-dropdown" id="allergen-dropdown">
         <div class="dropdown-header">
           <span>Выберите, что исключить:</span>
         </div>
@@ -126,10 +126,10 @@
           </div>
           <input type="text" class="allergen-search" placeholder="Поиск" />
         </div>
-        <div class="allergen-list">
+        <div class="allergen-list" id="allergen-list">
         </div>
       </div>
-      <div class="allergen-tags">
+      <div class="allergen-tags" id="allergen-tags">
       </div>
       <div class="allergen-note">
         <div class="info-icon">
@@ -139,6 +139,7 @@
         </div>
         <span>Указанные продукты будут исключены из вашего меню</span>
       </div>
+      <input id="allergen-input" type="text" name="comment" value="" style="display: none">
     </div>
 
     <!-- Order Summary -->
@@ -921,5 +922,567 @@
             }
         },
         "filename": "sport-dishes-data.json"
+    }
+
+    var allergens = {
+        "freeLimit": 3,
+        "pricePerExtra": 300,
+        "data": [
+        {
+            "id": "avocado",
+            "name": "Авокадо",
+            "value": "авокадо"
+        },
+        {
+            "id": "amaranth",
+            "name": "Амарант",
+            "value": "амарант"
+        },
+        {
+            "id": "pineapple",
+            "name": "Ананас",
+            "value": "ананас"
+        },
+        {
+            "id": "orange",
+            "name": "Апельсин",
+            "value": "апельсин"
+        },
+        {
+            "id": "eggplant",
+            "name": "Баклажаны",
+            "value": "баклажаны"
+        },
+        {
+            "id": "banana",
+            "name": "Банан",
+            "value": "банан"
+        },
+        {
+            "id": "lamb",
+            "name": "Баранина",
+            "value": "баранина"
+        },
+        {
+            "id": "sweet_potato",
+            "name": "Батат",
+            "value": "батат"
+        },
+        {
+            "id": "broccoli",
+            "name": "Брокколи",
+            "value": "брокколи"
+        },
+        {
+            "id": "bulgur",
+            "name": "Булгур",
+            "value": "булгур"
+        },
+        {
+            "id": "oyster_mushroom",
+            "name": "Вешенки",
+            "value": "вешенки"
+        },
+        {
+            "id": "grape",
+            "name": "Виноград",
+            "value": "виноград"
+        },
+        {
+            "id": "beef",
+            "name": "Говядина",
+            "value": "говядина"
+        },
+        {
+            "id": "pea",
+            "name": "Горох",
+            "value": "горох"
+        },
+        {
+            "id": "grapefruit",
+            "name": "Грейпфрут",
+            "value": "грейпфрут"
+        },
+        {
+            "id": "buckwheat",
+            "name": "Гречка",
+            "value": "гречка"
+        },
+        {
+            "id": "green_buckwheat",
+            "name": "Гречка зеленая",
+            "value": "гречка-зеленая"
+        },
+        {
+            "id": "buckwheat_noodles",
+            "name": "Гречневая лапша",
+            "value": "гречневая-лапша"
+        },
+        {
+            "id": "mushrooms",
+            "name": "Грибы",
+            "value": "грибы"
+        },
+        {
+            "id": "pear",
+            "name": "Груша",
+            "value": "груша"
+        },
+        {
+            "id": "dorado",
+            "name": "Дорадо",
+            "value": "дорадо"
+        },
+        {
+            "id": "catfish",
+            "name": "Зубатка",
+            "value": "зубатка"
+        },
+        {
+            "id": "raisins",
+            "name": "Изюм",
+            "value": "изюм"
+        },
+        {
+            "id": "turkey",
+            "name": "Индейка",
+            "value": "индейка"
+        },
+        {
+            "id": "cocoa",
+            "name": "Какао",
+            "value": "какао"
+        },
+        {
+            "id": "squid",
+            "name": "Кальмары",
+            "value": "кальмары"
+        },
+        {
+            "id": "white_cabbage",
+            "name": "Капуста белокачанная",
+            "value": "капуста-белокачанная"
+        },
+        {
+            "id": "red_cabbage",
+            "name": "Капуста краснокачанная",
+            "value": "капуста-краснокачанная"
+        },
+        {
+            "id": "cauliflower",
+            "name": "Капуста цветная",
+            "value": "капуста-цветная"
+        },
+        {
+            "id": "cashew",
+            "name": "Кешью",
+            "value": "кешью"
+        },
+        {
+            "id": "kiwi",
+            "name": "Киви",
+            "value": "киви"
+        },
+        {
+            "id": "coho_salmon",
+            "name": "Кижуч",
+            "value": "кижуч"
+        },
+        {
+            "id": "cilantro",
+            "name": "Кинза",
+            "value": "кинза"
+        },
+        {
+            "id": "quinoa",
+            "name": "Киноа",
+            "value": "киноа"
+        },
+        {
+            "id": "coconut",
+            "name": "Кокос и кокосовое молоко",
+            "value": "кокос-и-кокосовое-молоко"
+        },
+        {
+            "id": "crab",
+            "name": "Крабы",
+            "value": "крабы"
+        },
+        {
+            "id": "shrimp",
+            "name": "Креветки",
+            "value": "креветки"
+        },
+        {
+            "id": "rabbit",
+            "name": "Кролик",
+            "value": "кролик"
+        },
+        {
+            "id": "corn",
+            "name": "Кукуруза",
+            "value": "кукуруза"
+        },
+        {
+            "id": "dried_apricots",
+            "name": "Курага",
+            "value": "курага"
+        },
+        {
+            "id": "chicken",
+            "name": "Курица",
+            "value": "курица"
+        },
+        {
+            "id": "lime",
+            "name": "Лайм",
+            "value": "лайм"
+        },
+        {
+            "id": "lemon",
+            "name": "Лимон",
+            "value": "лимон"
+        },
+        {
+            "id": "salmon",
+            "name": "Лосось",
+            "value": "лосось"
+        },
+        {
+            "id": "green_onion",
+            "name": "Лук зеленый",
+            "value": "лук-зеленый"
+        },
+        {
+            "id": "onion",
+            "name": "Лук репчатый",
+            "value": "лук-репчатый"
+        },
+        {
+            "id": "gluten_free_pasta",
+            "name": "Макароны безглютеновые",
+            "value": "макароны-безглютеновые"
+        },
+        {
+            "id": "wheat_pasta",
+            "name": "Макароны из пшеничной муки",
+            "value": "макароны-из-пшеничной-муки"
+        },
+        {
+            "id": "olives",
+            "name": "Маслины",
+            "value": "маслины"
+        },
+        {
+            "id": "mung_bean",
+            "name": "Маш",
+            "value": "маш"
+        },
+        {
+            "id": "mussels",
+            "name": "Мидии",
+            "value": "мидии"
+        },
+        {
+            "id": "almond",
+            "name": "Миндаль",
+            "value": "миндаль"
+        },
+        {
+            "id": "animal_milk",
+            "name": "Молоко животное",
+            "value": "молоко-животное"
+        },
+        {
+            "id": "plant_milk",
+            "name": "Молоко растительное",
+            "value": "молоко-растительное"
+        },
+        {
+            "id": "carrot",
+            "name": "Морковь",
+            "value": "морковь"
+        },
+        {
+            "id": "scallop",
+            "name": "Морской гребешок",
+            "value": "морской-гребешок"
+        },
+        {
+            "id": "mint",
+            "name": "Мята",
+            "value": "мята"
+        },
+        {
+            "id": "chickpea",
+            "name": "Нут",
+            "value": "нут"
+        },
+        {
+            "id": "oatmeal",
+            "name": "Овсянка",
+            "value": "овсянка"
+        },
+        {
+            "id": "olives",
+            "name": "Оливки",
+            "value": "оливки"
+        },
+        {
+            "id": "nuts",
+            "name": "Орехи",
+            "value": "орехи"
+        },
+        {
+            "id": "bran",
+            "name": "Отруби",
+            "value": "отруби"
+        },
+        {
+            "id": "halibut",
+            "name": "Палтус",
+            "value": "палтус"
+        },
+        {
+            "id": "quail",
+            "name": "Перепелка",
+            "value": "перепелка"
+        },
+        {
+            "id": "pepper_spice",
+            "name": "Перец (приправа)",
+            "value": "перец-приправа"
+        },
+        {
+            "id": "bell_pepper",
+            "name": "Перец болгарский",
+            "value": "перец-болгарский"
+        },
+        {
+            "id": "chili_pepper",
+            "name": "Перец острый (чили)",
+            "value": "перец-острый-чили"
+        },
+        {
+            "id": "pearl_barley",
+            "name": "Перловка",
+            "value": "перловка"
+        },
+        {
+            "id": "peach",
+            "name": "Персик",
+            "value": "персик"
+        },
+        {
+            "id": "parsley",
+            "name": "Петрушка",
+            "value": "петрушка"
+        },
+        {
+            "id": "ptitim",
+            "name": "Птитим",
+            "value": "птитим"
+        },
+        {
+            "id": "millet",
+            "name": "Пшено",
+            "value": "пшено"
+        },
+        {
+            "id": "radish",
+            "name": "Редис",
+            "value": "редис"
+        },
+        {
+            "id": "horseradish",
+            "name": "Редька",
+            "value": "редька"
+        },
+        {
+            "id": "rice",
+            "name": "Рис",
+            "value": "рис"
+        },
+        {
+            "id": "arugula",
+            "name": "Руккола",
+            "value": "руккола"
+        },
+        {
+            "id": "beetroot",
+            "name": "Свекла",
+            "value": "свекла"
+        },
+        {
+            "id": "pork",
+            "name": "Свинина",
+            "value": "свинина"
+        },
+        {
+            "id": "celery",
+            "name": "Сельдерей",
+            "value": "сельдерей"
+        },
+        {
+            "id": "sea_bass",
+            "name": "Сибас",
+            "value": "сибас"
+        },
+        {
+            "id": "jerusalem_artichoke_syrup",
+            "name": "Сироп топинамбура",
+            "value": "сироп-топинамбура"
+        },
+        {
+            "id": "mackerel",
+            "name": "Скумбрия",
+            "value": "скумбрия"
+        },
+        {
+            "id": "animal_cream",
+            "name": "Сливки животные",
+            "value": "сливки-животные"
+        },
+        {
+            "id": "sour_cream",
+            "name": "Сметана",
+            "value": "сметана"
+        },
+        {
+            "id": "soy",
+            "name": "Соя",
+            "value": "соя"
+        },
+        {
+            "id": "asparagus",
+            "name": "Спаржа",
+            "value": "спаржа"
+        },
+        {
+            "id": "pike_perch",
+            "name": "Судак",
+            "value": "судак"
+        },
+        {
+            "id": "rambol_cheese",
+            "name": "Сыр рамболь",
+            "value": "сыр-рамболь"
+        },
+        {
+            "id": "cottage_cheese",
+            "name": "Творог",
+            "value": "творог"
+        },
+        {
+            "id": "sun_dried_tomatoes",
+            "name": "Томаты вяленые",
+            "value": "томаты-вяленые"
+        },
+        {
+            "id": "fresh_tomatoes",
+            "name": "Томаты свежие",
+            "value": "томаты-свежие"
+        },
+        {
+            "id": "tofu",
+            "name": "Тофу",
+            "value": "тофу"
+        },
+        {
+            "id": "cod",
+            "name": "Треска",
+            "value": "треска"
+        },
+        {
+            "id": "tuna",
+            "name": "Тунец",
+            "value": "тунец"
+        },
+        {
+            "id": "pumpkin",
+            "name": "Тыква",
+            "value": "тыква"
+        },
+        {
+            "id": "dill",
+            "name": "Укроп",
+            "value": "укроп"
+        },
+        {
+            "id": "duck",
+            "name": "Утка",
+            "value": "утка"
+        },
+        {
+            "id": "beans",
+            "name": "Фасоль",
+            "value": "фасоль"
+        },
+        {
+            "id": "bread",
+            "name": "Хлеб",
+            "value": "хлеб"
+        },
+        {
+            "id": "hummus",
+            "name": "Хумус",
+            "value": "хумус"
+        },
+        {
+            "id": "guinea_fowl",
+            "name": "Цесарка",
+            "value": "цесарка"
+        },
+        {
+            "id": "zucchini",
+            "name": "Цукини",
+            "value": "цукини"
+        },
+        {
+            "id": "prunes",
+            "name": "Чернослив",
+            "value": "чернослив"
+        },
+        {
+            "id": "garlic",
+            "name": "Чеснок",
+            "value": "чеснок"
+        },
+        {
+            "id": "lentils",
+            "name": "Чечевица",
+            "value": "чечевица"
+        },
+        {
+            "id": "chuka",
+            "name": "Чукка",
+            "value": "чукка"
+        },
+        {
+            "id": "champignon",
+            "name": "Шампиньоны",
+            "value": "шампиньоны"
+        },
+        {
+            "id": "chocolate",
+            "name": "Шоколад",
+            "value": "шоколад"
+        },
+        {
+            "id": "spinach",
+            "name": "Шпинат",
+            "value": "шпинат"
+        },
+        {
+            "id": "apple",
+            "name": "Яблоко",
+            "value": "яблоко"
+        },
+        {
+            "id": "eggs",
+            "name": "Яйца",
+            "value": "яйца"
+        }
+        ]
     }
 </script>

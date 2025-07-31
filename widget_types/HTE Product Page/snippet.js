@@ -188,5 +188,91 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
     
     // Инициализация: отображаем первый день
     updateDayDisplay();
+
+    // Управление выпадающим меню аллергенов
+    const allergenTrigger = document.getElementById('allergen-trigger');
+    const allergenDropdown = document.getElementById('allergen-dropdown');
+    
+    if (allergenTrigger && allergenDropdown) {
+        // Обработчик клика по триггеру
+        allergenTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            allergenDropdown.classList.toggle('active');
+        });
+        
+        // Обработчик клика вне дропдауна для его закрытия
+        document.addEventListener('click', function(e) {
+            if (!allergenDropdown.contains(e.target) && !allergenTrigger.contains(e.target)) {
+                allergenDropdown.classList.remove('active');
+            }
+        });
+        
+        // Предотвращение закрытия при клике внутри дропдауна
+        allergenDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+
+    // Рендерим список аллергенов
+    const allergenList = document.getElementById('allergen-list');
+    if (allergenList && window.allergens && Array.isArray(window.allergens.data)) {
+        allergenList.innerHTML = ''; // Очищаем на всякий случай
+        window.allergens.data.forEach(allergen => {
+            const item = document.createElement('div');
+            item.className = 'allergen-item';
+            item.setAttribute('data-allergen', allergen.value);
+            item.setAttribute('data-allergen-id', allergen.id);
+
+            item.innerHTML = `
+                <div class="checkbox">
+                    <div class="checkbox-inner"></div>
+                </div>
+                <span class="allergen-name">${allergen.name}</span>
+                <span class="allergen-price" style="display: none;">+300₽</span>
+            `;
+            allergenList.appendChild(item);
+        });
+    }
+
+    // Функция для обновления значения инпута
+    function updateAllergenInputAndTags() {
+        const allergenTags = document.getElementById('allergen-tags');
+        const selectedItems = Array.from(document.querySelectorAll('.allergen-item.selected'));
+        const input = document.getElementById('allergen-input');
+        if (input) {
+            input.value = selectedItems.map(item => item.getAttribute('data-allergen')).join(',');
+        }
+
+        // Обновляем теги
+        if (allergenTags) {
+            allergenTags.innerHTML = '';
+            selectedItems.forEach(item => {
+                const value = item.getAttribute('data-allergen');
+                const tag = document.createElement('span');
+                tag.className = 'allergen-tag';
+                tag.innerHTML = `
+                    ${value}
+                    <button class="remove-btn" type="button">×</button>
+                `;
+                tag.querySelector('.remove-btn').addEventListener('click', function(e) {
+                    // Снимаем выбор с allergen-item
+                    item.classList.remove('selected');
+                    updateAllergenInputAndTags();
+                });
+                allergenTags.appendChild(tag);
+            });
+        }
+    }
+
+    // Делегирование клика по аллергенам
+    if (allergenList) {
+        allergenList.addEventListener('click', function(e) {
+            const item = e.target.closest('.allergen-item');
+            if (item) {
+                item.classList.toggle('selected');
+                updateAllergenInputAndTags();
+            }
+        });
+    }
 });
 

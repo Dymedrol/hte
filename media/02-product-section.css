@@ -582,9 +582,11 @@
 
 .search-icon {
   position: absolute;
+  height: fit-content;
   left: var(--spacing-25);
-  top: 39px;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  margin: auto;
   z-index: 1;
 }
 
@@ -624,6 +626,15 @@
 
 .allergen-item.selected {
   background-color: var(--hte-super-dark-accent);
+}
+
+.allergen-item.selected .checkbox {
+  border-color: var(--hte-black);
+  background-color: var(--hte-black);
+}
+
+.allergen-item.selected .checkbox-inner {
+  opacity: 1;
 }
 
 .checkbox {
