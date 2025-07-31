@@ -123,6 +123,19 @@
   white-space: nowrap;
 }
 
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-sm);
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
 .dishes-gallery {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -132,6 +145,23 @@
   width: var(--width-details);
   justify-items: start;
   align-items: start;
+}
+
+.dishes-gallery.removeBreakfast .isBreakfast {
+  display: none;
+}
+
+.dishes-gallery.removeBreakfast .isSnack {
+  display: none;
+}
+
+
+.dishes-gallery.removeDiner .isDinner {
+  display: none;
+}
+
+.dishes-gallery.removeDiner .isSnack {
+  display: none;
 }
 
 .dish-item {
