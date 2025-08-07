@@ -1,0 +1,109 @@
+/* 05. Footer Styles */
+
+.footer {
+  background-color: var(--hte-black);
+  padding: var(--spacing-80) var(--spacing-40) var(--spacing-40);
+}
+
+.footer-logo {
+  width: calc(100vw - var(--spacing-40) * 2);
+  height: auto;
+  margin-bottom: var(--spacing-40);
+  opacity: 0.05;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-40);
+}
+
+.footer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-menu {
+  display: flex;
+  gap: var(--spacing-80);
+}
+
+.menu-column h4 {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-white);
+  margin: 0 0 var(--spacing-15) 0;
+}
+
+.menu-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-column li {
+  margin-bottom: var(--spacing-15);
+}
+
+.menu-column a {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-white);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.menu-column a:hover {
+  color: var(--hte-grey-text);
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-15);
+}
+
+.contact-info p {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-white);
+  text-align: right;
+  margin: 0;
+}
+
+.legal-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+}
+
+.legal-links a {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-dark-accent);
+  text-decoration: none;
+  text-align: right;
+  opacity: var(--opacity-low);
+  transition: opacity 0.3s ease;
+}
+
+.legal-links a:hover {
+  opacity: var(--opacity-high);
+}
+
+.company-info p {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  color: var(--hte-dark-accent);
+  text-align: right;
+  opacity: var(--opacity-low);
+  margin: 0;
+} 

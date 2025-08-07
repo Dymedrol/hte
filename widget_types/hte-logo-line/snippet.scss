@@ -1,0 +1,71 @@
+.logo-line {
+  padding: var(--spacing-80) 0;
+  background-color: var(--hte-white);
+}
+
+.logo-line__container {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-20);
+  overflow: hidden;
+}
+
+.logo-line__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-40);
+}
+
+.logo-line__item {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Скрываем дублированные элементы по умолчанию */
+.logo-line__item--duplicate {
+  display: none;
+}
+
+.logo-line__logo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Анимация бесконечной прокрутки для экранов меньше 1279px */
+@media (max-width: 1279px) {
+  .logo-line__wrapper {
+    animation: scroll-logos 30s linear infinite;
+    width: max-content;
+    gap: var(--spacing-60);
+  }
+  
+  .logo-line__item {
+    flex: none;
+    min-width: 120px;
+  }
+  
+  .logo-line__logo {
+    height: 38px;
+    width: auto;
+  }
+}
+
+@keyframes scroll-logos {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Показываем дублированные элементы только на маленьких экранах */
+@media (max-width: 1279px) {
+  .logo-line__item--duplicate {
+    display: flex;
+  }
+} 

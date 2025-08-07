@@ -1,0 +1,88 @@
+/* Hero Section */
+.hero-section {
+  width: 100vw;
+  height: 100vh;
+  // background-image: url('../assets/cover-desktop.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 var(--spacing-40) var(--spacing-40);
+}
+
+/* Hero Content */
+.hero-content {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-40);
+}
+
+/* Hero Text Group */
+.hero-text-group {
+  max-width: 520px;
+  flex-shrink: 0;
+}
+
+/* Hero Title */
+.hero-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+  color: var(--hte-black);
+  margin-bottom: var(--spacing-20);
+}
+
+/* Hero Subtitle */
+.hero-subtitle {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  color: var(--hte-black);
+  opacity: var(--opacity-high);
+  margin: 0;
+}
+
+
+
+/* Remove top padding for main content when hero section is present */
+.main-content {
+  padding-top: 0;
+}
+
+/* Add top padding for product section */
+.product-section {
+  padding-top: var(--spacing-120);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1279px) {
+  .hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: var(--spacing-30);
+  }
+  .hero-section {
+    padding: 0 var(--spacing-20) var(--spacing-40);
+  }
+}
+
+@media (max-width: 960px) {
+  .hero-section {
+    height: 100vh;
+    background-image: url('../assets/cover-mobile.jpg');
+    background-position: center center;
+    padding: 0 var(--spacing-20) var(--spacing-40);
+  }
+  
+} 

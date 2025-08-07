@@ -1,0 +1,23 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Programs section"
+  },
+  "handle": "hte-programs-section",
+  "description": {
+    "ru": "HTE Programs section"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "product-homepage",
+  "libraries": [
+    "commonjs_v2",
+    "jquery",
+    "my-layout"
+  ]
+}

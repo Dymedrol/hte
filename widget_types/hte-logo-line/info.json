@@ -1,0 +1,23 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Logo line"
+  },
+  "handle": "hte-logo-line",
+  "description": {
+    "ru": "HTE Logo line"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "commonjs_v2",
+    "jquery",
+    "my-layout"
+  ]
+}

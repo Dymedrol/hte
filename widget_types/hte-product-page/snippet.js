@@ -1,5 +1,7 @@
 
 EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data) {
+    let currentTime = new Date(2025, 8, 1, 0, 0, 0);
+
     const gallery = $('#dishes-gallery');
     let currentVariantOptions = [];
     const accessories = data.productJSON.accessories;
@@ -674,28 +676,28 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
         selectDate(date) {
         this.selectedDate = date;
         this.renderCalendar();
-        
-        // Находим индекс дня в программе для выбранной даты
-        if (typeof generateDaysArray === 'function' && typeof currentIndex !== 'undefined') {
-            try {
-            const daysArray = generateDaysArray();
-            const targetIndex = daysArray.findIndex(dayData => 
-                this.isSameDate(dayData.date, date)
-            );
-            
-            if (targetIndex !== -1) {
-                // Обновляем глобальный индекс и переходим к выбранному дню
-                currentIndex = targetIndex;
-                if (typeof updateDays === 'function') {
-                updateDays();
-                }
-            }
-            } catch (error) {
-            console.error('Error selecting date:', error);
+
+        // --- Добавлено: вычисление индекса дня и обновление отображения блюд ---
+        if (typeof currentTime !== 'undefined' && Array.isArray(dayKeys) && typeof updateDayDisplay === 'function') {
+            // Получаем сегодняшнюю дату (без времени)
+            const today = new Date(currentTime);
+            today.setHours(0, 0, 0, 0);
+
+            // Выбранная дата (без времени)
+            const selected = new Date(date);
+            selected.setHours(0, 0, 0, 0);
+
+            // Разница в днях
+            const diffDays = Math.round((selected - today) / (1000 * 60 * 60 * 24));
+
+            // Проверяем, что diffDays в допустимом диапазоне
+            if (diffDays >= 0 && diffDays < dayKeys.length) {
+                currentDayIndex = diffDays;
+                updateDayDisplay();
             }
         }
-        
-        // Закрываем календарь
+        // --- конец блока ---
+
         setTimeout(() => {
             this.closeCalendar();
         }, 300);
