@@ -227,7 +227,12 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
         
         // Обработчик клика вне дропдауна для его закрытия
         document.addEventListener('click', function(e) {
-            if (!allergenDropdown.contains(e.target) && !allergenTrigger.contains(e.target)) {
+            // Проверяем, что клик не внутри дропдауна, не по триггеру и не по инпутам в блоке accessories
+            const isInsideDropdown = allergenDropdown.contains(e.target);
+            const isTrigger = allergenTrigger.contains(e.target);
+            const isAccessoriesInput = e.target.closest('[data-product-accessories-item-id]');
+            
+            if (!isInsideDropdown && !isTrigger && !isAccessoriesInput) {
                 allergenDropdown.classList.remove('active');
             }
         });
@@ -275,6 +280,52 @@ EventBus.subscribe('accessories-rendered:insales:ui_accessories', function (data
                 allergenNote.style.display = 'flex';
             } else {
                 allergenNote.style.display = 'none';
+            }
+        }
+
+        // Показываем/скрываем блок allergen-price только у аллергенов, выбранных после 3-го
+        const allergenPriceElements = document.querySelectorAll('.allergen-price');
+        allergenPriceElements.forEach(priceElement => {
+            // Находим родительский элемент allergen-item
+            const allergenItem = priceElement.closest('.allergen-item');
+            if (allergenItem) {
+                // Проверяем, выбран ли этот аллерген
+                if (allergenItem.classList.contains('selected')) {
+                    // Находим индекс этого аллергена среди выбранных
+                    const selectedItemsArray = Array.from(selectedItems);
+                    const itemIndex = selectedItemsArray.indexOf(allergenItem);
+                    
+                    // Показываем цену только если это 4-й или более поздний выбранный аллерген (индекс >= 3)
+                    if (itemIndex >= 3) {
+                        priceElement.style.display = 'inline';
+                    } else {
+                        priceElement.style.display = 'none';
+                    }
+                } else {
+                    // Если аллерген не выбран, скрываем цену
+                    priceElement.style.display = 'none';
+                }
+            }
+        });
+
+        // Управляем инпутами в блоке с data-product-accessories-item-id="4307001"
+        const accessoriesBlock = document.querySelector(`[data-product-accessories-item-id="${excludeProductAccessories.id}"]`);
+        if (accessoriesBlock) {
+            const inputs = accessoriesBlock.querySelectorAll('input[type="checkbox"]');
+            const extraAllergens = Math.max(0, selectedItems.length - 3); // Количество аллергенов сверх 3-х
+            
+            // Сначала снимаем все чекбоксы
+            inputs.forEach(input => {
+                if (input.checked) {
+                    input.click();
+                }
+            });
+            
+            // Затем включаем нужное количество чекбоксов
+            for (let i = 0; i < extraAllergens && i < inputs.length; i++) {
+                if (!inputs[i].checked) {
+                    inputs[i].click();
+                }
             }
         }
 

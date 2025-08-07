@@ -31,6 +31,8 @@
         {% endif %}
         {% if block.content != null %}
           <div class="banner-list__item-subtitle">
+            <h1>Время сервера InSales:</h1>
+<p>{{ 'now' | date: "%d.%m.%Y %H:%M:%S" }}</p>
             {{ block.content | editable}}
           </div>
         {% endif %}
