@@ -1,0 +1,23 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Product Page"
+  },
+  "handle": "hte-product-page",
+  "description": {
+    "ru": "HTE Product Page"
+  },
+  "page_kinds": [
+    "product"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "products-cards",
+  "libraries": [
+    "commonjs_v2",
+    "jquery",
+    "my-layout"
+  ]
+}

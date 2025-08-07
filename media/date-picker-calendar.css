@@ -1,0 +1,271 @@
+/* Date Picker Calendar Styles - Идентичные стили существующего календаря */
+.date-picker-calendar {
+    position: absolute;
+    width: 241px;
+    height: auto;
+    background: var(--hte-white);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.15);
+    padding: var(--spacing-20);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+  
+  .date-picker-calendar.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .date-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .date-picker-nav-btn {
+    width: 27px;
+    height: 27px;
+    border: var(--border-width-normal) solid var(--hte-dark-accent);
+    border-radius: var(--border-radius-sm);
+    background: var(--hte-white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .date-picker-nav-btn:hover:not(.disabled) {
+    background: var(--hte-dark-accent);
+  }
+  
+  .date-picker-nav-btn.disabled {
+    opacity: var(--opacity-low);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  .date-picker-nav-btn.disabled:hover {
+    background: var(--hte-white);
+  }
+  
+  .date-picker-title {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .date-picker-month {
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: var(--hte-micro-text-14-font-size);
+    font-weight: var(--hte-micro-text-14-font-weight);
+    color: var(--hte-black);
+    line-height: 14px;
+  }
+  
+  .date-picker-year {
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: var(--hte-micro-text-14-font-size);
+    font-weight: var(--hte-micro-text-14-font-weight);
+    color: var(--hte-super-dark-accent);
+    line-height: 14px;
+  }
+  
+  .date-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    width: 189px;
+  }
+  
+  .date-picker-day-header {
+    width: 27px;
+    height: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: 12px;
+    font-weight: 450;
+    color: var(--hte-grey-text);
+    line-height: 12px;
+  }
+  
+  .date-picker-day {
+    width: 27px;
+    height: 27px;
+    background: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: 12px;
+    font-weight: 450;
+    line-height: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .date-picker-day.inactive {
+    color: var(--hte-super-dark-accent);
+  }
+  
+  .date-picker-day.past {
+    color: var(--hte-grey-text);
+    opacity: var(--opacity-low);
+    cursor: not-allowed;
+  }
+  
+  /* Специальные стили для недоступных дней в date-picker календаре */
+  .date-picker-day.unavailable {
+    color: var(--hte-grey-text);
+    opacity: var(--opacity-low);
+    cursor: not-allowed;
+    background: var(--hte-super-dark-accent);
+    border: var(--border-width-normal) solid var(--hte-white);
+    position: relative;
+  }
+  
+  .date-picker-day.unavailable::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 12px;
+    background: var(--hte-grey-text);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  
+  .date-picker-day.unavailable::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 12px;
+    background: var(--hte-grey-text);
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+  
+  .date-picker-day.active {
+    color: var(--hte-black);
+  }
+  
+  .date-picker-day.outlined {
+    border: var(--border-width-normal) solid var(--hte-dark-accent);
+  }
+  
+  .date-picker-day.selected {
+    background: var(--hte-black);
+    color: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: 40px;
+  }
+  
+  .date-picker-day.range-start,
+  .date-picker-day.range-end {
+    background: var(--hte-white);
+    color: var(--hte-black);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: 40px;
+  }
+  
+  .date-picker-day.range-middle {
+    background: var(--hte-black);
+    color: var(--hte-white);
+    border-radius: 40px;
+  }
+  
+  .date-picker-day.range-preview {
+    background: var(--hte-dark-accent);
+    color: var(--hte-black);
+    opacity: var(--opacity-medium);
+  }
+  
+  .date-picker-day.excluded {
+    background: var(--hte-grey-text);
+    color: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-grey-text);
+    border-radius: 40px;
+    opacity: var(--opacity-medium);
+  }
+  
+  /* Стили для выбора дат */
+  .date-picker-day.selectable:hover {
+    background: var(--hte-dark-accent);
+    transition: all 0.2s ease;
+  }
+  
+  .date-picker-day.selectable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    transition-delay: 0.1s;
+  }
+  
+  /* Отключаем hover для выбранного дня в date-picker календаре */
+  .date-picker-day.selected:hover {
+    background: var(--hte-black);
+    color: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: 40px;
+  }
+  
+  /* Responsive styles - идентичные существующему календарю */
+  @media (max-width: 1320px) {
+    .date-picker-calendar {
+      width: 241px;
+      padding: var(--spacing-20);
+    }
+    
+    .date-picker-grid {
+      width: 189px;
+    }
+    
+    .date-picker-day,
+    .date-picker-day-header {
+      width: 27px;
+      height: 27px;
+    }
+  }
+  
+  @media (max-width: 720px) {
+    .date-picker-calendar {
+      width: 241px;
+      padding: var(--spacing-20);
+    }
+    
+    .date-picker-calendar.active {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .date-picker-grid {
+      width: 189px;
+    }
+    
+    .date-picker-day,
+    .date-picker-day-header {
+      width: 27px;
+      height: 27px;
+      font-size: 12px;
+    }
+    
+    .date-picker-month {
+      font-size: var(--hte-micro-text-14-font-size);
+    }
+    
+    .date-picker-year {
+      font-size: var(--hte-micro-text-14-font-size);
+    }
+  } 
