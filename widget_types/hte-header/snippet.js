@@ -132,8 +132,7 @@ function initHeader() {
     const viewAllLink = document.querySelector('.dropdown-view-all');
     if (viewAllLink) {
       viewAllLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Здесь можно добавить логику перехода на страницу всех программ
+        // Убираем preventDefault, чтобы ссылка работала
         // window.location.href = '/programs';
       });
     }

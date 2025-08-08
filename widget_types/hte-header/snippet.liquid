@@ -2,7 +2,7 @@
 <header class="header">
   <nav class="main-nav">
     <div class="nav-dropdown programs-dropdown">
-      <a href="#" class="nav-link">Программы питания</a>
+      <div class="nav-link">Программы питания</div>
       <img class="nav-arrow" src="{{ 'arrow-4.svg' | asset_url }}" alt="Arrow" />
       
       <!-- Dropdown Menu -->
@@ -15,32 +15,32 @@
         <div class="programs-grid">
           <!-- First Row -->
           <div>
-            <div class="program-card dropdown-premium">
+            <a href="/product/premium" class="program-card dropdown-premium">
               <span class="program-name">Премиум</span>
-            </div>
+            </a>  
             
-            <div class="program-card dropdown-base">
+            <a href="/product/baza" class="program-card dropdown-base">
               <span class="program-name">База</span>
-            </div>
+            </a>
             
-            <div class="program-card dropdown-start">
+            <a href="/product/start" class="program-card dropdown-start">
               <span class="program-name">Старт</span>
-            </div>
+            </a>
           </div>
           
           <!-- Second Row -->
           <div>
-            <a href="sport.html" class="program-card dropdown-sport">
+            <a href="/product/sport" class="program-card dropdown-sport">
               <span class="program-name">Спорт</span>
             </a>
             
-            <div class="program-card dropdown-detox">
+            <a href="/product/detoks" class="program-card dropdown-detox">
               <span class="program-name">Детокс</span>
-            </div>
+            </a>
             
-            <div class="program-card dropdown-reload">
+            <a href="/product/perezagruzka" class="program-card dropdown-reload">
               <span class="program-name">Перезагрузка</span>
-            </div>
+            </a>
           </div>
           
           <!-- Individual Program Card -->
@@ -54,12 +54,12 @@
     <a href="#" class="nav-link">Полезный магазин</a>
     <a href="#" class="nav-link">Для Питомцев</a>
   </nav>
-  <a href="index.html" class="logo-link">
+  <a href="/" class="logo-link">
     <img class="logo" src="{{ 'logo-Union.svg' | asset_url }}" alt="How To Eat" />
   </a>
   <div class="user-nav">
     <div class="user-links">
-      <a href="#" class="nav-link">Корзина (2)</a>
+      <a href="{{ cart_url }}" class="nav-link">Корзина ({{ cart.items_count }})</a>
       <a href="#" class="nav-link">Личный кабинет</a>
     </div>
   </div>
@@ -87,23 +87,23 @@
             <span class="program-name">Премиум</span>
           </a>
           
-          <a href="#" class="program-card dropdown-base">
+          <a href="/product/baza class="program-card dropdown-base">
             <span class="program-name">База</span>
           </a>
           
-          <a href="#" class="program-card dropdown-start">
+          <a href="/product/start" class="program-card dropdown-start">
             <span class="program-name">Старт</span>
           </a>
           
-          <a href="sport.html" class="program-card dropdown-sport">
+          <a href="/product/sport" class="program-card dropdown-sport">
             <span class="program-name">Спорт</span>
           </a>
           
-          <a href="#" class="program-card dropdown-detox">
+          <a href="/product/detoks" class="program-card dropdown-detox">
             <span class="program-name">Детокс</span>
           </a>
           
-          <a href="#" class="program-card dropdown-reload">
+          <a href="/product/perezagruzka" class="program-card dropdown-reload">
             <span class="program-name">Перезагрузка</span>
           </a>
           
@@ -117,7 +117,7 @@
       <a href="#" class="nav-link">ДЛЯ ПИТОМЦЕВ</a>
     </nav>
     <div class="mobile-menu-user">
-      <a href="#" class="nav-link">КОРЗИНА (2)</a>
+      <a href="{{ cart_url }}" class="nav-link">КОРЗИНА ({{ cart.items_count }})</a>
       <a href="#" class="nav-link">ЛИЧНЫЙ КАБИНЕТ</a>
     </div>
   </div>

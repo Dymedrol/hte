@@ -1,6 +1,9 @@
 /* 01. Header Component Styles */
 
+/* test */
+
 /* Main Header Container */
+
 .header {
   display: flex;
   align-items: center;
@@ -124,6 +127,7 @@
 
 .dropdown-view-all:hover {
   opacity: 1;
+  color: #000;
 }
 
 /* Programs Grid */
