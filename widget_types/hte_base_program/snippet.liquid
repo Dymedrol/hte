@@ -1,0 +1,1357 @@
+<!-- Product Section - Универсальный модуль -->
+<section class="product-section" id="productSection">
+  <div class="product-details">
+    <div class="product-header">
+      <h1 class="product-title" id="program-title"></h1>
+      <div class="menu-selector">
+        <div class="menu-info">
+          <p class="menu-description">Уникальное меню на <span id="program-duration"></span> дней:</p>
+          <div class="day-navigation">
+            <button class="nav-btn prev-btn">
+              <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Previous" />
+            </button>
+            <div class="days-container">
+              <span class="day-item current-day"></span>
+            </div>
+            <button class="nav-btn next-btn">
+              <img src="{{ 'arrow-1-1.svg' | asset_url }}" alt="Next" />
+            </button>
+          </div>
+        </div>
+        <div class="nutrition-info">
+          <span class="nutrition-item">К 0</span>
+          <span class="nutrition-item">Б 0</span>
+          <span class="nutrition-item">Ж 0</span>
+          <span class="nutrition-item">У 0</span>
+        </div>
+      </div>
+      <div class="dishes-gallery">
+        <!-- Блюда будут загружены динамически из соответствующих файлов данных -->
+        <div class="loading-dishes"></div>
+      </div>
+    </div>
+    <div class="product-description">
+      <h2 class="description-title" id="program-description-title"></h2>
+      <p class="description-text" id="program-description-text">
+
+      </p>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <aside class="settings-panel" id="settingsPanel">
+    <!-- Все секции будут созданы динамически на основе конфигурации -->
+    <!-- Order Summary будет добавлен динамически -->
+  </aside>
+</section>
+
+<!-- Delivery Time Popup -->
+<div class="quantity-popup" id="quantityPopup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <div class="popup-left-section">
+      <div class="popup-form">
+        <div class="popup-header">
+          <h3 class="popup-title">ВЫБЕРИТЕ УДОБНОЕ ВРЕМЯ ДОСТАВКИ</h3>
+          <p class="popup-description">Пожалуйста, укажите желаемый временной слот для доставки. Мы постараемся привезти заказ в выбранное время</p>
+        </div>
+        
+        <div class="popup-inputs">
+          <div class="input-row">
+            <div class="input-field">
+              <input type="text" placeholder="Начало доставки" id="startDateInput" readonly />
+              <div class="calendar-dropdown" id="startDateCalendar">
+                <div class="calendar-header">
+                  <button class="calendar-nav-btn prev-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 12L6 8L10 4" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <div class="calendar-title">
+                    <span class="calendar-month">Месяц</span>
+                    <span class="calendar-year">2025</span>
+                  </div>
+                  <button class="calendar-nav-btn next-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 4L10 8L6 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="calendar-grid" id="startDateGrid">
+                  <!-- Дни недели -->
+                  <div class="calendar-day-header">Пн</div>
+                  <div class="calendar-day-header">Вт</div>
+                  <div class="calendar-day-header">Ср</div>
+                  <div class="calendar-day-header">Чт</div>
+                  <div class="calendar-day-header">Пт</div>
+                  <div class="calendar-day-header">Сб</div>
+                  <div class="calendar-day-header">Вс</div>
+                  <!-- Дни месяца будут добавлены динамически -->
+                </div>
+              </div>
+            </div>
+            <div class="input-field">
+              <input type="text" placeholder="Последний день доставки" id="endDateInput" readonly />
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="input-field with-icon">
+              <input type="text" placeholder="В какое время доставить?" id="deliveryTimeInput" readonly />
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="delivery-time-dropdown" id="deliveryTimeDropdown">
+                <div class="time-list" id="timeList">
+                  <!-- Time slots будут добавлены динамически из конфигурации -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="popup-total">
+          <span class="total-label">Итого:</span>
+          <span class="total-value" id="popupTotalValue">0 ₽</span>
+        </div>
+      </div>
+      
+      <div class="popup-footer">
+        <button class="add-to-cart-popup-btn" id="addToCartPopupBtn">Добавить в корзину</button>
+      </div>
+    </div>
+    
+    <div class="popup-right-section">
+      <div class="popup-image" id="popupImage">
+        <div class="image-overlay">
+          <h2 class="image-title" id="popupImageTitle">ПРОГРАММА</h2>
+        </div>
+      </div>
+    </div>
+    
+    <button class="popup-close" id="popupClose">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4L4 12M4 4L12 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+    window.PROGRAM_CONFIG = {
+      "programName": "БАЗА",
+      "startDate": "2025-01-01",
+      "deliverySchedule": "every-other-day",
+      "basePrice": 0,
+      "deliveryTimeSlots": [
+        {
+          "value": "06:01-07:00",
+          "label": "06:01 — 07:00"
+        },
+        {
+          "value": "07:00-08:00",
+          "label": "07:00 — 08:00"
+        },
+        {
+          "value": "08:00-09:00",
+          "label": "08:00 — 09:00"
+        },
+        {
+          "value": "09:00-10:00",
+          "label": "09:00 — 10:00"
+        }
+      ],
+      "description": {
+        "title": "ДЛЯ ТЕХ, КТО ХОЧЕТ НАЧАТЬ С БАЗОВОГО УРОВНЯ",
+        "text": "Простая и понятная программа питания с базовым набором блюд. 4 блюда в день, основные диетические опции и гибкая настройка аллергенов. Идеально для начала здорового питания."
+      },
+      "dataFiles": {
+        "1300-classic": "data/base/base-1300-classic.json",
+        "1300-vegetarian": "data/base/base-1300-vegetarian.json",
+        "1800-classic": "data/base/base-1800-classic.json",
+        "1800-vegetarian": "data/base/base-1800-vegetarian.json"
+      },
+      "allergens": {
+        "enabled": true,
+        "maxAllergens": 5,
+        "allergenPrice": 300,
+        "freeAllergenIds": ["garlic", "onion"],
+        "texts": {
+          "allergenText": "Лук и чеснок исключаются бесплатно"
+        }
+      },
+      "calorieOptions": [
+        {
+          "value": "1300",
+          "label": "1300",
+          "unit": "ккал",
+          "price": 3700
+        },
+        {
+          "value": "1800",
+          "label": "1800",
+          "unit": "ккал",
+          "price": 4000
+        }
+      ],
+      "dietTypes": [
+        {
+          "value": "classic",
+          "label": "Классика",
+          "price": 0
+        },
+        {
+          "value": "vegetarian",
+          "label": "Вегетарианство",
+          "price": 0
+        }
+      ],
+      "defaultMealsPerDay": 4
+    }
+
+    window.PROGRAM_DISHES_DATA = {
+        "1300-classic": {
+            "programName": "БАЗА",
+            "calorieOption": "1300",
+            "dietType": "classic",
+            "totalDays": 3,
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "База 1300 Классика - Стейк из говядины с овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,38,18,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с лососем и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,32,24,12",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с курицей и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "320,28,14,26",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Лосось с брокколи и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "440,36,20,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "360,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Суп с индейкой и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "280,24,10,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 8,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,26,8,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Куриная грудка с овощами гриль",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "400,42,16,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Творог с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "320,20,8,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с креветками и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,24,12,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,12,8,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            },
+            "totalNutrition": {
+                "calories": 1300,
+                "protein": 130,
+                "fat": 60,
+                "carbs": 120
+            }
+        },
+        "1300-vegetarian": {
+            "programName": "БАЗА",
+            "calorieOption": "1300",
+            "dietType": "vegetarian",
+            "totalDays": 3,
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "База 1300 Вегетарианство - Сырники с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "420,24,18,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Салат с авокадо и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "380,16,24,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Овощной суп с чечевицей",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "320,18,12,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 4,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "280,20,14,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Тофу с овощами и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "440,22,20,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Смузи с ягодами и семенами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "360,12,16,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Салат с нутом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "280,16,10,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Овсянка с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "240,8,6,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Фалафель с хумусом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "400,18,20,26",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Творог с медом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "320,22,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с фетой и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,16,18,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Гранола с йогуртом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,14,10,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            },
+            "totalNutrition": {
+                "calories": 1300,
+                "protein": 120,
+                "fat": 58,
+                "carbs": 125
+            }
+        },
+        "1800-classic": {
+            "programName": "БАЗА",
+            "calorieOption": "1800",
+            "dietType": "classic",
+            "totalDays": 3,
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "База 1800 Классика - Стейк из говядины с картофелем",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "580,48,24,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с лососем и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,38,28,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с курицей и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "420,34,18,34",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "320,28,12,26",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Лосось с брокколи и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "540,42,24,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "460,22,16,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Суп с индейкой и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "380,28,14,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 8,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,30,10,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Куриная грудка с овощами гриль",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "500,46,20,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Творог с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,24,12,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с креветками и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "400,28,16,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,16,12,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            },
+            "totalNutrition": {
+                "calories": 1800,
+                "protein": 180,
+                "fat": 80,
+                "carbs": 160
+            }
+        },
+        "1800-vegetarian": {
+            "programName": "БАЗА",
+            "calorieOption": "1800",
+            "dietType": "vegetarian",
+            "totalDays": 3,
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "База 1800 Вегетарианство - Сырники с ягодами и сметаной",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "580,28,22,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Салат с авокадо и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "480,20,28,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Овощной суп с чечевицей",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "420,22,16,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 4,
+                            "name": "Греческий йогурт с орехами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "320,24,18,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Тофу с овощами и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "540,26,24,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Смузи с ягодами и семенами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "460,16,20,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Салат с нутом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "380,20,14,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Овсянка с фруктами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "320,12,10,34",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Фалафель с хумусом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "500,22,24,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Творог с медом и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,26,16,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с фетой и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "400,20,22,26",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Гранола с йогуртом и фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,18,14,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            },
+            "totalNutrition": {
+                "calories": 1800,
+                "protein": 170,
+                "fat": 82,
+                "carbs": 168
+            }
+        }
+    }
+
+    window.ALLERGENS_CONFIG = {
+        "data": [
+            {
+                "id": "onion",
+                "name": "Лук репчатый",
+                "value": "лук-репчатый"
+            },
+            {
+                "id": "garlic",
+                "name": "Чеснок",
+                "value": "чеснок"
+            },
+            {
+                "id": "avocado",
+                "name": "Авокадо",
+                "value": "авокадо"
+            },
+            {
+                "id": "amaranth",
+                "name": "Амарант",
+                "value": "амарант"
+            },
+            {
+                "id": "pineapple",
+                "name": "Ананас",
+                "value": "ананас"
+            },
+            {
+                "id": "orange",
+                "name": "Апельсин",
+                "value": "апельсин"
+            },
+            {
+                "id": "eggplant",
+                "name": "Баклажаны",
+                "value": "баклажаны"
+            },
+            {
+                "id": "banana",
+                "name": "Банан",
+                "value": "банан"
+            },
+            {
+                "id": "lamb",
+                "name": "Баранина",
+                "value": "баранина"
+            },
+            {
+                "id": "sweet_potato",
+                "name": "Батат",
+                "value": "батат"
+            },
+            {
+                "id": "broccoli",
+                "name": "Брокколи",
+                "value": "брокколи"
+            },
+            {
+                "id": "bulgur",
+                "name": "Булгур",
+                "value": "булгур"
+            },
+            {
+                "id": "oyster_mushroom",
+                "name": "Вешенки",
+                "value": "вешенки"
+            },
+            {
+                "id": "grape",
+                "name": "Виноград",
+                "value": "виноград"
+            },
+            {
+                "id": "beef",
+                "name": "Говядина",
+                "value": "говядина"
+            },
+            {
+                "id": "pea",
+                "name": "Горох",
+                "value": "горох"
+            },
+            {
+                "id": "grapefruit",
+                "name": "Грейпфрут",
+                "value": "грейпфрут"
+            },
+            {
+                "id": "buckwheat",
+                "name": "Гречка",
+                "value": "гречка"
+            },
+            {
+                "id": "green_buckwheat",
+                "name": "Гречка зеленая",
+                "value": "гречка-зеленая"
+            },
+            {
+                "id": "buckwheat_noodles",
+                "name": "Гречневая лапша",
+                "value": "гречневая-лапша"
+            },
+            {
+                "id": "mushrooms",
+                "name": "Грибы",
+                "value": "грибы"
+            },
+            {
+                "id": "pear",
+                "name": "Груша",
+                "value": "груша"
+            },
+            {
+                "id": "dorado",
+                "name": "Дорадо",
+                "value": "дорадо"
+            },
+            {
+                "id": "catfish",
+                "name": "Зубатка",
+                "value": "зубатка"
+            },
+            {
+                "id": "raisins",
+                "name": "Изюм",
+                "value": "изюм"
+            },
+            {
+                "id": "turkey",
+                "name": "Индейка",
+                "value": "индейка"
+            },
+            {
+                "id": "cocoa",
+                "name": "Какао",
+                "value": "какао"
+            },
+            {
+                "id": "squid",
+                "name": "Кальмары",
+                "value": "кальмары"
+            },
+            {
+                "id": "white_cabbage",
+                "name": "Капуста белокачанная",
+                "value": "капуста-белокачанная"
+            },
+            {
+                "id": "red_cabbage",
+                "name": "Капуста краснокачанная",
+                "value": "капуста-краснокачанная"
+            },
+            {
+                "id": "cauliflower",
+                "name": "Капуста цветная",
+                "value": "капуста-цветная"
+            },
+            {
+                "id": "cashew",
+                "name": "Кешью",
+                "value": "кешью"
+            },
+            {
+                "id": "kiwi",
+                "name": "Киви",
+                "value": "киви"
+            },
+            {
+                "id": "coho_salmon",
+                "name": "Кижуч",
+                "value": "кижуч"
+            },
+            {
+                "id": "cilantro",
+                "name": "Кинза",
+                "value": "кинза"
+            },
+            {
+                "id": "quinoa",
+                "name": "Киноа",
+                "value": "киноа"
+            },
+            {
+                "id": "coconut_milk",
+                "name": "Кокос и кокосовое молоко",
+                "value": "кокос-и-кокосовое-молоко"
+            },
+            {
+                "id": "crab",
+                "name": "Крабы",
+                "value": "крабы"
+            },
+            {
+                "id": "shrimp",
+                "name": "Креветки",
+                "value": "креветки"
+            },
+            {
+                "id": "rabbit",
+                "name": "Кролик",
+                "value": "кролик"
+            },
+            {
+                "id": "corn",
+                "name": "Кукуруза",
+                "value": "кукуруза"
+            },
+            {
+                "id": "dried_apricots",
+                "name": "Курага",
+                "value": "курага"
+            },
+            {
+                "id": "chicken",
+                "name": "Курица",
+                "value": "курица"
+            },
+            {
+                "id": "lime",
+                "name": "Лайм",
+                "value": "лайм"
+            },
+            {
+                "id": "lemon",
+                "name": "Лимон",
+                "value": "лимон"
+            },
+            {
+                "id": "salmon",
+                "name": "Лосось",
+                "value": "лосось"
+            },
+            {
+                "id": "green_onion",
+                "name": "Лук зеленый",
+                "value": "лук-зеленый"
+            },
+            {
+                "id": "mint",
+                "name": "Мята",
+                "value": "мята"
+            },
+            {
+                "id": "chickpea",
+                "name": "Нут",
+                "value": "нут"
+            },
+            {
+                "id": "oatmeal",
+                "name": "Овсянка",
+                "value": "овсянка"
+            },
+            {
+                "id": "olives_black",
+                "name": "Оливки",
+                "value": "оливки"
+            },
+            {
+                "id": "nuts",
+                "name": "Орехи",
+                "value": "орехи"
+            },
+            {
+                "id": "bran",
+                "name": "Отруби",
+                "value": "отруби"
+            },
+            {
+                "id": "halibut",
+                "name": "Палтус",
+                "value": "палтус"
+            },
+            {
+                "id": "quail",
+                "name": "Перепелка",
+                "value": "перепелка"
+            },
+            {
+                "id": "pepper_spice",
+                "name": "Перец (приправа)",
+                "value": "перец-приправа"
+            },
+            {
+                "id": "bell_pepper",
+                "name": "Перец болгарский",
+                "value": "перец-болгарский"
+            },
+            {
+                "id": "chili_pepper",
+                "name": "Перец острый (чили)",
+                "value": "перец-острый-чили"
+            },
+            {
+                "id": "pearl_barley",
+                "name": "Перловка",
+                "value": "перловка"
+            },
+            {
+                "id": "peach",
+                "name": "Персик",
+                "value": "персик"
+            },
+            {
+                "id": "parsley",
+                "name": "Петрушка",
+                "value": "петрушка"
+            },
+            {
+                "id": "ptitim",
+                "name": "Птитим",
+                "value": "птитим"
+            },
+            {
+                "id": "millet",
+                "name": "Пшено",
+                "value": "пшено"
+            },
+            {
+                "id": "radish",
+                "name": "Редис",
+                "value": "редис"
+            },
+            {
+                "id": "radish_black",
+                "name": "Редька",
+                "value": "редька"
+            },
+            {
+                "id": "rice",
+                "name": "Рис",
+                "value": "рис"
+            },
+            {
+                "id": "arugula",
+                "name": "Руккола",
+                "value": "руккола"
+            },
+            {
+                "id": "beetroot",
+                "name": "Свекла",
+                "value": "свекла"
+            },
+            {
+                "id": "pork",
+                "name": "Свинина",
+                "value": "свинина"
+            },
+            {
+                "id": "celery",
+                "name": "Сельдерей",
+                "value": "сельдерей"
+            },
+            {
+                "id": "sea_bass",
+                "name": "Сибас",
+                "value": "сибас"
+            },
+            {
+                "id": "jerusalem_artichoke_syrup",
+                "name": "Сироп топинамбура",
+                "value": "сироп-топинамбура"
+            },
+            {
+                "id": "mackerel",
+                "name": "Скумбрия",
+                "value": "скумбрия"
+            },
+            {
+                "id": "animal_cream",
+                "name": "Сливки животные",
+                "value": "сливки-животные"
+            },
+            {
+                "id": "sour_cream",
+                "name": "Сметана",
+                "value": "сметана"
+            },
+            {
+                "id": "soy",
+                "name": "Соя",
+                "value": "соя"
+            },
+            {
+                "id": "asparagus",
+                "name": "Спаржа",
+                "value": "спаржа"
+            },
+            {
+                "id": "pike_perch",
+                "name": "Судак",
+                "value": "судак"
+            },
+            {
+                "id": "rambol_cheese",
+                "name": "Сыр рамболь",
+                "value": "сыр-рамболь"
+            },
+            {
+                "id": "cottage_cheese",
+                "name": "Творог",
+                "value": "творог"
+            },
+            {
+                "id": "dried_tomatoes",
+                "name": "Томаты вяленые",
+                "value": "томаты-вяленые"
+            },
+            {
+                "id": "fresh_tomatoes",
+                "name": "Томаты свежие",
+                "value": "томаты-свежие"
+            },
+            {
+                "id": "tofu",
+                "name": "Тофу",
+                "value": "тофу"
+            },
+            {
+                "id": "cod",
+                "name": "Треска",
+                "value": "треска"
+            },
+            {
+                "id": "tuna",
+                "name": "Тунец",
+                "value": "тунец"
+            },
+            {
+                "id": "pumpkin",
+                "name": "Тыква",
+                "value": "тыква"
+            },
+            {
+                "id": "dill",
+                "name": "Укроп",
+                "value": "укроп"
+            },
+            {
+                "id": "duck",
+                "name": "Утка",
+                "value": "утка"
+            },
+            {
+                "id": "beans",
+                "name": "Фасоль",
+                "value": "фасоль"
+            },
+            {
+                "id": "bread",
+                "name": "Хлеб",
+                "value": "хлеб"
+            },
+            {
+                "id": "hummus",
+                "name": "Хумус",
+                "value": "хумус"
+            },
+            {
+                "id": "guinea_fowl",
+                "name": "Цесарка",
+                "value": "цесарка"
+            },
+            {
+                "id": "zucchini",
+                "name": "Цукини",
+                "value": "цукини"
+            },
+            {
+                "id": "prunes",
+                "name": "Чернослив",
+                "value": "чернослив"
+            },
+            {
+                "id": "lentils",
+                "name": "Чечевица",
+                "value": "чечевица"
+            },
+            {
+                "id": "chuka",
+                "name": "Чукка",
+                "value": "чукка"
+            },
+            {
+                "id": "champignon",
+                "name": "Шампиньоны",
+                "value": "шампиньоны"
+            },
+            {
+                "id": "chocolate",
+                "name": "Шоколад",
+                "value": "шоколад"
+            },
+            {
+                "id": "spinach",
+                "name": "Шпинат",
+                "value": "шпинат"
+            },
+            {
+                "id": "apple",
+                "name": "Яблоко",
+                "value": "яблоко"
+            },
+            {
+                "id": "eggs",
+                "name": "Яйца",
+                "value": "яйца"
+            }
+        ]
+    }
+
+    window.currentTime = new Date(2025, 8, 1, 0, 0, 0);
+</script>    
+
+<!-- Основные скрипты -->
+<script src="{{ '02-allergens-config.js' | asset_url }}"></script>
+<script src="{{ '02-allergens.js' | asset_url }}" defer></script>
+<script src="{{ 'date-availability.js' | asset_url }}"></script>
+<script src="{{ '02-dishes-gallery.js' | asset_url }}" defer></script>
+<script src="{{ '04-products-slider.js' | asset_url }}" defer></script>
+<script src="{{ 'quantity-popup.js' | asset_url }}" defer></script>
+<script src="{{ 'date-picker-calendar.js' | asset_url }}" defer></script>
+
+<!-- Универсальная система Product Section -->
+<script src="{{ 'product-section-config.js' | asset_url }}"></script>
+<script src="{{ 'product-section-date-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-dishes-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-price-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-settings-builder.js' | asset_url }}"></script>
+<script src="{{ 'product-section-ui-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-main.js' | asset_url }}"></script>
+<script src="{{ 'product-section-init.js' | asset_url }}"></script>
+
+<script src="{{ 'calendar.js' | asset_url }}" defer></script>
+
+<script>
+      // Загружаем компоненты при загрузке DOM
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          // Ждем готовности конфигурации программы
+        //   await window.waitForProgramConfig();
+          
+          // Инициализируем универсальную систему после загрузки компонентов
+          if (window.initializeProductSection) {
+            await window.initializeProductSection();
+          } else {
+            console.error('❌ Функция initializeProductSection не найдена');
+          }
+          
+          // Инициализируем попап выбора времени доставки ПОСЛЕ загрузки всех компонентов
+          if (window.initQuantityPopup) {
+            window.initQuantityPopup();
+          } else {
+            console.error('❌ Функция initQuantityPopup не найдена');
+          }
+          
+        } catch (error) {
+          console.error('❌ Ошибка загрузки страницы:', error);
+        }
+      });
+</script>
