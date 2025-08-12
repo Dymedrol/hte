@@ -1,0 +1,23 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Reload Program"
+  },
+  "handle": "hte_reload_program",
+  "description": {
+    "ru": "HTE Reload Program"
+  },
+  "page_kinds": [
+    "product"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "products-cards",
+  "libraries": [
+    "jquery",
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

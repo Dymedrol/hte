@@ -41,7 +41,7 @@
       "heading-ratio": 1.5,
       "heading-weight": 600,
       "color-preset": "custom",
-      "_settings_version": 1754648964.9468994,
+      "_settings_version": 1754989010.8756173,
       "sidebar_index_show": false,
       "sidebar_page.system-template-4d22c9296573bfd50d31_position": "left",
       "sidebar_page.system-template-1edb10153fcbc13c7cae_position": "left",
@@ -50,7 +50,8 @@
       "sidebar_collection.system-template-2f9034489e47cccc7961_position": "left",
       "collection.system-template-2f9034489e47cccc7961_count": 12,
       "sidebar_product.system-template-acca640e9f77cc34ea3d_position": "left",
-      "sidebar_product.system-template-b9bc228330eb9b11f434_position": "left"
+      "sidebar_product.system-template-b9bc228330eb9b11f434_position": "left",
+      "sidebar_product.system-template-38a03d03d6ef0806fc34_position": "left"
     }
   },
   "remote_theme_id": 653,
