@@ -1219,7 +1219,7 @@
 .popup-image {
   width: 100%;
   height: 100%;
-  background-image: url('../assets/add-to-cart-bg.jpg');
+  background-image: url('https://static.insales-cdn.com/files/1/1321/95077673/original/add-to-cart-bg.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -1392,5 +1392,27 @@
 
 
 } 
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-sm);
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  border-color: var(--hte-black);
+}
+
+.nav-btn img {
+  width: 11px;
+  height: 7.36px;
+}
 
  
