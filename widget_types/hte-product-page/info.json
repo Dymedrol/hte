@@ -16,8 +16,8 @@
   "generation": 4,
   "widget_category_handle": "products-cards",
   "libraries": [
-    "commonjs_v2",
     "jquery",
+    "commonjs_v2",
     "my-layout"
   ]
 }

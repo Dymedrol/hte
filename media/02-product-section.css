@@ -1,9 +1,6 @@
 /* 02. Product Section Styles */
 
 /* Product Section */
-
-
-
 .product-section {
   display: flex;
   align-items: flex-start;
@@ -102,6 +99,12 @@
   color: var(--hte-black);
   text-decoration: underline;
   white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.current-day:hover {
+  color: var(--hte-grey-text);
 }
 
 .nutrition-info {
@@ -125,58 +128,32 @@
   white-space: nowrap;
 }
 
-.nav-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 27px;
-  height: 27px;
-  border: var(--border-width-normal) solid var(--hte-dark-accent);
-  border-radius: var(--border-radius-sm);
-  background: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
 .dishes-gallery {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
-  border-radius: var(--border-radius-md);
   overflow: hidden;
   width: var(--width-details);
   justify-items: start;
   align-items: start;
 }
 
-.dishes-gallery.removeBreakfast .isBreakfast {
-  display: none;
-}
-
-.dishes-gallery.removeBreakfast .isSnack {
-  display: none;
-}
-
-
-.dishes-gallery.removeDiner .isDinner {
-  display: none;
-}
-
-.dishes-gallery.removeDiner .isSnack {
-  display: none;
-}
-
 .dish-item {
   aspect-ratio: 1;
   position: relative;
   min-width: 0;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%; /* Создает квадрат */
 }
 
 .dish-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: var(--border-radius-sm);
 }
 
 .dish-overlay {
@@ -191,7 +168,6 @@
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
-  border-radius: var(--border-radius-sm);
 }
 
 .dish-overlay span {
@@ -201,6 +177,7 @@
   color: var(--hte-black);
   text-align: center;
   padding: 0 var(--spacing-20);
+  line-height: 18px;
 }
 
 .dish-item:hover .dish-overlay {
@@ -376,6 +353,48 @@
   border: var(--border-width-normal) solid var(--hte-black);
 }
 
+/* Убрано: CSS правила для .hidden классов больше не нужны
+   Секции создаются динамически только когда есть соответствующие данные */
+
+/* Анимации для появления элементов в settings-panel */
+@keyframes slideInFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Класс для анимации появления новых элементов */
+.settings-panel-animate {
+  animation: slideInFadeIn 0.25s ease-out;
+}
+
+/* Плавные переходы для изменения содержимого */
+.setting-group {
+  transition: all 0.2s ease-out;
+}
+
+.meal-options {
+  transition: all 0.2s ease-out;
+}
+
+.separator-line {
+  transition: opacity 0.2s ease-out;
+}
+
+/* Анимация для обновления delivery-info */
+.delivery-info {
+  transition: transform 0.3s ease-out;
+}
+
+.delivery-info.updating {
+  transform: translateY(-2px);
+}
+
 .separator-line {
   width: 100%;
   height: var(--border-width-thin);
@@ -396,10 +415,6 @@
   gap: var(--spacing-15);
 }
 
-.meal-option input {
-  display: none;
-}
-
 .toggle-switch {
   display: flex;
   width: 45px;
@@ -407,29 +422,28 @@
   align-items: center;
   padding: 6px;
   background-color: var(--hte-white);
+  border: var(--border-width-normal) solid var(--hte-border);
   border-radius: var(--border-radius-xl);
   cursor: pointer;
   transition: border-color 0.3s ease, justify-content 0.3s ease;
-  border: var(--border-width-normal) solid var(--hte-black);
-  justify-content: flex-end;
 }
 
-.meal-option input:checked ~ .toggle-switch {
-  border: var(--border-width-normal) solid var(--hte-border);
-  justify-content: flex-start;
+.toggle-switch.active {
+  border: var(--border-width-normal) solid var(--hte-black);
+  justify-content: flex-end;
 }
 
 .toggle-circle {
   width: 15px;
   height: 15px;
+  background-color: var(--hte-border);
   border-radius: var(--border-radius-xxl);
   transition: background-color 0.3s ease;
   flex-shrink: 0;
-  background-color: var(--hte-black);
 }
 
-.meal-option input:checked ~ .toggle-switch .toggle-circle {
-  background-color: var(--hte-border);
+.toggle-switch.active .toggle-circle {
+  background-color: var(--hte-black);
 }
 
 .meal-option span {
@@ -558,18 +572,19 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   width: 280px;
+  overflow: hidden;
 }
 
 .allergen-dropdown.active {
   display: block;
 }
 
-.dropdown-header {
-  padding: var(--spacing-15);
-  border-bottom: var(--border-width-thin) solid var(--hte-dark-accent);
+.allergen-dropdown .dropdown-header {
+  padding: var(--spacing-15) var(--spacing-15) 0 var(--spacing-15);
+  width: 100%;
 }
 
-.dropdown-header span {
+.allergen-dropdown .dropdown-header span {
   font-family: var(--hte-body-18-font-family);
   font-size: var(--hte-body-18-font-size);
   font-weight: var(--hte-body-18-font-weight);
@@ -584,11 +599,9 @@
 
 .search-icon {
   position: absolute;
-  height: fit-content;
   left: var(--spacing-25);
-  top: 0;
-  bottom: 0;
-  margin: auto;
+  top: 39px;
+  transform: translateY(-50%);
   z-index: 1;
 }
 
@@ -628,15 +641,6 @@
 
 .allergen-item.selected {
   background-color: var(--hte-super-dark-accent);
-}
-
-.allergen-item.selected .checkbox {
-  border-color: var(--hte-black);
-  background-color: var(--hte-black);
-}
-
-.allergen-item.selected .checkbox-inner {
-  opacity: 1;
 }
 
 .checkbox {
@@ -685,12 +689,71 @@
   color: var(--hte-grey-text);
 }
 
+/* Delivery Time Dropdown */
+.delivery-time-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 100%;
+  margin-top: var(--spacing-5);
+  overflow: hidden;
+}
+
+.delivery-time-dropdown.active {
+  display: block;
+}
+
+.time-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.time-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-10) var(--spacing-15);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: var(--border-width-thin) solid var(--hte-dark-accent);
+}
+
+.time-item:last-child {
+  border-bottom: none;
+}
+
+.time-item:hover {
+  background-color: var(--hte-dark-accent);
+}
+
+.time-item.selected {
+  background-color: var(--hte-super-dark-accent);
+}
+
+.time-slot {
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+}
+
 .order-summary {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-15);
   padding-top: var(--spacing-25);
   border-top: var(--border-width-thin) solid var(--hte-dark-accent);
+}
+
+/* Убираем верхний бордер и отступ если нет опций у продукта */
+.order-summary.no-options {
+  border-top: none;
+  padding-top: 0;
 }
 
 .price-info {
@@ -746,6 +809,500 @@
   color: var(--hte-grey-text);
   margin: 0;
   text-align: center;
+}
+
+/* Quantity Popup */
+.quantity-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: none;
+}
+
+.quantity-popup.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.popup-content {
+  position: relative;
+  background-color: var(--hte-white);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-8);
+  max-width: 900px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: var(--spacing-40);
+}
+
+.popup-left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--spacing-15) 0 var(--spacing-15) var(--spacing-15);
+}
+
+.popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-30);
+}
+
+.popup-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.popup-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  text-transform: uppercase;
+  line-height: 35px;
+}
+
+.popup-description {
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  opacity: var(--opacity-medium);
+  line-height: 16px;
+}
+
+.popup-close {
+  position: absolute;
+  top: var(--spacing-15);
+  right: var(--spacing-15);
+  width: 26px;
+  height: 26px;
+  background: var(--hte-white);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-close:hover {
+  background-color: var(--hte-dark-accent);
+}
+
+.popup-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--spacing-12);
+}
+
+.input-field {
+  flex: 1;
+  position: relative;
+}
+
+.input-field input {
+  width: 100%;
+  height: 44px;
+  padding: var(--spacing-15) var(--spacing-15);
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  outline: none;
+}
+
+.input-field input::placeholder {
+  color: var(--hte-grey-text);
+}
+
+.input-field.with-icon {
+  display: flex;
+  align-items: center;
+}
+
+.input-field.with-icon input {
+  padding-right: var(--spacing-40);
+}
+
+.input-field.with-icon svg {
+  position: absolute;
+  right: var(--spacing-15);
+  opacity: var(--opacity-medium);
+  transition: transform 0.3s ease;
+}
+
+.input-field.with-icon.active svg {
+  transform: rotate(180deg);
+}
+
+/* Calendar Dropdown */
+.calendar-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 241px;
+  height: auto;
+  background: var(--hte-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.15);
+  padding: var(--spacing-20);
+  margin-top: var(--spacing-5);
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+
+
+.calendar-dropdown.active {
+  display: flex;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar-nav-btn {
+  width: 27px;
+  height: 27px;
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-sm);
+  background: var(--hte-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.calendar-nav-btn:hover {
+  background: var(--hte-dark-accent);
+}
+
+.calendar-nav-btn.disabled {
+  opacity: var(--opacity-low);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.calendar-nav-btn.disabled:hover {
+  background: var(--hte-white);
+}
+
+.calendar-title {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.calendar-month {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-black);
+  line-height: 14px;
+}
+
+.calendar-year {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-super-dark-accent);
+  line-height: 14px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  width: 189px;
+}
+
+.calendar-day-header {
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: 12px;
+  font-weight: 450;
+  color: var(--hte-grey-text);
+  line-height: 12px;
+}
+
+.calendar-day {
+  width: 27px;
+  height: 27px;
+  background: var(--hte-white);
+  border: var(--border-width-normal) solid var(--hte-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 12px;
+  transition: all 0.3s ease;
+}
+
+.calendar-day.inactive {
+  color: var(--hte-super-dark-accent);
+  pointer-events: none; /* Отключаем клики по недоступным дням */
+  cursor: not-allowed;
+}
+
+.calendar-day.past {
+  color: var(--hte-grey-text);
+  opacity: var(--opacity-low);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Специальные стили для недоступных дней в calendar-dropdown */
+.calendar-day.unavailable {
+  color: var(--hte-grey-text);
+  opacity: var(--opacity-low);
+  cursor: not-allowed;
+  pointer-events: none;
+  background: var(--hte-super-dark-accent);
+  border: var(--border-width-normal) solid var(--hte-white);
+  position: relative;
+}
+
+.calendar-day.unavailable::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 12px;
+  background: var(--hte-grey-text);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.calendar-day.unavailable::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 12px;
+  background: var(--hte-grey-text);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.calendar-day.active {
+  color: var(--hte-black);
+}
+
+.calendar-day.outlined {
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+}
+
+.calendar-day.selected {
+  background: var(--hte-black);
+  color: var(--hte-white);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: 40px;
+}
+
+.calendar-day.range-start,
+.calendar-day.range-end {
+  background: var(--hte-white);
+  color: var(--hte-black);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: 40px;
+}
+
+.calendar-day.range-middle {
+  background: var(--hte-black);
+  color: var(--hte-white);
+  border-radius: 40px;
+}
+
+.calendar-day.range-preview {
+  background: var(--hte-dark-accent);
+  color: var(--hte-black);
+  opacity: var(--opacity-medium);
+}
+
+.calendar-day.excluded {
+  background: var(--hte-grey-text);
+  color: var(--hte-white);
+  border: var(--border-width-normal) solid var(--hte-grey-text);
+  border-radius: 40px;
+  opacity: var(--opacity-medium);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Стили для выбора дат */
+.calendar-day.selectable:hover {
+  background: var(--hte-dark-accent);
+  transition: all 0.2s ease;
+}
+
+.calendar-day.selectable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transition-delay: 0.1s;
+}
+
+.popup-total {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-8);
+}
+
+.total-label {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-grey-text);
+  line-height: 14px;
+}
+
+.total-value {
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  line-height: 16px;
+}
+
+.popup-right-section {
+  width: 420px;
+  height: 480px;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.popup-image {
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/add-to-cart-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--spacing-25) var(--spacing-15);
+}
+
+.image-overlay {
+  text-align: center;
+}
+
+.image-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-white);
+  text-transform: uppercase;
+  line-height: 35px;
+  margin: 0;
+}
+
+
+
+.popup-footer {
+  text-align: center;
+}
+
+.add-to-cart-popup-btn {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--spacing-20);
+  background-color: var(--hte-black);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-white);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  line-height: var(--hte-body-18-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-to-cart-popup-btn:hover {
+  background-color: transparent;
+  border: var(--border-width-normal) solid var(--hte-black);
+  color: var(--hte-black);
+}
+
+/* Mobile Responsive for Popup */
+@media (max-width: 720px) {
+  .popup-content {
+    flex-direction: column;
+    padding: var(--spacing-15);
+    max-width: 95%;
+    gap: var(--spacing-20);
+  }
+  
+  .popup-left-section {
+    padding: 0;
+  }
+  
+  .popup-right-section {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .popup-title {
+    font-size: 26px;
+    line-height: 26px;
+    max-width: 280px;
+  }
+  
+  .input-row {
+    flex-direction: column;
+  }
+  
+  .popup-form {
+    margin-bottom: var(--spacing-20);
+  }
 }
 
 
@@ -813,109 +1370,27 @@
     width: 100%;
     max-width: 100%;
   }
+
+  .menu-selector {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .menu-info {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .day-navigation {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+
 } 
-
-.settings-panel .option-selector {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: var(--spacing-25);
-}
-
-.settings-panel .option {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-10);
-}
-
-.settings-panel .option-label {
-  font-family: var(--hte-micro-text-14-font-family);
-  font-size: var(--hte-micro-text-14-font-size);
-  font-weight: var(--hte-micro-text-14-font-weight);
-  color: var(--hte-grey-text);
-}
-
-.settings-panel .option-kalorijnost_ .option-values {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  background-color: var(--hte-white);
-  border-radius: var(--border-radius-xxl);
-  overflow: visible;
-  width: fit-content;
-  position: relative;
-}
-
-.settings-panel .option-kalorijnost_ .option-value {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-5);
-  padding: 0 var(--spacing-15);
-  height: 42px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: var(--border-radius-xl);
-  position: relative;
-  z-index: 1;
-}
-
-.settings-panel .option-kalorijnost_ .option-value.is-active {
-  border: 1.5px solid var(--hte-black, #1A1A1A);
-}
-
-.settings-panel .option-kalorijnost_ .option-value span {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-5);
-  flex-shrink: 0;
-
-  font-family: var(--hte-body-18-font-family);
-  font-size: var(--hte-body-18-font-size);
-  font-weight: var(--hte-body-18-font-weight);
-  color: var(--hte-black);
-  letter-spacing: var(--hte-body-18-letter-spacing);
-  line-height: var(--hte-body-18-line-height);
-  white-space: nowrap;
-}
-
-.settings-panel .option-value input {
-  display: none;
-}
-
-.settings-panel  .option-values {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-8);
-}
-
-.settings-panel .option-value {
-  display: inline-flex;
-  align-items: center;
-  height: 42px;
-  padding: 0 var(--spacing-20);
-  border: var(--border-width-normal) solid var(--hte-border);
-  border-radius: var(--border-radius-xl);
-  background-color: var(--hte-white);
-  cursor: pointer;
-}
-
-.settings-panel .option-value.is-active {
-  border: var(--border-width-normal) solid var(--hte-black);
-}
-
-.settings-panel .option-value span {
-  font-family: var(--hte-body-18-font-family);
-  font-size: var(--hte-body-18-font-size);
-  font-weight: var(--hte-body-18-font-weight);
-  line-height: var(--hte-body-18-line-height);
-  color: var(--hte-black);
-  transition: all 0.3s ease;
-  text-transform: capitalize;
-}
-
-
 
  

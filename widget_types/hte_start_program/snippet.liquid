@@ -1,0 +1,606 @@
+<!-- Product Section - Универсальный модуль -->
+<section class="product-section" id="productSection">
+  <div class="product-details">
+    <div class="product-header">
+      <h1 class="product-title" id="program-title"></h1>
+      <div class="menu-selector">
+        <div class="menu-info">
+          <p class="menu-description">Уникальное меню на <span id="program-duration"></span> дней:</p>
+          <div class="day-navigation">
+            <button class="nav-btn prev-btn">
+              <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Previous" />
+            </button>
+            <div class="days-container">
+              <span class="day-item current-day"></span>
+            </div>
+            <button class="nav-btn next-btn">
+              <img src="{{ 'arrow-1-1.svg' | asset_url }}" alt="Next" />
+            </button>
+          </div>
+        </div>
+        <div class="nutrition-info">
+          <span class="nutrition-item">К 0</span>
+          <span class="nutrition-item">Б 0</span>
+          <span class="nutrition-item">Ж 0</span>
+          <span class="nutrition-item">У 0</span>
+        </div>
+      </div>
+      <div class="dishes-gallery">
+        <!-- Блюда будут загружены динамически из соответствующих файлов данных -->
+        <div class="loading-dishes"></div>
+      </div>
+    </div>
+    <div class="product-description">
+      <h2 class="description-title" id="program-description-title"></h2>
+      <p class="description-text" id="program-description-text">
+
+      </p>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <aside class="settings-panel" id="settingsPanel">
+    <!-- Все секции будут созданы динамически на основе конфигурации -->
+    <!-- Order Summary будет добавлен динамически -->
+  </aside>
+</section>
+
+<!-- Delivery Time Popup -->
+<div class="quantity-popup" id="quantityPopup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <div class="popup-left-section">
+      <div class="popup-form">
+        <div class="popup-header">
+          <h3 class="popup-title">ВЫБЕРИТЕ УДОБНОЕ ВРЕМЯ ДОСТАВКИ</h3>
+          <p class="popup-description">Пожалуйста, укажите желаемый временной слот для доставки. Мы постараемся привезти заказ в выбранное время</p>
+        </div>
+        
+        <div class="popup-inputs">
+          <div class="input-row">
+            <div class="input-field">
+              <input type="text" placeholder="Начало доставки" id="startDateInput" readonly />
+              <div class="calendar-dropdown" id="startDateCalendar">
+                <div class="calendar-header">
+                  <button class="calendar-nav-btn prev-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 12L6 8L10 4" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <div class="calendar-title">
+                    <span class="calendar-month">Месяц</span>
+                    <span class="calendar-year">2025</span>
+                  </div>
+                  <button class="calendar-nav-btn next-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 4L10 8L6 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="calendar-grid" id="startDateGrid">
+                  <!-- Дни недели -->
+                  <div class="calendar-day-header">Пн</div>
+                  <div class="calendar-day-header">Вт</div>
+                  <div class="calendar-day-header">Ср</div>
+                  <div class="calendar-day-header">Чт</div>
+                  <div class="calendar-day-header">Пт</div>
+                  <div class="calendar-day-header">Сб</div>
+                  <div class="calendar-day-header">Вс</div>
+                  <!-- Дни месяца будут добавлены динамически -->
+                </div>
+              </div>
+            </div>
+            <div class="input-field">
+              <input type="text" placeholder="Последний день доставки" id="endDateInput" readonly />
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="input-field with-icon">
+              <input type="text" placeholder="В какое время доставить?" id="deliveryTimeInput" readonly />
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="delivery-time-dropdown" id="deliveryTimeDropdown">
+                <div class="time-list" id="timeList">
+                  <!-- Time slots будут добавлены динамически из конфигурации -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="popup-total">
+          <span class="total-label">Итого:</span>
+          <span class="total-value" id="popupTotalValue">0 ₽</span>
+        </div>
+      </div>
+      
+      <div class="popup-footer">
+        <button class="add-to-cart-popup-btn" id="addToCartPopupBtn">Добавить в корзину</button>
+      </div>
+    </div>
+    
+    <div class="popup-right-section">
+      <div class="popup-image" id="popupImage">
+        <div class="image-overlay">
+          <h2 class="image-title" id="popupImageTitle">ПРОГРАММА</h2>
+        </div>
+      </div>
+    </div>
+    
+    <button class="popup-close" id="popupClose">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4L4 12M4 4L12 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+ 
+
+<script>
+    window.PROGRAM_CONFIG = {
+        programName: "{{ product.title }}",
+        startDate: "2025-01-01",
+        deliverySchedule: "every-day",
+        basePrice: {{ product.price }},
+        totalDays: 3,
+        "deliveryTimeSlots": [
+            {
+            "value": "06:00-07:00",
+            "label": "06:00 — 07:00"
+            },
+            {
+            "value": "07:00-08:00",
+            "label": "07:00 — 08:00"
+            },
+            {
+            "value": "08:00-09:00",
+            "label": "08:00 — 09:00"
+            },
+            {
+            "value": "09:00-10:00",
+            "label": "09:00 — 10:00"
+            }
+        ],
+        "description": {
+            "title": "ДЛЯ НАЧИНАЮЩИХ, КОТОРЫЕ ХОТЯТ НАЧАТЬ СВОЙ ПУТЬ К ЗДОРОВОМУ ПИТАНИЮ",
+            "text": "Ваш первый шаг к здоровому образу жизни. Программа разработана специально для тех, кто только начинает свой путь к правильному питанию. Простые, но вкусные блюда с базовым набором нутриентов помогут вам постепенно привыкнуть к здоровому рациону. 1 сентября 2025 00:00"
+        },
+        "dataFiles": {
+          "1000-classic": {
+            "programName": "СТАРТ",
+            "calorieOption": "1000",
+            "dietType": "classic",
+            "totalDays": 3,
+            "mealOptions": [
+              {
+                "value": "with-soup",
+                "label": "С супом",
+                "price": 250,
+                "description": "Добавить суп к каждому дню питания"
+              },
+              {
+                "value": "with-snack",
+                "label": "С перекусом",
+                "price": 250,
+                "description": "Добавить перекус к каждому дню питания"
+              }
+            ],
+            "dishesByDay": {
+              "day-1": {
+                "dishes": [
+                  {
+                    "id": 1,
+                    "name": "Старт 1000 Классика - Куриная грудка с рисом и овощами",
+                    "image": "assets/dishes-1.jpg",
+                    "nutrition": "480,42,18,22",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 2,
+                    "name": "Овсяная каша с яблоком и корицей",
+                    "image": "assets/dishes-6.jpg",
+                    "nutrition": "320,28,12,16",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 3,
+                    "name": "Салат с огурцом и помидором",
+                    "image": "assets/dishes-2.jpg",
+                    "nutrition": "200,18,8,12",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 4,
+                    "name": "Куриный бульон с овощами",
+                    "image": "assets/dishes-3.jpg",
+                    "nutrition": "150,14,6,10",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": true
+                  },
+                  {
+                    "id": 5,
+                    "name": "Йогурт с ягодами",
+                    "image": "assets/dishes-4.jpg",
+                    "nutrition": "180,16,8,12",
+                    "isBreakfast": false,
+                    "isSnack": true,
+                    "isDinner": false,
+                    "isSoup": false
+                  }
+                ]
+              },
+              "day-2": {
+                "dishes": [
+                  {
+                    "id": 6,
+                    "name": "Индейка с гречкой и морковью",
+                    "image": "assets/dishes-5.jpg",
+                    "nutrition": "460,44,16,20",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 7,
+                    "name": "Творог с медом и орехами",
+                    "image": "assets/dishes-3.jpg",
+                    "nutrition": "280,24,14,18",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 8,
+                    "name": "Фруктовый салат с йогуртом",
+                    "image": "assets/dishes-4.jpg",
+                    "nutrition": "260,22,10,20",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 9,
+                    "name": "Овощной суп-пюре",
+                    "image": "assets/dishes-1.jpg",
+                    "nutrition": "140,12,4,8",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": true
+                  },
+                  {
+                    "id": 10,
+                    "name": "Ореховая смесь с сухофруктами",
+                    "image": "assets/dishes-6.jpg",
+                    "nutrition": "220,20,10,16",
+                    "isBreakfast": false,
+                    "isSnack": true,
+                    "isDinner": false,
+                    "isSoup": false
+                  }
+                ]
+              },
+              "day-3": {
+                "dishes": [
+                  {
+                    "id": 11,
+                    "name": "Лосось с картофелем и зеленью",
+                    "image": "assets/dishes-1.jpg",
+                    "nutrition": "520,48,20,24",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 12,
+                    "name": "Молочный коктейль с бананом",
+                    "image": "assets/dishes-6.jpg",
+                    "nutrition": "240,20,8,16",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 13,
+                    "name": "Овощной суп-пюре",
+                    "image": "assets/dishes-3.jpg",
+                    "nutrition": "180,16,6,14",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": false
+                  },
+                  {
+                    "id": 14,
+                    "name": "Грибной суп с зеленью",
+                    "image": "assets/dishes-2.jpg",
+                    "nutrition": "160,14,6,10",
+                    "isBreakfast": false,
+                    "isSnack": false,
+                    "isDinner": false,
+                    "isSoup": true
+                  },
+                  {
+                    "id": 15,
+                    "name": "Творожная запеканка с яблоком",
+                    "image": "assets/dishes-5.jpg",
+                    "nutrition": "200,18,8,14",
+                    "isBreakfast": false,
+                    "isSnack": true,
+                    "isDinner": false,
+                    "isSoup": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        calorieOptions:  [
+            {
+            "value": "1000",
+            "label": "1000",
+            "unit": "ккал",
+            "price": 1800
+            }
+        ],
+        dietTypes: [
+            {
+            "value": "classic",
+            "label": "Классика",
+            "price": 0
+            }
+        ],
+        allergens: {
+            "enabled": false,
+            "maxAllergens": 0,
+            "allergenPrice": 0,
+            "freeAllergenIds": [],
+            "texts": {
+                "allergenText": "Аллергены не исключаются"
+            }
+        }
+    };
+
+    window.PROGRAM_DISHES_DATA = {
+        "day-1": {
+        "dishes": [
+            {
+            "id": 1,
+            "name": "Старт 1000 Классика - Куриная грудка с рисом и овощами",
+            "image": "assets/dishes-1.jpg",
+            "nutrition": "480,42,18,22",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 2,
+            "name": "Овсяная каша с яблоком и корицей",
+            "image": "assets/dishes-6.jpg",
+            "nutrition": "320,28,12,16",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 3,
+            "name": "Салат с огурцом и помидором",
+            "image": "assets/dishes-2.jpg",
+            "nutrition": "200,18,8,12",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 4,
+            "name": "Куриный бульон с овощами",
+            "image": "assets/dishes-3.jpg",
+            "nutrition": "150,14,6,10",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": true
+            },
+            {
+            "id": 5,
+            "name": "Йогурт с ягодами",
+            "image": "assets/dishes-4.jpg",
+            "nutrition": "180,16,8,12",
+            "isBreakfast": false,
+            "isSnack": true,
+            "isDinner": false,
+            "isSoup": false
+            }
+        ]
+        },
+        "day-2": {
+        "dishes": [
+            {
+            "id": 6,
+            "name": "Индейка с гречкой и морковью",
+            "image": "assets/dishes-5.jpg",
+            "nutrition": "460,44,16,20",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 7,
+            "name": "Творог с медом и орехами",
+            "image": "assets/dishes-3.jpg",
+            "nutrition": "280,24,14,18",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 8,
+            "name": "Фруктовый салат с йогуртом",
+            "image": "assets/dishes-4.jpg",
+            "nutrition": "260,22,10,20",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 9,
+            "name": "Овощной суп-пюре",
+            "image": "assets/dishes-1.jpg",
+            "nutrition": "140,12,4,8",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": true
+            },
+            {
+            "id": 10,
+            "name": "Ореховая смесь с сухофруктами",
+            "image": "assets/dishes-6.jpg",
+            "nutrition": "220,20,10,16",
+            "isBreakfast": false,
+            "isSnack": true,
+            "isDinner": false,
+            "isSoup": false
+            }
+        ]
+        },
+        "day-3": {
+        "dishes": [
+            {
+            "id": 11,
+            "name": "Лосось с картофелем и зеленью",
+            "image": "assets/dishes-1.jpg",
+            "nutrition": "520,48,20,24",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 12,
+            "name": "Молочный коктейль с бананом",
+            "image": "assets/dishes-6.jpg",
+            "nutrition": "240,20,8,16",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 13,
+            "name": "Овощной суп-пюре",
+            "image": "assets/dishes-3.jpg",
+            "nutrition": "180,16,6,14",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": false
+            },
+            {
+            "id": 14,
+            "name": "Грибной суп с зеленью",
+            "image": "assets/dishes-2.jpg",
+            "nutrition": "160,14,6,10",
+            "isBreakfast": false,
+            "isSnack": false,
+            "isDinner": false,
+            "isSoup": true
+            },
+            {
+            "id": 15,
+            "name": "Творожная запеканка с яблоком",
+            "image": "assets/dishes-5.jpg",
+            "nutrition": "200,18,8,14",
+            "isBreakfast": false,
+            "isSnack": true,
+            "isDinner": false,
+            "isSoup": false
+            }
+        ]
+        }
+    };
+
+    window.ALLERGENS_CONFIG = {
+        "enabled": false,
+        "maxAllergens": 0,
+        "allergenPrice": 0,
+        "freeAllergenIds": [],
+        "texts": {
+            "allergenText": "Аллергены не исключаются"
+        }
+    }
+
+    window.currentTime = new Date(2025, 8, 1, 0, 0, 0);
+</script>    
+
+<!-- Основные скрипты -->
+<script src="{{ '02-allergens-config.js' | asset_url }}"></script>
+<script src="{{ '02-allergens.js' | asset_url }}" defer></script>
+<script src="{{ 'date-availability.js' | asset_url }}"></script>
+<script src="{{ '02-dishes-gallery.js' | asset_url }}" defer></script>
+<script src="{{ '04-products-slider.js' | asset_url }}" defer></script>
+<script src="{{ 'quantity-popup.js' | asset_url }}" defer></script>
+<script src="{{ 'date-picker-calendar.js' | asset_url }}" defer></script>
+
+<!-- Универсальная система Product Section -->
+<script src="{{ 'product-section-config.js' | asset_url }}"></script>
+<script src="{{ 'product-section-date-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-dishes-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-price-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-settings-builder.js' | asset_url }}"></script>
+<script src="{{ 'product-section-ui-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-main.js' | asset_url }}"></script>
+<script src="{{ 'product-section-init.js' | asset_url }}"></script>
+
+<script src="{{ 'calendar.js' | asset_url }}" defer></script>
+
+<script>
+      // Загружаем компоненты при загрузке DOM
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          // Ждем готовности конфигурации программы
+        //   await window.waitForProgramConfig();
+          
+          // Инициализируем универсальную систему после загрузки компонентов
+          if (window.initializeProductSection) {
+            await window.initializeProductSection();
+          } else {
+            console.error('❌ Функция initializeProductSection не найдена');
+          }
+          
+          // Инициализируем попап выбора времени доставки ПОСЛЕ загрузки всех компонентов
+          if (window.initQuantityPopup) {
+            window.initQuantityPopup();
+          } else {
+            console.error('❌ Функция initQuantityPopup не найдена');
+          }
+          
+        } catch (error) {
+          console.error('❌ Ошибка загрузки страницы:', error);
+        }
+      });
+</script>

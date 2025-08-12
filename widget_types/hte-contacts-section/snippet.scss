@@ -1,0 +1,212 @@
+/* Contacts Section Styles */
+.contacts-section {
+  width: 100%;
+  margin: 0 0 50px 0;
+  padding: 0 var(--spacing-40);
+}
+
+.contacts-container {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: var(--spacing-40);
+  background: var(--hte-bg-fill);
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+  background-image: url(../assets/contacts.jpg);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  background-color: var(--hte-bg-fill);
+}
+
+.contacts-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 120px;
+}
+
+.contacts-header {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+}
+
+.contacts-title {
+  align-self: stretch;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: var(--hte-black);
+  font-size: var(--hte-h1-font-size);
+  font-family: var(--hte-h1-font-family);
+  font-weight: var(--hte-h1-font-weight);
+  text-transform: var(--hte-h1-text-transform);
+  line-height: var(--hte-h1-line-height);
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.contacts-subtitle {
+  align-self: stretch;
+  opacity: var(--opacity-high);
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: var(--hte-black);
+  font-size: var(--hte-body-18-font-size);
+  font-family: var(--hte-body-18-font-family);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.contacts-info {
+  align-self: stretch;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--spacing-80);
+  display: inline-flex;
+}
+
+.contact-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--spacing-20);
+}
+
+.contact-label {
+  padding-left: var(--spacing-15);
+  padding-right: var(--spacing-15);
+  padding-top: var(--spacing-10);
+  padding-bottom: var(--spacing-10);
+  background: var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-10);
+  display: inline-flex;
+  color: var(--hte-black);
+  font-size: var(--hte-small-text-16-font-size);
+  font-family: var(--hte-small-text-16-font-family);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.contact-detail {
+  align-self: stretch;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--spacing-8);
+  display: inline-flex;
+}
+
+.contact-text {
+  opacity: var(--opacity-high);
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: var(--hte-black);
+  font-size: var(--hte-body-18-font-size);
+  font-family: var(--hte-body-18-font-family);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  word-wrap: break-word;
+}
+
+.contact-icon {
+  width: 16px;
+  height: 16px;
+  opacity: var(--opacity-high);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.contact-icon:hover {
+  opacity: 0.5;
+}
+
+/* Tablet Styles */
+@media (max-width: 1279px) {
+  .contacts-section {
+    padding: 0 var(--spacing-20);
+  }
+  
+  .contacts-container {
+    padding: var(--spacing-30);
+    background-image: url(../assets/contacts.jpg);
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: contain;
+    background-color: var(--hte-bg-fill);
+  }
+  
+  .contacts-content {
+    gap: var(--spacing-30);
+  }
+  
+  .contacts-info {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--spacing-30);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 719px) {
+  .contacts-section {
+    margin: 0 0 50px 0;
+    padding: 0 var(--spacing-20);
+  }
+  
+  .contacts-container {
+    padding: var(--spacing-20);
+    background-image: none;
+  }
+  
+  .contacts-content {
+    gap: var(--spacing-30);
+  }
+  
+  .contacts-header {
+    width: 100%;
+  }
+  
+  .contacts-title {
+    font-size: 28px;
+    line-height: 28px;
+  }
+  
+  .contacts-info {
+    gap: var(--spacing-30);
+  }
+  
+  .contact-item {
+    gap: var(--spacing-15);
+  }
+  
+  .contact-details {
+    gap: var(--spacing-12);
+  }
+  
+  .contact-text {
+    font-size: 16px;
+    line-height: 19.2px;
+  }
+} 
