@@ -11,6 +11,7 @@
  * @param {string} deliverySchedule - График доставки ("every-day" или "every-other-day")
  * @returns {boolean} - true если день доступен, false если недоступен
  */
+
 function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule = "every-day") {
   // Доступные дни - только те, что показываем в меню (начиная с завтрашнего дня)
   const tomorrow = new Date(currentTime);

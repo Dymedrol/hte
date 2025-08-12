@@ -3,6 +3,7 @@
  * Отвечает за генерацию дат, навигацию по дням и расчет дней программы
  */
 
+
 class DateManager {
   constructor(config) {
     this.config = config;
@@ -308,3 +309,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.DateManager = DateManager;
 }
+;

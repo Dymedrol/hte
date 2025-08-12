@@ -4,6 +4,7 @@
  * Объединяет все подмодули в единую систему
  */
 
+
 class ProductSection {
   constructor() {
     this.config = null;
@@ -406,3 +407,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.ProductSection = ProductSection;
 }
+;

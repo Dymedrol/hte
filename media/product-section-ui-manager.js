@@ -3,6 +3,7 @@
  * Отвечает за инициализацию DOM элементов и обработку событий
  */
 
+
 class UIManager {
   constructor(config, dateManager, dishesManager, priceManager) {
     this.config = config;
@@ -386,3 +387,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.UIManager = UIManager;
 }
+;

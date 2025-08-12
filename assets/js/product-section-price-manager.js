@@ -3,6 +3,7 @@
  * Отвечает за расчет цен, скидок и обновление отображения
  */
 
+
 class PriceManager {
   constructor(config) {
     this.config = config;
@@ -332,3 +333,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.PriceManager = PriceManager;
 }
+;

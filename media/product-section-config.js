@@ -3,6 +3,7 @@
  * Универсальная система конфигурации для всех программ
  */
 
+
 class ProductSectionConfig {
   constructor() {
     this.PRODUCT_CONFIG = null;
@@ -272,3 +273,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.ProductSectionConfig = ProductSectionConfig;
 }
+;

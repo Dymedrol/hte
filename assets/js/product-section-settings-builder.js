@@ -2,6 +2,7 @@
  * SettingsPanelBuilder - Класс для динамического создания панели настроек
  * Создает элементы только на основе имеющихся данных в конфигурации
  */
+
 class SettingsPanelBuilder {
   constructor(config, onComplete = null) {
     this.config = config;
@@ -799,3 +800,4 @@ class SettingsPanelBuilder {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = SettingsPanelBuilder;
 }
+;

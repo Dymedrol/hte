@@ -3,6 +3,7 @@
  * Автоматически загружает конфигурацию и инициализирует модуль
  */
 
+
 class ProductSectionInitializer {
   constructor() {
     this.config = null;
@@ -734,3 +735,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.ProductSectionInitializer = ProductSectionInitializer;
 }
+;
