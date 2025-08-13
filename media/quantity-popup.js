@@ -259,10 +259,107 @@ function logSelectedConfiguration() {
   }
     console.log(`4. ⚠️ Выбранные аллергены: ${allergensText}`);
   
-  // Вызываем функцию для обновления чекбоксов аллергенов в форме
-  if (typeof window.updateAllergenFormCheckboxes === 'function') {
-    window.updateAllergenFormCheckboxes();
-  }  
+  // Функция для отметки чекбоксов в форме на основе выбранных аллергенов с ценой
+  function markAllergenCheckboxes() {
+    // Находим блок с аллергенами
+    const allergenList = document.getElementById('allergenList');
+    if (!allergenList) {
+      console.log('❌ Блок allergenList не найден');
+      return;
+    }
+    
+    // Считаем количество выбранных аллергенов с видимым блоком цены
+    const selectedAllergens = allergenList.querySelectorAll('.allergen-item.selected');
+    let selectedCount = 0;
+    
+    selectedAllergens.forEach(allergen => {
+      const priceBlock = allergen.querySelector('.allergen-price');
+      if (priceBlock && priceBlock.style.display !== 'none' && priceBlock.offsetParent !== null) {
+        selectedCount++;
+      }
+    });
+    
+    console.log(`🔍 Найдено выбранных аллергенов с ценой: ${selectedCount}`);
+    
+    // Находим форму
+    const form = document.getElementById('hte-product-form');
+    if (!form) {
+      console.log('❌ Форма hte-product-form не найдена');
+      return;
+    }
+    
+    // Ищем блок .accessory-item с текстом "Исключить продукт"
+    const accessoryItems = form.querySelectorAll('.accessory-item');
+    let targetAccessoryItem = null;
+    
+    accessoryItems.forEach(item => {
+      const nameElement = item.querySelector('[data-product-accessory-name]');
+      if (nameElement && nameElement.textContent.includes('Исключить продукт')) {
+        targetAccessoryItem = item;
+      }
+    });
+    
+    if (!targetAccessoryItem) {
+      console.log('❌ Блок .accessory-item с "Исключить продукт" не найден');
+      return;
+    }
+    
+    // Находим все чекбоксы в .accessory-values
+    const accessoryValues = targetAccessoryItem.querySelector('.accessory-values');
+    if (!accessoryValues) {
+      console.log('❌ Блок .accessory-values не найден');
+      return;
+    }
+    
+    const checkboxes = accessoryValues.querySelectorAll('input[type="checkbox"]');
+    console.log(`🔍 Найдено чекбоксов: ${checkboxes.length}`);
+    
+    // Отмечаем нужное количество чекбоксов
+    checkboxes.forEach((checkbox, index) => {
+      if (index < selectedCount) {
+        checkbox.checked = true;
+        console.log(`✅ Отмечен чекбокс ${index + 1} из ${selectedCount}`);
+      } else {
+        checkbox.checked = false;
+      }
+      
+      // Генерируем событие change для уведомления других обработчиков
+      const changeEvent = new Event('change', { bubbles: true });
+      checkbox.dispatchEvent(changeEvent);
+    });
+    
+    console.log(`✅ Отмечено ${selectedCount} чекбоксов из ${checkboxes.length} доступных`);
+    
+    // Устанавливаем значение в input с name="allergens"
+    const allergensInput = form.querySelector('input[name="allergens"]');
+    console.log('🔍 Поиск input[name="allergens"]:', allergensInput);
+    
+    if (allergensInput) {
+      console.log('🔍 Текущее значение input:', allergensInput.value);
+      console.log('🔍 Новое значение:', allergensText);
+      
+      allergensInput.value = allergensText;
+      
+      // Проверяем, что значение установилось
+      console.log('🔍 Значение после установки:', allergensInput.value);
+      
+      // Генерируем событие change для уведомления других обработчиков
+      const changeEvent = new Event('change', { bubbles: true });
+      allergensInput.dispatchEvent(changeEvent);
+      
+      // Также генерируем событие input
+      const inputEvent = new Event('input', { bubbles: true });
+      allergensInput.dispatchEvent(inputEvent);
+      
+      console.log(`✅ Установлено значение в input[name="allergens"]: ${allergensText}`);
+    } else {
+      console.log('❌ Input с name="allergens" не найден в форме');
+      console.log('🔍 Все input в форме:', form.querySelectorAll('input'));
+    }
+  }
+  
+  // Вызываем функцию для отметки чекбоксов
+  markAllergenCheckboxes();  
   
   // 7. Итоговое количество выбранных дней
   const daysCount = window.calendarDaysCount || calendarDaysCount || 0;
