@@ -346,6 +346,66 @@ class UIManager {
       window.markSnackCheckbox(mealOptions);
     }
     
+    // Обновляем чекбокс "Понизить глютен" при изменении meal options
+    if (window.markGlutenCheckbox && typeof window.markGlutenCheckbox === 'function') {
+      // Получаем текущие meal options
+      const toggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+      let mealOptions = '';
+      if (toggleSwitches.length > 0) {
+        const selectedMeals = [];
+        toggleSwitches.forEach((toggle, index) => {
+          if (toggle.classList.contains('active')) {
+            const optionText = toggle.closest('.meal-option').querySelector('span');
+            if (optionText) {
+              selectedMeals.push(optionText.textContent);
+            }
+          }
+        });
+        mealOptions = selectedMeals.join(', ');
+      }
+      window.markGlutenCheckbox(mealOptions);
+    }
+    
+    // Обновляем чекбокс "Убрать завтрак и перекус" при изменении meal options
+    if (window.markBreakfastCheckbox && typeof window.markBreakfastCheckbox === 'function') {
+      // Получаем текущие meal options
+      const toggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+      let mealOptions = '';
+      if (toggleSwitches.length > 0) {
+        const selectedMeals = [];
+        toggleSwitches.forEach((toggle, index) => {
+          if (toggle.classList.contains('active')) {
+            const optionText = toggle.closest('.meal-option').querySelector('span');
+            if (optionText) {
+              selectedMeals.push(optionText.textContent);
+            }
+          }
+        });
+        mealOptions = selectedMeals.join(', ');
+      }
+      window.markBreakfastCheckbox(mealOptions);
+    }
+    
+    // Обновляем чекбокс "Убрать ужин и перекус" при изменении meal options
+    if (window.markDinnerCheckbox && typeof window.markDinnerCheckbox === 'function') {
+      // Получаем текущие meal options
+      const toggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+      let mealOptions = '';
+      if (toggleSwitches.length > 0) {
+        const selectedMeals = [];
+        toggleSwitches.forEach((toggle, index) => {
+          if (toggle.classList.contains('active')) {
+            const optionText = toggle.closest('.meal-option').querySelector('span');
+            if (optionText) {
+              selectedMeals.push(optionText.textContent);
+            }
+          }
+        });
+        mealOptions = selectedMeals.join(', ');
+      }
+      window.markDinnerCheckbox(mealOptions);
+    }
+    
     // Сохраняем настройки
     this.saveSettings();
   }

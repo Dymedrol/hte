@@ -104,6 +104,126 @@ function markSnackCheckbox(mealOptions) {
   console.log(`✅ Чекбокс "с перекусом" ${hasSnack ? 'отмечен' : 'снята отметка'}`);
 }
 
+// Функция для отметки чекбокса "Понизить глютен" в форме
+function markGlutenCheckbox(mealOptions) {
+  const form = document.getElementById('hte-product-form');
+  if (!form) {
+    console.log('❌ Форма hte-product-form не найдена');
+    return;
+  }
+  
+  // Ищем .accessory-values__item с текстом "Понизить глютен"
+  const accessoryItems = form.querySelectorAll('.accessory-values__item');
+  let glutenCheckbox = null;
+  
+  accessoryItems.forEach(item => {
+    const spanElement = item.querySelector('span[data-product-accessory-values-item-name]');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('понизить глютен')) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        glutenCheckbox = checkbox;
+      }
+    }
+  });
+  
+  if (!glutenCheckbox) {
+    console.log('❌ Чекбокс "Понизить глютен" не найден в форме');
+    return;
+  }
+  
+  // Проверяем, есть ли строка "Понизить глютен" в mealOptions (без учета регистра)
+  const hasGluten = mealOptions.toLowerCase().includes('понизить глютен');
+  
+  // Отмечаем или снимаем отметку с чекбокса
+  glutenCheckbox.checked = hasGluten;
+  
+  // Генерируем событие change для уведомления других обработчиков
+  const changeEvent = new Event('change', { bubbles: true });
+  glutenCheckbox.dispatchEvent(changeEvent);
+  
+  console.log(`✅ Чекбокс "Понизить глютен" ${hasGluten ? 'отмечен' : 'снята отметка'}`);
+}
+
+// Функция для отметки чекбокса "Убрать завтрак и перекус" в форме
+function markBreakfastCheckbox(mealOptions) {
+  const form = document.getElementById('hte-product-form');
+  if (!form) {
+    console.log('❌ Форма hte-product-form не найдена');
+    return;
+  }
+  
+  // Ищем .accessory-values__item с текстом "Убрать завтрак и перекус"
+  const accessoryItems = form.querySelectorAll('.accessory-values__item');
+  let breakfastCheckbox = null;
+  
+  accessoryItems.forEach(item => {
+    const spanElement = item.querySelector('span[data-product-accessory-values-item-name]');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('убрать завтрак и перекус')) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        breakfastCheckbox = checkbox;
+      }
+    }
+  });
+  
+  if (!breakfastCheckbox) {
+    console.log('❌ Чекбокс "Убрать завтрак и перекус" не найден в форме');
+    return;
+  }
+  
+  // Проверяем, есть ли строка "Убрать завтрак и перекус" в mealOptions (без учета регистра)
+  const hasBreakfast = mealOptions.toLowerCase().includes('убрать завтрак и перекус');
+  
+  // Отмечаем или снимаем отметку с чекбокса
+  breakfastCheckbox.checked = hasBreakfast;
+  
+  // Генерируем событие change для уведомления других обработчиков
+  const changeEvent = new Event('change', { bubbles: true });
+  breakfastCheckbox.dispatchEvent(changeEvent);
+  
+  console.log(`✅ Чекбокс "Убрать завтрак и перекус" ${hasBreakfast ? 'отмечен' : 'снята отметка'}`);
+}
+
+// Функция для отметки чекбокса "Убрать ужин и перекус" в форме
+function markDinnerCheckbox(mealOptions) {
+  const form = document.getElementById('hte-product-form');
+  if (!form) {
+    console.log('❌ Форма hte-product-form не найдена');
+    return;
+  }
+  
+  // Ищем .accessory-values__item с текстом "Убрать ужин и перекус"
+  const accessoryItems = form.querySelectorAll('.accessory-values__item');
+  let dinnerCheckbox = null;
+  
+  accessoryItems.forEach(item => {
+    const spanElement = item.querySelector('span[data-product-accessory-values-item-name]');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('убрать ужин и перекус')) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        dinnerCheckbox = checkbox;
+      }
+    }
+  });
+  
+  if (!dinnerCheckbox) {
+    console.log('❌ Чекбокс "Убрать ужин и перекус" не найден в форме');
+    return;
+  }
+  
+  // Проверяем, есть ли строка "Убрать ужин и перекус" в mealOptions (без учета регистра)
+  const hasDinner = mealOptions.toLowerCase().includes('убрать ужин и перекус');
+  
+  // Отмечаем или снимаем отметку с чекбокса
+  dinnerCheckbox.checked = hasDinner;
+  
+  // Генерируем событие change для уведомления других обработчиков
+  const changeEvent = new Event('change', { bubbles: true });
+  dinnerCheckbox.dispatchEvent(changeEvent);
+  
+  console.log(`✅ Чекбокс "Убрать ужин и перекус" ${hasDinner ? 'отмечен' : 'снята отметка'}`);
+}
+
 // Функция для получения ближайшей доступной даты доставки
 function getNearestDeliveryDate() {
   // Получаем график доставки из конфигурации
@@ -322,6 +442,17 @@ function logSelectedConfiguration() {
   
   // Вызываем функцию для отметки чекбокса "с перекусом"
   markSnackCheckbox(mealOptions);
+  
+  // Вызываем функцию для отметки чекбокса "Понизить глютен"
+  markGlutenCheckbox(mealOptions);
+  
+  // Вызываем функцию для отметки чекбокса "Убрать завтрак и перекус"
+  markBreakfastCheckbox(mealOptions);
+  
+  // Вызываем функцию для отметки чекбокса "Убрать ужин и перекус"
+  markDinnerCheckbox(mealOptions);
+
+  
 
   
 
@@ -1232,4 +1363,13 @@ window.initTimeSlotEventListeners = initTimeSlotEventListeners;
 window.markSoupCheckbox = markSoupCheckbox;
 
 // Делаем функцию для отметки чекбокса "с перекусом" глобально доступной
-window.markSnackCheckbox = markSnackCheckbox; 
+window.markSnackCheckbox = markSnackCheckbox;
+
+// Делаем функцию для отметки чекбокса "Понизить глютен" глобально доступной
+window.markGlutenCheckbox = markGlutenCheckbox;
+
+// Делаем функцию для отметки чекбокса "Убрать завтрак и перекус" глобально доступной
+window.markBreakfastCheckbox = markBreakfastCheckbox;
+
+// Делаем функцию для отметки чекбокса "Убрать ужин и перекус" глобально доступной
+window.markDinnerCheckbox = markDinnerCheckbox; 
