@@ -24,6 +24,86 @@ function formatDateForDelivery(date) {
   return `${day} ${months[month]}`;
 }
 
+// Функция для отметки чекбокса "с супом" в форме
+function markSoupCheckbox(mealOptions) {
+  const form = document.getElementById('hte-product-form');
+  if (!form) {
+    console.log('❌ Форма hte-product-form не найдена');
+    return;
+  }
+  
+  // Ищем .accessory-values__item с текстом "с супом"
+  const accessoryItems = form.querySelectorAll('.accessory-values__item');
+  let soupCheckbox = null;
+  
+  accessoryItems.forEach(item => {
+    const spanElement = item.querySelector('span[data-product-accessory-values-item-name]');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('с супом')) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        soupCheckbox = checkbox;
+      }
+    }
+  });
+  
+  if (!soupCheckbox) {
+    console.log('❌ Чекбокс "с супом" не найден в форме');
+    return;
+  }
+  
+  // Проверяем, есть ли строка "с супом" в mealOptions (без учета регистра)
+  const hasSoup = mealOptions.toLowerCase().includes('с супом');
+  
+  // Отмечаем или снимаем отметку с чекбокса
+  soupCheckbox.checked = hasSoup;
+  
+  // Генерируем событие change для уведомления других обработчиков
+  const changeEvent = new Event('change', { bubbles: true });
+  soupCheckbox.dispatchEvent(changeEvent);
+  
+  console.log(`✅ Чекбокс "с супом" ${hasSoup ? 'отмечен' : 'снята отметка'}`);
+}
+
+// Функция для отметки чекбокса "с перекусом" в форме
+function markSnackCheckbox(mealOptions) {
+  const form = document.getElementById('hte-product-form');
+  if (!form) {
+    console.log('❌ Форма hte-product-form не найдена');
+    return;
+  }
+  
+  // Ищем .accessory-values__item с текстом "с перекусом"
+  const accessoryItems = form.querySelectorAll('.accessory-values__item');
+  let snackCheckbox = null;
+  
+  accessoryItems.forEach(item => {
+    const spanElement = item.querySelector('span[data-product-accessory-values-item-name]');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('с перекусом')) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        snackCheckbox = checkbox;
+      }
+    }
+  });
+  
+  if (!snackCheckbox) {
+    console.log('❌ Чекбокс "с перекусом" не найден в форме');
+    return;
+  }
+  
+  // Проверяем, есть ли строка "с перекусом" в mealOptions (без учета регистра)
+  const hasSnack = mealOptions.toLowerCase().includes('с перекусом');
+  
+  // Отмечаем или снимаем отметку с чекбокса
+  snackCheckbox.checked = hasSnack;
+  
+  // Генерируем событие change для уведомления других обработчиков
+  const changeEvent = new Event('change', { bubbles: true });
+  snackCheckbox.dispatchEvent(changeEvent);
+  
+  console.log(`✅ Чекбокс "с перекусом" ${hasSnack ? 'отмечен' : 'снята отметка'}`);
+}
+
 // Функция для получения ближайшей доступной даты доставки
 function getNearestDeliveryDate() {
   // Получаем график доставки из конфигурации
@@ -236,7 +316,15 @@ function logSelectedConfiguration() {
     }
   }
   console.log(`3. 🍽️ Выбранные meal options: ${mealOptions}`);
+
+  // Вызываем функцию для отметки чекбокса "с супом"
+  markSoupCheckbox(mealOptions);
   
+  // Вызываем функцию для отметки чекбокса "с перекусом"
+  markSnackCheckbox(mealOptions);
+
+  
+
   // 4. Выбранные аллергены
   let allergensText = 'Не выбрано';
   if (config?.allergens) {
@@ -347,6 +435,10 @@ function logSelectedConfiguration() {
   // Вызываем функцию для отметки чекбоксов
   markAllergenCheckboxes();  
   
+  // 7. Итоговое количество выбранных дней
+  const daysCount = window.calendarDaysCount || calendarDaysCount || 0;
+  console.log(`7. 📅 Итоговое количество дней: ${daysCount}`);
+  
   // 5. Итоговая цена за день
   console.log(`5. 💰 Итоговая цена за день: ${calendarPrice || 'Не выбрано'} ₽`);
   
@@ -357,10 +449,6 @@ function logSelectedConfiguration() {
   } else {
     console.log('6. 💳 Итоговая цена (общая): Не рассчитано');
   }
-
-  // 7. Итоговое количество выбранных дней
-  const daysCount = window.calendarDaysCount || calendarDaysCount || 0;
-  console.log(`7. 📅 Итоговое количество дней: ${daysCount}`);
   
   // Устанавливаем количество дней в input с name="quantity"
   const form = document.getElementById('hte-product-form');
@@ -1138,4 +1226,10 @@ window.updateDeliveryInfo = updateDeliveryInfo;
 
 // Делаем функции для работы с временными слотами глобально доступными
 window.renderTimeSlots = renderTimeSlots;
-window.initTimeSlotEventListeners = initTimeSlotEventListeners; 
+window.initTimeSlotEventListeners = initTimeSlotEventListeners;
+
+// Делаем функцию для отметки чекбокса "с супом" глобально доступной
+window.markSoupCheckbox = markSoupCheckbox;
+
+// Делаем функцию для отметки чекбокса "с перекусом" глобально доступной
+window.markSnackCheckbox = markSnackCheckbox; 

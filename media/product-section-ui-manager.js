@@ -301,6 +301,51 @@ class UIManager {
     // Обновляем отображение блюд и КБЖУ при изменении приемов пищи
     this.dishesManager.updateDishesAndNutrition();
     
+    // Логируем обновленную конфигурацию при изменении meal options
+    if (window.logSelectedConfiguration && typeof window.logSelectedConfiguration === 'function') {
+      window.logSelectedConfiguration();
+    }
+    
+    // Обновляем чекбокс "с супом" при изменении meal options
+    if (window.markSoupCheckbox && typeof window.markSoupCheckbox === 'function') {
+      // Получаем текущие meal options
+      const toggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+      let mealOptions = '';
+      if (toggleSwitches.length > 0) {
+        const selectedMeals = [];
+        toggleSwitches.forEach((toggle, index) => {
+          if (toggle.classList.contains('active')) {
+            const optionText = toggle.closest('.meal-option').querySelector('span');
+            if (optionText) {
+              selectedMeals.push(optionText.textContent);
+            }
+          }
+        });
+        mealOptions = selectedMeals.join(', ');
+      }
+      window.markSoupCheckbox(mealOptions);
+    }
+    
+    // Обновляем чекбокс "с перекусом" при изменении meal options
+    if (window.markSnackCheckbox && typeof window.markSnackCheckbox === 'function') {
+      // Получаем текущие meal options
+      const toggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+      let mealOptions = '';
+      if (toggleSwitches.length > 0) {
+        const selectedMeals = [];
+        toggleSwitches.forEach((toggle, index) => {
+          if (toggle.classList.contains('active')) {
+            const optionText = toggle.closest('.meal-option').querySelector('span');
+            if (optionText) {
+              selectedMeals.push(optionText.textContent);
+            }
+          }
+        });
+        mealOptions = selectedMeals.join(', ');
+      }
+      window.markSnackCheckbox(mealOptions);
+    }
+    
     // Сохраняем настройки
     this.saveSettings();
   }
