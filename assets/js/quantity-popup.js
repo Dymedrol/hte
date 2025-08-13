@@ -279,8 +279,6 @@ function logSelectedConfiguration() {
       }
     });
     
-    console.log(`🔍 Найдено выбранных аллергенов с ценой: ${selectedCount}`);
-    
     // Находим форму
     const form = document.getElementById('hte-product-form');
     if (!form) {
@@ -312,13 +310,11 @@ function logSelectedConfiguration() {
     }
     
     const checkboxes = accessoryValues.querySelectorAll('input[type="checkbox"]');
-    console.log(`🔍 Найдено чекбоксов: ${checkboxes.length}`);
     
     // Отмечаем нужное количество чекбоксов
     checkboxes.forEach((checkbox, index) => {
       if (index < selectedCount) {
         checkbox.checked = true;
-        console.log(`✅ Отмечен чекбокс ${index + 1} из ${selectedCount}`);
       } else {
         checkbox.checked = false;
       }
@@ -328,20 +324,11 @@ function logSelectedConfiguration() {
       checkbox.dispatchEvent(changeEvent);
     });
     
-    console.log(`✅ Отмечено ${selectedCount} чекбоксов из ${checkboxes.length} доступных`);
-    
     // Устанавливаем значение в input с name="allergens"
     const allergensInput = form.querySelector('input[name="allergens"]');
-    console.log('🔍 Поиск input[name="allergens"]:', allergensInput);
     
     if (allergensInput) {
-      console.log('🔍 Текущее значение input:', allergensInput.value);
-      console.log('🔍 Новое значение:', allergensText);
-      
       allergensInput.value = allergensText;
-      
-      // Проверяем, что значение установилось
-      console.log('🔍 Значение после установки:', allergensInput.value);
       
       // Генерируем событие change для уведомления других обработчиков
       const changeEvent = new Event('change', { bubbles: true });
@@ -350,8 +337,7 @@ function logSelectedConfiguration() {
       // Также генерируем событие input
       const inputEvent = new Event('input', { bubbles: true });
       allergensInput.dispatchEvent(inputEvent);
-      
-      console.log(`✅ Установлено значение в input[name="allergens"]: ${allergensText}`);
+
     } else {
       console.log('❌ Input с name="allergens" не найден в форме');
       console.log('🔍 Все input в форме:', form.querySelectorAll('input'));
@@ -364,6 +350,26 @@ function logSelectedConfiguration() {
   // 7. Итоговое количество выбранных дней
   const daysCount = window.calendarDaysCount || calendarDaysCount || 0;
   console.log(`7. 📅 Итоговое количество дней: ${daysCount}`);
+  
+  // Устанавливаем количество дней в input с name="quantity"
+  const form = document.getElementById('hte-product-form');
+  if (form) {
+    const quantityInput = form.querySelector('input[name="quantity"]');
+    if (quantityInput) {
+      quantityInput.value = daysCount;
+      console.log(`✅ Установлено количество дней в input[name="quantity"]: ${daysCount}`);
+      
+      // Генерируем событие change для уведомления других обработчиков
+      const changeEvent = new Event('change', { bubbles: true });
+      quantityInput.dispatchEvent(changeEvent);
+    } else {
+      console.log('❌ Input с name="quantity" не найден в форме');
+    }
+  
+  } else {
+    console.log('❌ Форма hte-product-form не найдена');
+  }
+  
   
   // 5. Итоговая цена за день
   console.log(`5. 💰 Итоговая цена за день: ${calendarPrice || 'Не выбрано'} ₽`);
@@ -381,6 +387,21 @@ function logSelectedConfiguration() {
     const startDate = new Date(window.calendarStartDate).toLocaleDateString('ru-RU');
     const endDate = new Date(window.calendarEndDate).toLocaleDateString('ru-RU');
     console.log(`8. 📆 Даты доставки: ${startDate} - ${endDate}`);
+
+    // Устанавливаем даты доставки в input с name="delivery_dates"
+    if (form) {
+      const deliveryDatesInput = form.querySelector('input[name="delivery_dates"]');
+      if (deliveryDatesInput) {
+
+        deliveryDatesInput.value = `Даты доставки: ${startDate} - ${endDate}`;
+        
+        // Генерируем событие change для уведомления других обработчиков
+        const changeEvent = new Event('change', { bubbles: true });
+        deliveryDatesInput.dispatchEvent(changeEvent);
+      } else {
+        console.log('❌ Input с name="delivery_dates" не найден в форме');
+      }
+    }
   } else {
     console.log('8. 📆 Даты доставки: Не выбрано');
   }
@@ -391,6 +412,18 @@ function logSelectedConfiguration() {
       date.toLocaleDateString('ru-RU')
     );
     console.log(`9. 📋 Массив дат: [${formattedDates.map(d => `"${d}"`).join(', ')}]`);
+    if (form) {
+      const deliveryDatesMassiveInput = form.querySelector('input[name="delivery_dates_massive"]');
+      if (deliveryDatesMassiveInput) {
+        deliveryDatesMassiveInput.value = `Массив дат: [${formattedDates.map(d => `"${d}"`).join(', ')}]`;
+        
+        // Генерируем событие change для уведомления других обработчиков
+        const changeEvent = new Event('change', { bubbles: true });
+        deliveryDatesMassiveInput.dispatchEvent(changeEvent);
+      } else {
+        console.log('❌ Input с name="delivery_dates_massive" не найден в форме');
+      }
+    }
   } else {
     console.log('9. 📋 Массив дат: Пустой');
   }
