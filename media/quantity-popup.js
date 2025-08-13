@@ -96,7 +96,52 @@ function logSelectedConfiguration() {
       selectedDiet = config.dietTypes[0].label;
     }
   }
+  
   console.log(`1. 🥗 Выбранная диета: ${selectedDiet}`);
+  
+  // Функция для выбора input с name="tip_pitaniya" в форме hte-product-form
+  function selectTipPitaniyaInput(selectedDiet) {
+    const form = document.getElementById('hte-product-form');
+    if (!form) {
+      console.log('❌ Форма hte-product-form не найдена');
+      return;
+    }
+    
+    // Ищем все input с name="tip_pitaniya" в форме
+    const tipPitaniyaInputs = form.querySelectorAll('input[name="tip_pitaniya"]');
+    
+    if (tipPitaniyaInputs.length === 0) {
+      console.log('❌ Input с name="tip_pitaniya" не найден в форме');
+      return;
+    }
+    
+    // Проходим по всем найденным input
+    tipPitaniyaInputs.forEach(input => {
+      // Ищем следующий span после input
+      const nextSpan = input.nextElementSibling;
+      
+      if (nextSpan && nextSpan.tagName === 'SPAN') {
+        const spanText = nextSpan.textContent.trim();
+        
+        // Проверяем, содержит ли span текст selectedDiet (без учета регистра)
+        if (spanText.toLowerCase().includes(selectedDiet.toLowerCase())) {
+          // Делаем этот input выбранным
+          if (input.type === 'radio' || input.type === 'checkbox') {
+            input.checked = true;
+          } else {
+            input.value = selectedDiet;
+          }
+          
+          // Генерируем событие change для уведомления других обработчиков
+          const changeEvent = new Event('change', { bubbles: true });
+          input.dispatchEvent(changeEvent);
+        }
+      }
+    });
+  }
+  
+  // Вызываем функцию для выбора input
+  selectTipPitaniyaInput(selectedDiet);
   
   // 2. Выбранная калорийность - получаем из UI или конфигурации
   let selectedCalories = 'Не выбрано';
@@ -112,7 +157,60 @@ function logSelectedConfiguration() {
       selectedCalories = config.calorieOptions[0].label;
     }
   }
-  console.log(`2. 🔥 Выбранная калорийность: ${selectedCalories}`);
+    console.log(`2. 🔥 Выбранная калорийность: ${selectedCalories}`);
+  
+  // Функция для выбора input с name="kalorijnost_" в форме hte-product-form
+  function selectKalorijnostInput(selectedCalories) {
+    const form = document.getElementById('hte-product-form');
+    if (!form) {
+      console.log('❌ Форма hte-product-form не найдена');
+      return;
+    }
+    
+    // Извлекаем число из строки selectedCalories
+    const calorieNumber = selectedCalories.match(/\d+/);
+    if (!calorieNumber) {
+      console.log('❌ Не удалось извлечь число из строки калорийности:', selectedCalories);
+      return;
+    }
+    
+    const calorieValue = calorieNumber[0];
+    
+    // Ищем все input с name="kalorijnost_" в форме
+    const kalorijnostInputs = form.querySelectorAll('input[name="kalorijnost_"]');
+    
+    if (kalorijnostInputs.length === 0) {
+      console.log('❌ Input с name="kalorijnost_" не найден в форме');
+      return;
+    }
+    
+    // Проходим по всем найденным input
+    kalorijnostInputs.forEach(input => {
+      // Ищем следующий span после input
+      const nextSpan = input.nextElementSibling;
+      
+      if (nextSpan && nextSpan.tagName === 'SPAN') {
+        const spanText = nextSpan.textContent.trim();
+        
+        // Проверяем, содержит ли span число калорийности (без учета регистра)
+        if (spanText.toLowerCase().includes(calorieValue.toLowerCase())) {
+          // Делаем этот input выбранным
+          if (input.type === 'radio' || input.type === 'checkbox') {
+            input.checked = true;
+          } else {
+            input.value = calorieValue;
+          }
+          
+          // Генерируем событие change для уведомления других обработчиков
+          const changeEvent = new Event('change', { bubbles: true });
+          input.dispatchEvent(changeEvent);
+        }
+      }
+    });
+  }
+  
+  // Вызываем функцию для выбора input калорийности
+  selectKalorijnostInput(selectedCalories);  
   
   // 3. Выбранные meal options - получаем из UI
   let mealOptions = 'Не выбрано';
@@ -159,7 +257,12 @@ function logSelectedConfiguration() {
       }
     }
   }
-  console.log(`4. ⚠️ Выбранные аллергены: ${allergensText}`);
+    console.log(`4. ⚠️ Выбранные аллергены: ${allergensText}`);
+  
+  // Вызываем функцию для обновления чекбоксов аллергенов в форме
+  if (typeof window.updateAllergenFormCheckboxes === 'function') {
+    window.updateAllergenFormCheckboxes();
+  }  
   
   // 7. Итоговое количество выбранных дней
   const daysCount = window.calendarDaysCount || calendarDaysCount || 0;

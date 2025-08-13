@@ -136,6 +136,104 @@
   </div>
 </div>
 
+<form action="{{ cart_url }}" method="post" data-product-id="{{ product.id }}" id="hte-product-form">
+  <div class="product__sku">
+    <span data-product-card-sku='{
+        "skuLabel": "Артикул."
+      }'
+    ></span>
+  </div>
+
+  <span data-product-card-available='{
+      "availableText": "Товар в наличии",
+      "notAvailableText": "Нет в наличии"
+    }'
+  >
+  </span>
+
+  <div data-product-card-old-price></div>
+  <div data-product-card-price></div>
+
+  {% if product.show_variants? %}
+    <select name="variant_id" data-product-variants='{"default": "option-radio"}'>
+      {% for variant in product.variants %}
+        <option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+      {% endfor %}
+    </select>
+  {% else %}
+    <input type="hidden" name="variant_id" value="{{product.variants.first.id}}" >
+  {% endif %}
+
+  {% unless product.is_bundle %}
+    {% if product.accessories.size > 0 %}
+      <div class="product__area-accessories">
+        <div class="label-accessories">{{ messages.options }}</div>
+        <div data-product-accessories></div>
+      </div>
+
+      <template data-product-accessories-template>
+        <div
+          class="accessory-item"
+          data-product-accessories-item
+        >
+          <div class="accessory-name">
+            <strong>
+              <span data-product-accessory-name></span>
+            </strong>
+
+            <span data-product-accessory-minmax-count='{
+              "minCountMessage": "{{ messages.from }}",
+              "maxCountMessage": "{{ messages.to }}"
+            }'></span>
+          </div>
+
+          <div class="accessory-values" data-product-accessory-values></div>
+
+          <div
+            data-product-accessory-error='{
+              "lessThenMinCount": "Выбрано меньше минимального количества",
+              "moreThenMaxCount": "Выбрано больше максимального количества",
+              "scrollEnabled": "true"
+            }'
+            class="accessory-item__error"
+          ></div>
+        </div>
+      </template>
+
+      <template data-product-accessory-values-template>
+        <label
+          class="accessory-values__item"
+          data-product-accessory-values-item
+          data-product-accessory-values-item-id
+        >
+          <span data-product-accessory-values-item-name></span> (+<span data-product-accessory-values-item-price></span>)
+        </label>
+      </template>
+    {% endif %}
+  {% endunless %}
+
+  <div class="">
+    <div class="">Аллергены</div>
+    <input type="text" name="allergens" value="">
+  </div>
+
+  <div data-quantity data-min="1">
+    <input type="text" name="quantity" value="1" />
+    <span data-quantity-change="-1">-</span>
+    <span data-quantity-change="1">+</span>
+  </div>
+
+  <button type="submit" data-item-add>
+    Добавить в корзину
+  </button>
+
+  {% if account.quick_checkout.enabled %}
+    <button data-quick-checkout="[data-product-id='{{ product.id }}']">
+      Купить в 1 клик
+    </button>
+  {% endif %}
+</form>
+
 <script>
     window.PROGRAM_CONFIG = {
       "programName": "БАЗА",
