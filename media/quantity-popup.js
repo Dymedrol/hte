@@ -171,17 +171,47 @@ function markBreakfastCheckbox(mealOptions) {
     return;
   }
   
-  // Проверяем, есть ли строка "Убрать завтрак и перекус" в mealOptions (без учета регистра)
-  const hasBreakfast = mealOptions.toLowerCase().includes('убрать завтрак и перекус');
+  // Проверяем, есть ли .meal-option с текстом "Убрать завтрак и перекус" в UI
+  const mealOptionsElements = document.querySelectorAll('.meal-option');
+  let breakfastMealOption = null;
+  
+  mealOptionsElements.forEach(option => {
+    const spanElement = option.querySelector('span');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('убрать завтрак и перекус')) {
+      breakfastMealOption = option;
+    }
+  });
+  
+  // Если нет .meal-option с текстом "Убрать завтрак и перекус", делаем чекбокс неактивным
+  if (!breakfastMealOption) {
+    breakfastCheckbox.checked = false;
+    
+    // Генерируем событие change для уведомления других обработчиков
+    const changeEvent = new Event('change', { bubbles: true });
+    breakfastCheckbox.dispatchEvent(changeEvent);
+    
+    console.log('✅ Чекбокс "Убрать завтрак и перекус" снята отметка (meal-option не найден в UI)');
+    return;
+  }
+  
+  // Ищем .toggle-switch в найденном .meal-option и проверяем его состояние
+  const toggleSwitch = breakfastMealOption.querySelector('.toggle-switch');
+  if (!toggleSwitch) {
+    console.log('❌ .toggle-switch не найден в .meal-option "Убрать завтрак и перекус"');
+    return;
+  }
+  
+  // Если у переключателя НЕТ класса .active, то чекбокс должен быть активным
+  const shouldCheckboxBeActive = !toggleSwitch.classList.contains('active');
   
   // Отмечаем или снимаем отметку с чекбокса
-  breakfastCheckbox.checked = hasBreakfast;
+  breakfastCheckbox.checked = shouldCheckboxBeActive;
   
   // Генерируем событие change для уведомления других обработчиков
   const changeEvent = new Event('change', { bubbles: true });
   breakfastCheckbox.dispatchEvent(changeEvent);
   
-  console.log(`✅ Чекбокс "Убрать завтрак и перекус" ${hasBreakfast ? 'отмечен' : 'снята отметка'}`);
+  console.log(`✅ Чекбокс "Убрать завтрак и перекус" ${shouldCheckboxBeActive ? 'отмечен' : 'снята отметка'} (переключатель ${toggleSwitch.classList.contains('active') ? 'активен' : 'неактивен'})`);
 }
 
 // Функция для отметки чекбокса "Убрать ужин и перекус" в форме
@@ -211,17 +241,47 @@ function markDinnerCheckbox(mealOptions) {
     return;
   }
   
-  // Проверяем, есть ли строка "Убрать ужин и перекус" в mealOptions (без учета регистра)
-  const hasDinner = mealOptions.toLowerCase().includes('убрать ужин и перекус');
+  // Проверяем, есть ли .meal-option с текстом "Убрать ужин и перекус" в UI
+  const mealOptionsElements = document.querySelectorAll('.meal-option');
+  let dinnerMealOption = null;
+  
+  mealOptionsElements.forEach(option => {
+    const spanElement = option.querySelector('span');
+    if (spanElement && spanElement.textContent.toLowerCase().includes('убрать ужин и перекус')) {
+      dinnerMealOption = option;
+    }
+  });
+  
+  // Если нет .meal-option с текстом "Убрать ужин и перекус", делаем чекбокс неактивным
+  if (!dinnerMealOption) {
+    dinnerCheckbox.checked = false;
+    
+    // Генерируем событие change для уведомления других обработчиков
+    const changeEvent = new Event('change', { bubbles: true });
+    dinnerCheckbox.dispatchEvent(changeEvent);
+    
+    console.log('✅ Чекбокс "Убрать ужин и перекус" снята отметка (meal-option не найден в UI)');
+    return;
+  }
+  
+  // Ищем .toggle-switch в найденном .meal-option и проверяем его состояние
+  const toggleSwitch = dinnerMealOption.querySelector('.toggle-switch');
+  if (!toggleSwitch) {
+    console.log('❌ .toggle-switch не найден в .meal-option "Убрать ужин и перекус"');
+    return;
+  }
+  
+  // Если у переключателя НЕТ класса .active, то чекбокс должен быть активным
+  const shouldCheckboxBeActive = !toggleSwitch.classList.contains('active');
   
   // Отмечаем или снимаем отметку с чекбокса
-  dinnerCheckbox.checked = hasDinner;
+  dinnerCheckbox.checked = shouldCheckboxBeActive;
   
   // Генерируем событие change для уведомления других обработчиков
   const changeEvent = new Event('change', { bubbles: true });
   dinnerCheckbox.dispatchEvent(changeEvent);
   
-  console.log(`✅ Чекбокс "Убрать ужин и перекус" ${hasDinner ? 'отмечен' : 'снята отметка'}`);
+  console.log(`✅ Чекбокс "Убрать ужин и перекус" ${shouldCheckboxBeActive ? 'отмечен' : 'снята отметка'} (переключатель ${toggleSwitch.classList.contains('active') ? 'активен' : 'неактивен'})`);
 }
 
 // Функция для получения ближайшей доступной даты доставки
