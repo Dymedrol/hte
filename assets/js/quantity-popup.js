@@ -274,7 +274,7 @@ function logSelectedConfiguration() {
     
     selectedAllergens.forEach(allergen => {
       const priceBlock = allergen.querySelector('.allergen-price');
-      if (priceBlock && priceBlock.style.display !== 'none' && priceBlock.offsetParent !== null) {
+      if (priceBlock && priceBlock.style.display !== 'none') {
         selectedCount++;
       }
     });
@@ -347,6 +347,17 @@ function logSelectedConfiguration() {
   // Вызываем функцию для отметки чекбоксов
   markAllergenCheckboxes();  
   
+  // 5. Итоговая цена за день
+  console.log(`5. 💰 Итоговая цена за день: ${calendarPrice || 'Не выбрано'} ₽`);
+  
+  // 6. Итоговая цена (общая за количество дней)
+  if (calendarPrice && daysCount) {
+    const totalPrice = parseInt(calendarPrice.replace(/\s/g, '')) * daysCount;
+    console.log(`6. 💳 Итоговая цена (общая): ${totalPrice.toLocaleString('ru-RU')} ₽`);
+  } else {
+    console.log('6. 💳 Итоговая цена (общая): Не рассчитано');
+  }
+
   // 7. Итоговое количество выбранных дней
   const daysCount = window.calendarDaysCount || calendarDaysCount || 0;
   console.log(`7. 📅 Итоговое количество дней: ${daysCount}`);
@@ -357,7 +368,6 @@ function logSelectedConfiguration() {
     const quantityInput = form.querySelector('input[name="quantity"]');
     if (quantityInput) {
       quantityInput.value = daysCount;
-      console.log(`✅ Установлено количество дней в input[name="quantity"]: ${daysCount}`);
       
       // Генерируем событие change для уведомления других обработчиков
       const changeEvent = new Event('change', { bubbles: true });
@@ -368,18 +378,6 @@ function logSelectedConfiguration() {
   
   } else {
     console.log('❌ Форма hte-product-form не найдена');
-  }
-  
-  
-  // 5. Итоговая цена за день
-  console.log(`5. 💰 Итоговая цена за день: ${calendarPrice || 'Не выбрано'} ₽`);
-  
-  // 6. Итоговая цена (общая за количество дней)
-  if (calendarPrice && daysCount) {
-    const totalPrice = parseInt(calendarPrice.replace(/\s/g, '')) * daysCount;
-    console.log(`6. 💳 Итоговая цена (общая): ${totalPrice.toLocaleString('ru-RU')} ₽`);
-  } else {
-    console.log('6. 💳 Итоговая цена (общая): Не рассчитано');
   }
   
   // 8. Начальная и конечная дата доставки
