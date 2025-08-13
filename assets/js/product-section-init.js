@@ -627,8 +627,6 @@ class ProductSectionInitializer {
       // Загружаем конфигурацию
       this.config = await this.loadConfigFromHTML() || this.loadConfigFromDataAttributes();
 
-      console.log('🔍 this.config:', this.config);
-
       if (!this.config) {
         return false;
       }

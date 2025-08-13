@@ -1,0 +1,2720 @@
+<!-- Product Section - Универсальный модуль -->
+<section class="product-section" id="productSection">
+  <div class="product-details">
+    <div class="product-header">
+      <h1 class="product-title" id="program-title"></h1>
+      <div class="menu-selector">
+        <div class="menu-info">
+          <p class="menu-description">Уникальное меню на <span id="program-duration"></span> дней:</p>
+          <div class="day-navigation">
+            <button class="nav-btn prev-btn">
+              <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Previous" />
+            </button>
+            <div class="days-container">
+              <span class="day-item current-day"></span>
+            </div>
+            <button class="nav-btn next-btn">
+              <img src="{{ 'arrow-1-1.svg' | asset_url }}" alt="Next" />
+            </button>
+          </div>
+        </div>
+        <div class="nutrition-info">
+          <span class="nutrition-item">К 0</span>
+          <span class="nutrition-item">Б 0</span>
+          <span class="nutrition-item">Ж 0</span>
+          <span class="nutrition-item">У 0</span>
+        </div>
+      </div>
+      <div class="dishes-gallery">
+        <!-- Блюда будут загружены динамически из соответствующих файлов данных -->
+        <div class="loading-dishes"></div>
+      </div>
+    </div>
+    <div class="product-description">
+      <h2 class="description-title" id="program-description-title"></h2>
+      <p class="description-text" id="program-description-text">
+
+      </p>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <aside class="settings-panel" id="settingsPanel">
+    <!-- Все секции будут созданы динамически на основе конфигурации -->
+    <!-- Order Summary будет добавлен динамически -->
+  </aside>
+</section>
+
+<!-- Delivery Time Popup -->
+<div class="quantity-popup" id="quantityPopup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <div class="popup-left-section">
+      <div class="popup-form">
+        <div class="popup-header">
+          <h3 class="popup-title">ВЫБЕРИТЕ УДОБНОЕ ВРЕМЯ ДОСТАВКИ</h3>
+          <p class="popup-description">Пожалуйста, укажите желаемый временной слот для доставки. Мы постараемся привезти заказ в выбранное время</p>
+        </div>
+        
+        <div class="popup-inputs">
+          <div class="input-row">
+            <div class="input-field">
+              <input type="text" placeholder="Начало доставки" id="startDateInput" readonly />
+              <div class="calendar-dropdown" id="startDateCalendar">
+                <div class="calendar-header">
+                  <button class="calendar-nav-btn prev-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 12L6 8L10 4" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <div class="calendar-title">
+                    <span class="calendar-month">Месяц</span>
+                    <span class="calendar-year">2025</span>
+                  </div>
+                  <button class="calendar-nav-btn next-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 4L10 8L6 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="calendar-grid" id="startDateGrid">
+                  <!-- Дни недели -->
+                  <div class="calendar-day-header">Пн</div>
+                  <div class="calendar-day-header">Вт</div>
+                  <div class="calendar-day-header">Ср</div>
+                  <div class="calendar-day-header">Чт</div>
+                  <div class="calendar-day-header">Пт</div>
+                  <div class="calendar-day-header">Сб</div>
+                  <div class="calendar-day-header">Вс</div>
+                  <!-- Дни месяца будут добавлены динамически -->
+                </div>
+              </div>
+            </div>
+            <div class="input-field">
+              <input type="text" placeholder="Последний день доставки" id="endDateInput" readonly />
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="input-field with-icon">
+              <input type="text" placeholder="В какое время доставить?" id="deliveryTimeInput" readonly />
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="delivery-time-dropdown" id="deliveryTimeDropdown">
+                <div class="time-list" id="timeList">
+                  <!-- Time slots будут добавлены динамически из конфигурации -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="popup-total">
+          <span class="total-label">Итого:</span>
+          <span class="total-value" id="popupTotalValue">0 ₽</span>
+        </div>
+      </div>
+      
+      <div class="popup-footer">
+        <button class="add-to-cart-popup-btn" id="addToCartPopupBtn">Добавить в корзину</button>
+      </div>
+    </div>
+    
+    <div class="popup-right-section">
+      <div class="popup-image" id="popupImage">
+        <div class="image-overlay">
+          <h2 class="image-title" id="popupImageTitle">ПРОГРАММА</h2>
+        </div>
+      </div>
+    </div>
+    
+    <button class="popup-close" id="popupClose">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4L4 12M4 4L12 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+    window.PROGRAM_CONFIG = {
+        "programName": "ПРЕМИУМ",
+        "startDate": "2025-01-01",
+        "deliverySchedule": "every-other-day",
+        "basePrice": 0,
+        "deliveryTimeSlots": [
+            {
+            "value": "06:01-07:00",
+            "label": "06:01 — 07:00"
+            },
+            {
+            "value": "07:00-08:00",
+            "label": "07:00 — 08:00"
+            },
+            {
+            "value": "08:00-09:00",
+            "label": "08:00 — 09:00"
+            },
+            {
+            "value": "09:00-10:00",
+            "label": "09:00 — 10:00"
+            }
+        ],
+        "description": {
+            "title": "ДЛЯ ТЕХ, КОМУ НУЖЕН КОРОТКИЙ ГАСТРОНОМИЧНЫЙ ПЕРЕЗАПУСК",
+            "text": "Ваш выбор для лёгкого старта с безупречным вкусом. Каждое блюдо — это выверенный баланс нутриентов, натуральные ингредиенты самого высокого качества, авторские техники приготовления и визуальная гармония. Начните свой путь к осознанной легкости. 2 сентября 2025 14:00"
+        },
+        "dataFiles": {
+            "1000-classic": "data/premium/premium-1000-classic.json",
+            "1000-vegetarian": "data/premium/premium-1000-vegetarian.json",
+            "1000-pescatarian": "data/premium/premium-1000-pescatarian.json",
+            "1000-vegan": "data/premium/premium-1000-vegan.json",
+            "1300-classic": "data/premium/premium-1300-classic.json",
+            "1300-vegetarian": "data/premium/premium-1300-vegetarian.json",
+            "1300-pescatarian": "data/premium/premium-1300-pescatarian.json",
+            "1300-vegan": "data/premium/premium-1300-vegan.json",
+            "1800-classic": "data/premium/premium-1800-classic.json",
+            "1800-vegetarian": "data/premium/premium-1800-vegetarian.json",
+            "1800-pescatarian": "data/premium/premium-1800-pescatarian.json",
+            "1800-vegan": "data/premium/premium-1800-vegan.json"
+        },
+        "allergens": {
+            "enabled": true,
+            "maxAllergens": 3,
+            "allergenPrice": 0,
+            "freeAllergenIds": ["garlic", "onion"],
+            "texts": {
+            "allergenText": "Вы можете исключить до 3 аллергенов"
+            }
+        },
+        "calorieOptions": [
+            {
+            "value": "1000",
+            "label": "1000",
+            "unit": "ккал",
+            "price": 5500
+            },
+            {
+            "value": "1300",
+            "label": "1300",
+            "unit": "ккал",
+            "price": 5800
+            },
+            {
+            "value": "1800",
+            "label": "1800",
+            "unit": "ккал",
+            "price": 6100
+            }
+        ],
+        "dietTypes": [
+            {
+            "value": "classic",
+            "label": "Классика",
+            "price": 0
+            },
+            {
+            "value": "vegetarian",
+            "label": "Вегетарианство",
+            "price": 0
+            },
+            {
+            "value": "pescatarian",
+            "label": "Пескетарианство",
+            "price": 0
+            },
+            {
+            "value": "vegan",
+            "label": "Веганство",
+            "price": 0
+            }
+        ]
+    } 
+
+    window.PROGRAM_DISHES_DATA = {
+        "1000-classic": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1000",
+            "dietType": "classic",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1000 Классика - Лосось с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,28,12,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с авокадо и шпинатом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,22,18,8",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с креветками и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "240,20,10,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 4,
+                            "name": "Индейка с брокколи и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,32,8,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Суп-пюре из тыквы с семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "220,16,8,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Говядина с овощами и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "340,36,14,12",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,26,8,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1000-vegetarian": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1000",
+            "dietType": "vegetarian",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1000 Вегетарианство - Киноа с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,16,12,42",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,18,16,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с авокадо и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "240,8,20,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 4,
+                            "name": "Чечевица с овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,20,8,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,14,12,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Суп-пюре из тыквы",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "220,6,8,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Фалафель с овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "340,14,16,38",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Творожная запеканка с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,16,10,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Салат с сыром и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,12,18,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1000-pescatarian": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1000",
+            "dietType": "pescatarian",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1000 Пескетарианство - Лосось с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,28,12,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с креветками и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,22,18,8",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "240,20,10,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 4,
+                            "name": "Тунец с овощами и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,32,8,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Суп с креветками и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "220,16,8,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Креветки с овощами и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "340,36,14,12",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Салат с лососем и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,26,8,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1000-vegan": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1000",
+            "dietType": "vegan",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1000 Веганство - Киноа с овощами и тофу",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,16,12,42",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,12,16,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с авокадо и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "240,8,20,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 4,
+                            "name": "Чечевица с овощами и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,20,8,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Кокосовый йогурт с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,6,16,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Суп-пюре из тыквы с кокосом",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "220,6,8,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Фалафель с овощами и хумусом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "340,14,16,38",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Смузи с бананом и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,8,12,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Салат с тофу и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,12,18,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1300-classic": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1300",
+            "dietType": "classic",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1300 Классика - Стейк из говядины с овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,38,18,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с лососем и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,32,24,12",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с курицей и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "320,28,14,26",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Лосось с брокколи и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "440,36,20,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "360,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Суп с индейкой и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "280,24,10,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 8,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,26,8,14",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Индейка с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "400,34,16,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "340,22,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с курицей и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "300,30,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1300-vegetarian": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1300",
+            "dietType": "vegetarian",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1300 Вегетарианство - Киноа с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "420,20,16,52",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,24,20,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с авокадо и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "320,12,24,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,20,14,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Чечевица с овощами и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "440,24,12,54",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "360,18,16,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Суп-пюре из тыквы с семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "280,8,12,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 8,
+                            "name": "Салат с сыром и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,16,22,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Фалафель с овощами и хумусом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "460,18,20,48",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "400,12,16,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с тофу и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,16,22,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Кокосовый йогурт с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,6,16,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1300-pescatarian": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1300",
+            "dietType": "pescatarian",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1300 Пескетарианство - Лосось с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "420,36,18,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с креветками и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,28,24,12",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с тунцом и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "320,30,14,26",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,24,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Тунец с брокколи и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "440,38,20,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "360,20,16,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Суп с креветками и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "280,22,10,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 8,
+                            "name": "Салат с лососем и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,32,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Креветки с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "400,36,16,30",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Омлет с тунцом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "340,24,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с креветками и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "300,28,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1300-vegan": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1300",
+            "dietType": "vegan",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1300 Веганство - Киноа с овощами и тофу",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "420,20,16,52",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,16,20,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с авокадо и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "320,12,24,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Смузи с бананом и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,8,12,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 5,
+                            "name": "Чечевица с овощами и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "440,24,12,54",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Кокосовый йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "360,10,20,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 7,
+                            "name": "Суп-пюре из тыквы с кокосом",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "280,8,12,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": true
+                        },
+                        {
+                            "id": 8,
+                            "name": "Салат с тофу и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "240,16,22,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 9,
+                            "name": "Фалафель с овощами и хумусом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "460,18,20,48",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Овсянка с фруктами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "400,12,16,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с тофу и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "320,16,22,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Кокосовый йогурт с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,6,16,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1800-classic": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1800",
+            "dietType": "classic",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "breakfast-snack",
+                    "label": "Убрать завтрак и перекус",
+                    "price": -1500
+                },
+                {
+                    "id": "dinner-snack",
+                    "label": "Убрать ужин и перекус",
+                    "price": -1200
+                },
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1800 Классика - Стейк из говядины с картофелем",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "580,48,24,42",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с беконом и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,36,32,16",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с курицей и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "420,38,22,24",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с медом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "360,32,20,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "320,28,26,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "280,36,18,28",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Лосось с рисом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "540,44,26,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Творожная запеканка с медом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "460,32,20,44",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Суп с индейкой и макаронами",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "380,30,14,42",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "340,28,24,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с курицей и киноа",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,30,12,20",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Греческий йогурт с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "260,22,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 13,
+                            "name": "Индейка с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "520,42,20,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 14,
+                            "name": "Греческий йогурт с орехами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "440,28,26,32",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 15,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "400,36,18,28",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 16,
+                            "name": "Омлет с беконом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "360,32,24,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 17,
+                            "name": "Салат с говядиной и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "320,34,14,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 18,
+                            "name": "Творожная запеканка с ягодами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "280,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1800-vegetarian": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1800",
+            "dietType": "vegetarian",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "breakfast-snack",
+                    "label": "Убрать завтрак и перекус",
+                    "price": -1500
+                },
+                {
+                    "id": "dinner-snack",
+                    "label": "Убрать ужин и перекус",
+                    "price": -1200
+                },
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1800 Вегетарианство - Киноа с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "580,24,20,72",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,32,28,18",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с авокадо и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,16,32,24",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,28,18,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с орехами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "340,22,20,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Салат с сыром и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,20,26,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Чечевица с овощами и рисом",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "540,28,16,64",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "460,22,20,44",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Суп-пюре из тыквы с семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "380,12,16,52",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "340,16,24,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с авокадо и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "300,12,32,18",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Творожная запеканка с медом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "260,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 13,
+                            "name": "Фалафель с овощами и хумусом",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "560,22,24,58",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 14,
+                            "name": "Творожная запеканка с фруктами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,28,18,48",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 15,
+                            "name": "Салат с сыром и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "400,20,26,22",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 16,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "360,28,24,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 17,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "320,22,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 18,
+                            "name": "Салат с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "280,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1800-pescatarian": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1800",
+            "dietType": "pescatarian",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "breakfast-snack",
+                    "label": "Убрать завтрак и перекус",
+                    "price": -1500
+                },
+                {
+                    "id": "dinner-snack",
+                    "label": "Убрать ужин и перекус",
+                    "price": -1200
+                },
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1800 Пескетарианство - Лосось с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "580,44,26,42",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,32,28,18",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с тунцом и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,36,22,24",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Творожная запеканка с фруктами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,28,18,44",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с орехами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "340,22,20,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Салат с креветками и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,32,16,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Тунец с рисом и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "540,42,20,40",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "460,22,20,44",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Уха с овощами и зеленью",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "380,28,14,42",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "340,16,24,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с лососем и авокадо",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "300,30,22,18",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Творожная запеканка с медом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "260,24,10,22",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 13,
+                            "name": "Креветки с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "560,40,18,46",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 14,
+                            "name": "Творожная запеканка с фруктами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,28,18,48",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 15,
+                            "name": "Салат с тунцом и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "400,32,20,24",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 16,
+                            "name": "Омлет с овощами и сыром",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "360,28,24,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 17,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "320,22,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 18,
+                            "name": "Салат с лососем и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "280,26,14,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        },
+        "1800-vegan": {
+            "programName": "ПРЕМИУМ",
+            "calorieOption": "1800",
+            "dietType": "vegan",
+            "totalDays": 3,
+            "mealOptions": [
+                {
+                    "id": "breakfast-snack",
+                    "label": "Убрать завтрак и перекус",
+                    "price": -1500
+                },
+                {
+                    "id": "dinner-snack",
+                    "label": "Убрать ужин и перекус",
+                    "price": -1200
+                },
+                {
+                    "id": "reduce-gluten",
+                    "label": "Понизить глютен",
+                    "price": 300
+                }
+            ],
+            "dishesByDay": {
+                "day-1": {
+                    "dishes": [
+                        {
+                            "id": 1,
+                            "name": "Премиум 1800 Веганство - Чечевица с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "580,28,16,72",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 2,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,16,24,48",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 3,
+                            "name": "Салат с авокадо и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "420,12,32,24",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 4,
+                            "name": "Тофу-скрэмбл с овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "380,24,18,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 5,
+                            "name": "Греческий йогурт с орехами и медом",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "340,18,20,32",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 6,
+                            "name": "Салат с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "300,18,12,20",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-2": {
+                    "dishes": [
+                        {
+                            "id": 7,
+                            "name": "Фалафель с овощами и хумусом",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "540,22,24,58",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 8,
+                            "name": "Греческий йогурт с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "460,18,20,44",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 9,
+                            "name": "Суп-пюре из тыквы с семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
+                            "nutrition": "380,12,16,52",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 10,
+                            "name": "Овсянка с фруктами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "340,14,22,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 11,
+                            "name": "Салат с авокадо и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "300,10,32,18",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 12,
+                            "name": "Тофу-скрэмбл с овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "260,20,14,16",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                },
+                "day-3": {
+                    "dishes": [
+                        {
+                            "id": 13,
+                            "name": "Киноа с овощами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2761/90614473/original/dishes-2.jpg",
+                            "nutrition": "560,20,22,56",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": true,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 14,
+                            "name": "Тофу-скрэмбл с овощами и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "480,22,20,40",
+                            "isBreakfast": true,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 15,
+                            "name": "Салат с авокадо и семечками",
+                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
+                            "nutrition": "400,14,28,22",
+                            "isBreakfast": false,
+                            "isSnack": true,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 16,
+                            "name": "Овсянка с ягодами и орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
+                            "nutrition": "360,16,24,36",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 17,
+                            "name": "Греческий йогурт с орехами",
+                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
+                            "nutrition": "320,18,20,24",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        },
+                        {
+                            "id": 18,
+                            "name": "Салат с киноа и овощами",
+                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
+                            "nutrition": "280,16,12,18",
+                            "isBreakfast": false,
+                            "isSnack": false,
+                            "isDinner": false,
+                            "isSoup": false
+                        }
+                    ]
+                }
+            }
+        }
+    }
+
+    window.ALLERGENS_CONFIG = {
+        "data": [
+            {
+                "id": "onion",
+                "name": "Лук репчатый",
+                "value": "лук-репчатый"
+            },
+            {
+                "id": "garlic",
+                "name": "Чеснок",
+                "value": "чеснок"
+            },
+            {
+                "id": "avocado",
+                "name": "Авокадо",
+                "value": "авокадо"
+            },
+            {
+                "id": "amaranth",
+                "name": "Амарант",
+                "value": "амарант"
+            },
+            {
+                "id": "pineapple",
+                "name": "Ананас",
+                "value": "ананас"
+            },
+            {
+                "id": "orange",
+                "name": "Апельсин",
+                "value": "апельсин"
+            },
+            {
+                "id": "eggplant",
+                "name": "Баклажаны",
+                "value": "баклажаны"
+            },
+            {
+                "id": "banana",
+                "name": "Банан",
+                "value": "банан"
+            },
+            {
+                "id": "lamb",
+                "name": "Баранина",
+                "value": "баранина"
+            },
+            {
+                "id": "sweet_potato",
+                "name": "Батат",
+                "value": "батат"
+            },
+            {
+                "id": "broccoli",
+                "name": "Брокколи",
+                "value": "брокколи"
+            },
+            {
+                "id": "bulgur",
+                "name": "Булгур",
+                "value": "булгур"
+            },
+            {
+                "id": "oyster_mushroom",
+                "name": "Вешенки",
+                "value": "вешенки"
+            },
+            {
+                "id": "grape",
+                "name": "Виноград",
+                "value": "виноград"
+            },
+            {
+                "id": "beef",
+                "name": "Говядина",
+                "value": "говядина"
+            },
+            {
+                "id": "pea",
+                "name": "Горох",
+                "value": "горох"
+            },
+            {
+                "id": "grapefruit",
+                "name": "Грейпфрут",
+                "value": "грейпфрут"
+            },
+            {
+                "id": "buckwheat",
+                "name": "Гречка",
+                "value": "гречка"
+            },
+            {
+                "id": "green_buckwheat",
+                "name": "Гречка зеленая",
+                "value": "гречка-зеленая"
+            },
+            {
+                "id": "buckwheat_noodles",
+                "name": "Гречневая лапша",
+                "value": "гречневая-лапша"
+            },
+            {
+                "id": "mushrooms",
+                "name": "Грибы",
+                "value": "грибы"
+            },
+            {
+                "id": "pear",
+                "name": "Груша",
+                "value": "груша"
+            },
+            {
+                "id": "dorado",
+                "name": "Дорадо",
+                "value": "дорадо"
+            },
+            {
+                "id": "catfish",
+                "name": "Зубатка",
+                "value": "зубатка"
+            },
+            {
+                "id": "raisins",
+                "name": "Изюм",
+                "value": "изюм"
+            },
+            {
+                "id": "turkey",
+                "name": "Индейка",
+                "value": "индейка"
+            },
+            {
+                "id": "cocoa",
+                "name": "Какао",
+                "value": "какао"
+            },
+            {
+                "id": "squid",
+                "name": "Кальмары",
+                "value": "кальмары"
+            },
+            {
+                "id": "white_cabbage",
+                "name": "Капуста белокачанная",
+                "value": "капуста-белокачанная"
+            },
+            {
+                "id": "red_cabbage",
+                "name": "Капуста краснокачанная",
+                "value": "капуста-краснокачанная"
+            },
+            {
+                "id": "cauliflower",
+                "name": "Капуста цветная",
+                "value": "капуста-цветная"
+            },
+            {
+                "id": "cashew",
+                "name": "Кешью",
+                "value": "кешью"
+            },
+            {
+                "id": "kiwi",
+                "name": "Киви",
+                "value": "киви"
+            },
+            {
+                "id": "coho_salmon",
+                "name": "Кижуч",
+                "value": "кижуч"
+            },
+            {
+                "id": "cilantro",
+                "name": "Кинза",
+                "value": "кинза"
+            },
+            {
+                "id": "quinoa",
+                "name": "Киноа",
+                "value": "киноа"
+            },
+            {
+                "id": "coconut_milk",
+                "name": "Кокос и кокосовое молоко",
+                "value": "кокос-и-кокосовое-молоко"
+            },
+            {
+                "id": "crab",
+                "name": "Крабы",
+                "value": "крабы"
+            },
+            {
+                "id": "shrimp",
+                "name": "Креветки",
+                "value": "креветки"
+            },
+            {
+                "id": "rabbit",
+                "name": "Кролик",
+                "value": "кролик"
+            },
+            {
+                "id": "corn",
+                "name": "Кукуруза",
+                "value": "кукуруза"
+            },
+            {
+                "id": "dried_apricots",
+                "name": "Курага",
+                "value": "курага"
+            },
+            {
+                "id": "chicken",
+                "name": "Курица",
+                "value": "курица"
+            },
+            {
+                "id": "lime",
+                "name": "Лайм",
+                "value": "лайм"
+            },
+            {
+                "id": "lemon",
+                "name": "Лимон",
+                "value": "лимон"
+            },
+            {
+                "id": "salmon",
+                "name": "Лосось",
+                "value": "лосось"
+            },
+            {
+                "id": "green_onion",
+                "name": "Лук зеленый",
+                "value": "лук-зеленый"
+            },
+            {
+                "id": "mint",
+                "name": "Мята",
+                "value": "мята"
+            },
+            {
+                "id": "chickpea",
+                "name": "Нут",
+                "value": "нут"
+            },
+            {
+                "id": "oatmeal",
+                "name": "Овсянка",
+                "value": "овсянка"
+            },
+            {
+                "id": "olives_black",
+                "name": "Оливки",
+                "value": "оливки"
+            },
+            {
+                "id": "nuts",
+                "name": "Орехи",
+                "value": "орехи"
+            },
+            {
+                "id": "bran",
+                "name": "Отруби",
+                "value": "отруби"
+            },
+            {
+                "id": "halibut",
+                "name": "Палтус",
+                "value": "палтус"
+            },
+            {
+                "id": "quail",
+                "name": "Перепелка",
+                "value": "перепелка"
+            },
+            {
+                "id": "pepper_spice",
+                "name": "Перец (приправа)",
+                "value": "перец-приправа"
+            },
+            {
+                "id": "bell_pepper",
+                "name": "Перец болгарский",
+                "value": "перец-болгарский"
+            },
+            {
+                "id": "chili_pepper",
+                "name": "Перец острый (чили)",
+                "value": "перец-острый-чили"
+            },
+            {
+                "id": "pearl_barley",
+                "name": "Перловка",
+                "value": "перловка"
+            },
+            {
+                "id": "peach",
+                "name": "Персик",
+                "value": "персик"
+            },
+            {
+                "id": "parsley",
+                "name": "Петрушка",
+                "value": "петрушка"
+            },
+            {
+                "id": "ptitim",
+                "name": "Птитим",
+                "value": "птитим"
+            },
+            {
+                "id": "millet",
+                "name": "Пшено",
+                "value": "пшено"
+            },
+            {
+                "id": "radish",
+                "name": "Редис",
+                "value": "редис"
+            },
+            {
+                "id": "radish_black",
+                "name": "Редька",
+                "value": "редька"
+            },
+            {
+                "id": "rice",
+                "name": "Рис",
+                "value": "рис"
+            },
+            {
+                "id": "arugula",
+                "name": "Руккола",
+                "value": "руккола"
+            },
+            {
+                "id": "beetroot",
+                "name": "Свекла",
+                "value": "свекла"
+            },
+            {
+                "id": "pork",
+                "name": "Свинина",
+                "value": "свинина"
+            },
+            {
+                "id": "celery",
+                "name": "Сельдерей",
+                "value": "сельдерей"
+            },
+            {
+                "id": "sea_bass",
+                "name": "Сибас",
+                "value": "сибас"
+            },
+            {
+                "id": "jerusalem_artichoke_syrup",
+                "name": "Сироп топинамбура",
+                "value": "сироп-топинамбура"
+            },
+            {
+                "id": "mackerel",
+                "name": "Скумбрия",
+                "value": "скумбрия"
+            },
+            {
+                "id": "animal_cream",
+                "name": "Сливки животные",
+                "value": "сливки-животные"
+            },
+            {
+                "id": "sour_cream",
+                "name": "Сметана",
+                "value": "сметана"
+            },
+            {
+                "id": "soy",
+                "name": "Соя",
+                "value": "соя"
+            },
+            {
+                "id": "asparagus",
+                "name": "Спаржа",
+                "value": "спаржа"
+            },
+            {
+                "id": "pike_perch",
+                "name": "Судак",
+                "value": "судак"
+            },
+            {
+                "id": "rambol_cheese",
+                "name": "Сыр рамболь",
+                "value": "сыр-рамболь"
+            },
+            {
+                "id": "cottage_cheese",
+                "name": "Творог",
+                "value": "творог"
+            },
+            {
+                "id": "dried_tomatoes",
+                "name": "Томаты вяленые",
+                "value": "томаты-вяленые"
+            },
+            {
+                "id": "fresh_tomatoes",
+                "name": "Томаты свежие",
+                "value": "томаты-свежие"
+            },
+            {
+                "id": "tofu",
+                "name": "Тофу",
+                "value": "тофу"
+            },
+            {
+                "id": "cod",
+                "name": "Треска",
+                "value": "треска"
+            },
+            {
+                "id": "tuna",
+                "name": "Тунец",
+                "value": "тунец"
+            },
+            {
+                "id": "pumpkin",
+                "name": "Тыква",
+                "value": "тыква"
+            },
+            {
+                "id": "dill",
+                "name": "Укроп",
+                "value": "укроп"
+            },
+            {
+                "id": "duck",
+                "name": "Утка",
+                "value": "утка"
+            },
+            {
+                "id": "beans",
+                "name": "Фасоль",
+                "value": "фасоль"
+            },
+            {
+                "id": "bread",
+                "name": "Хлеб",
+                "value": "хлеб"
+            },
+            {
+                "id": "hummus",
+                "name": "Хумус",
+                "value": "хумус"
+            },
+            {
+                "id": "guinea_fowl",
+                "name": "Цесарка",
+                "value": "цесарка"
+            },
+            {
+                "id": "zucchini",
+                "name": "Цукини",
+                "value": "цукини"
+            },
+            {
+                "id": "prunes",
+                "name": "Чернослив",
+                "value": "чернослив"
+            },
+            {
+                "id": "lentils",
+                "name": "Чечевица",
+                "value": "чечевица"
+            },
+            {
+                "id": "chuka",
+                "name": "Чукка",
+                "value": "чукка"
+            },
+            {
+                "id": "champignon",
+                "name": "Шампиньоны",
+                "value": "шампиньоны"
+            },
+            {
+                "id": "chocolate",
+                "name": "Шоколад",
+                "value": "шоколад"
+            },
+            {
+                "id": "spinach",
+                "name": "Шпинат",
+                "value": "шпинат"
+            },
+            {
+                "id": "apple",
+                "name": "Яблоко",
+                "value": "яблоко"
+            },
+            {
+                "id": "eggs",
+                "name": "Яйца",
+                "value": "яйца"
+            }
+        ]
+    }
+
+    window.currentTime = new Date(2025, 8, 1, 0, 0, 0);
+</script>    
+
+<!-- Основные скрипты -->
+<script src="{{ '02-allergens-config.js' | asset_url }}"></script>
+<script src="{{ '02-allergens.js' | asset_url }}" defer></script>
+<script src="{{ 'date-availability.js' | asset_url }}"></script>
+<script src="{{ '02-dishes-gallery.js' | asset_url }}" defer></script>
+<script src="{{ '04-products-slider.js' | asset_url }}" defer></script>
+<script src="{{ 'quantity-popup.js' | asset_url }}" defer></script>
+<script src="{{ 'date-picker-calendar.js' | asset_url }}" defer></script>
+
+<!-- Универсальная система Product Section -->
+<script src="{{ 'product-section-config.js' | asset_url }}"></script>
+<script src="{{ 'product-section-date-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-dishes-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-price-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-settings-builder.js' | asset_url }}"></script>
+<script src="{{ 'product-section-ui-manager.js' | asset_url }}"></script>
+<script src="{{ 'product-section-main.js' | asset_url }}"></script>
+<script src="{{ 'product-section-init.js' | asset_url }}"></script>
+
+<script src="{{ 'calendar.js' | asset_url }}" defer></script>
+
+<script>
+      // Загружаем компоненты при загрузке DOM
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          // Ждем готовности конфигурации программы
+        //   await window.waitForProgramConfig();
+          
+          // Инициализируем универсальную систему после загрузки компонентов
+          if (window.initializeProductSection) {
+            await window.initializeProductSection();
+          } else {
+            console.error('❌ Функция initializeProductSection не найдена');
+          }
+          
+          // Инициализируем попап выбора времени доставки ПОСЛЕ загрузки всех компонентов
+          if (window.initQuantityPopup) {
+            window.initQuantityPopup();
+          } else {
+            console.error('❌ Функция initQuantityPopup не найдена');
+          }
+          
+        } catch (error) {
+          console.error('❌ Ошибка загрузки страницы:', error);
+        }
+      });
+</script>
