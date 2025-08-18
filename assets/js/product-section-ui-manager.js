@@ -4,6 +4,7 @@
  */
 
 
+
 class UIManager {
   constructor(config, dateManager, dishesManager, priceManager) {
     this.config = config;

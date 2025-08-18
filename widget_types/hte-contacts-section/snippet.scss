@@ -210,3 +210,109 @@
     line-height: 19.2px;
   }
 } 
+
+/* Requisites Section Styles */
+.requisites-section {
+  width: 100%;
+  margin: 0 0 var(--spacing-80) 0;
+  padding: 0 var(--spacing-40);
+}
+
+.requisites-container {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-40);
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+}
+
+.requisites-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 125px;
+}
+
+.requisites-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--spacing-20);
+  max-width: 360px;
+}
+
+.requisites-label {
+  padding-left: var(--spacing-15);
+  padding-right: var(--spacing-15);
+  padding-top: var(--spacing-10);
+  padding-bottom: var(--spacing-10);
+  background: var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-10);
+  display: inline-flex;
+  color: var(--hte-black);
+  font-size: var(--hte-small-text-16-font-size);
+  font-family: var(--hte-small-text-16-font-family);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+}
+
+.requisites-details {
+  opacity: var(--opacity-high);
+  color: var(--hte-black);
+  font-size: var(--hte-body-18-font-size);
+  font-family: var(--hte-body-18-font-family);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  word-wrap: break-word;
+}
+
+/* Tablet Styles */
+@media (max-width: 1279px) {
+  .requisites-section {
+    padding: 0 var(--spacing-20);
+  }
+  
+  .requisites-container {
+    padding: 0 var(--spacing-30);
+  }
+  
+  .requisites-content {
+    flex-direction: column;
+    gap: var(--spacing-30);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 719px) {
+  .requisites-section {
+    margin: 0 0 var(--spacing-40) 0;
+    padding: 0 var(--spacing-20);
+  }
+  
+  .requisites-container {
+    padding: 0 var(--spacing-20);
+  }
+  
+  .requisites-content {
+    gap: var(--spacing-30);
+  }
+  
+  .requisites-item {
+    gap: var(--spacing-15);
+  }
+  
+  .requisites-details {
+    gap: var(--spacing-12);
+  }
+  
+
+  
+  .requisites-details {
+    font-size: 16px;
+    line-height: 19.2px;
+  }
+} 

@@ -1,0 +1,67 @@
+<!-- Blog Header Component -->
+<h1 class="blog-title">{{ blog.title }}</h1>
+
+<!-- Blog Tabs Component -->
+
+{% assign isAllArticles = true %}
+
+{% for tag in blog.tags %}
+  {% if tag.current? %}
+    {% assign isAllArticles = false %}
+  {% endif %}
+{% endfor %}
+
+{% unless blog.tags == empty %}
+  <div class="tabs-container">
+    <a class="tab-button {% if isAllArticles %}active{% endif %}" href='{{ blog.url }}' title='Все статьи'>
+      Все статьи
+      </a>
+    {% for tag in blog.tags %}
+      <a class="tab-button {% if tag.current? %}active{% endif %}" href='{{ tag.url }}' title='{{ tag.title }}'>
+      {{ tag.title }} 
+      </a>
+    {% endfor %}
+  </div>
+{% endunless %}
+
+<!-- Blog Articles Grid Component -->
+<div class="blog-articles">
+  {% for article in articles %}
+    <a href="{{ article.url }}" class="blog-article">
+      <div class="article-image">
+        {{ article.image | webp_picture_tag: 600, alt: blog_img_title, title: blog_img_title }}
+        <div class="article-category-list">
+          {% for tag in article.tags %}
+            <div class="article-category-item">{{ tag.title }}</div>
+          {% endfor %}
+        </div>
+        
+      </div>
+      <div class="article-content">
+        <h3 class="article-title">{{ article.title }}</h3>
+        <p class="article-excerpt">{{ article.preview }}</p>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+
+<!-- Blog Pagination Component -->
+{% comment %}  
+<div class="blog-pagination">
+  <button class="pagination-btn pagination-prev inactive">
+    <img src="assets/arrow-1.svg" alt="Предыдущая страница" />
+  </button>
+  <div class="pagination-pages">
+    <span class="page-number active">1</span>
+    <span class="page-number">2</span>
+    <span class="page-number">3</span>
+    <span class="page-dots">...</span>
+    <span class="page-number">4</span>
+  </div>
+  <button class="pagination-btn pagination-next">
+    <img src="assets/arrow-1.svg" alt="Следующая страница" />
+  </button>
+</div>
+{% endcomment %}
+
+

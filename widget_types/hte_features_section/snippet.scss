@@ -1,0 +1,123 @@
+/* 03. Features Section Styles */
+
+/* Base styles */
+.features-section {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-10);
+  margin-bottom: var(--spacing-80);
+  max-width: var(--max-width-section);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-40);
+  padding-right: var(--spacing-40);
+}
+
+.feature-card {
+  height: 480px;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  position: relative;
+  background-color: lightgray;
+  background-size: cover;
+}
+
+.feature-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+      padding: var(--spacing-35) var(--spacing-15);
+}
+
+/* Позиционирование текста для разных карточек */
+.feature-card-left .feature-content {
+  align-items: flex-start;
+  padding-top: var(--spacing-40);
+}
+
+.feature-card-center .feature-content {
+  align-items: flex-end;
+  padding-bottom: var(--spacing-40);
+}
+
+.feature-card-right .feature-content {
+  align-items: flex-start;
+  padding-top: var(--spacing-40);
+}
+
+.feature-content h2 {
+  font-family: var(--hte-h2-font-family);
+  font-size: var(--hte-h2-font-size);
+  font-weight: var(--hte-h2-font-weight);
+  text-align: center;
+  letter-spacing: var(--hte-h2-letter-spacing);
+  line-height: var(--hte-h2-line-height);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.feature-card-left .feature-content h2 {
+  color: var(--hte-white);
+}
+
+.feature-card-center .feature-content h2,
+.feature-card-right .feature-content h2 {
+  color: var(--hte-black);
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Desktop (1280px and above) */
+@media (min-width: 1280px) {
+  .feature-card {
+    flex: 1;
+  }
+}
+
+/* Tablet (721px - 1279px) */
+@media (max-width: 1279px) and (min-width: 721px) {
+  .features-section {
+    max-width: 100vw;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding-left: var(--spacing-20);
+    padding-right: var(--spacing-20);
+  }
+  
+  .features-section::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .feature-card {
+    flex: none;
+    width: 390px;
+  }
+}
+
+/* Mobile (720px and below) */
+@media (max-width: 720px) {
+  .features-section {
+    max-width: 100vw;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding-left: var(--spacing-20);
+    padding-right: var(--spacing-20);
+  }
+  
+  .features-section::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .feature-card {
+    flex: none;
+    width: 330px;
+  }
+  
+  .feature-content {
+    padding-left: var(--spacing-20);
+    padding-right: var(--spacing-20);
+  }
+} 

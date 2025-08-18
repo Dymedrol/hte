@@ -3,6 +3,7 @@
  * Создает элементы только на основе имеющихся данных в конфигурации
  */
 
+
 class SettingsPanelBuilder {
   constructor(config, onComplete = null) {
     this.config = config;

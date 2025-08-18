@@ -1,0 +1,23 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE blog list"
+  },
+  "handle": "hte_blog_list",
+  "description": {
+    "ru": "HTE blog list"
+  },
+  "page_kinds": [
+    "blog"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "blog",
+  "libraries": [
+    "jquery",
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

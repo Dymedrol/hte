@@ -1,0 +1,24 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Cart"
+  },
+  "handle": "hte_cart",
+  "description": {
+    "ru": "HTE Cart"
+  },
+  "page_kinds": [
+    "cart"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "cart",
+  "libraries": [
+    "micromodal",
+    "jquery",
+    "commonjs_v2",
+    "my-layout"
+  ]
+}
