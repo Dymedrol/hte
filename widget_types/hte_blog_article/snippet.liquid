@@ -1,0 +1,36 @@
+{% assign img_width = 1920 %}
+
+<!-- Article Hero Component -->
+<section class="article-hero">
+  <div class="hero-background">
+    {{  article.image | webp_picture_tag: 1360, class: 'hero-bg-image', data-index: 1, alt: image_title, title: image_title }}
+  </div>
+  <div class="hero-background-mask"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">{{ article.title }}</h1>
+    <div class="hero-meta">
+      <span class="meta-date">{{ article.created_at | date: '%d.%m.%y' }}</span>
+      <!-- <span class="meta-time"></span> -->
+    </div>
+  </div>
+</section>
+
+<!-- Article Content Component -->
+<div class="back-button-container">
+  <a href="javascript:history.back()" class="nav-back">← Назад</a>
+</div>
+
+<section class="article-content">
+  <div class="content-container">
+    <!-- Navigation Tags -->
+    <div class="nav-tags">
+      {% for item in article.tags %}
+        <a href="{{ item.url }}" class="nav-tag">{{ item.title }}</a>
+      {% endfor %}
+    </div>
+
+    {{ article.content | replace: '<table', '<div class="table-wrapper"><table' | replace: '</table>', '</table></div>' | editable }}
+  </div>
+</section>
+
+

@@ -129,3 +129,118 @@
 .contacts-container {
     background-image: url('./contacts.jpg') !important;
 }
+
+// hte header
+
+.dropdown-menu .dropdown-base::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-5.png') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+}
+
+  /* Start Program */
+.dropdown-menu .dropdown-start::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-1.png') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+}
+
+/* Sport Program */
+.dropdown-menu .dropdown-sport::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-3.png') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+
+  /* Detox Program */
+.dropdown-menu .dropdown-detox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-2.png') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+}
+
+  /* Reload Program */
+.dropdown-menu .dropdown-reload::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-4.png') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+
+  /* Premium Program */
+.dropdown-menu .dropdown-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+
+  .mobile-programs-grid .dropdown-premium::before {
+    background-image: url('./program.png');
+  }
+  
+  .mobile-programs-grid .dropdown-base::before {
+    background-image: url('./program-5.png');
+  }
+  
+  .mobile-programs-grid .dropdown-start::before {
+    background-image: url('./program-1.png');
+  }
+  
+  .mobile-programs-grid .dropdown-sport::before {
+    background-image: url('./program-3.png');
+  }
+  
+  .mobile-programs-grid .dropdown-detox::before {
+    background-image: url('./program-2.png');
+  }
+  
+  .mobile-programs-grid .dropdown-reload::before {
+    background-image: url('./program-4.png');
+  }

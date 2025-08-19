@@ -14,6 +14,11 @@
   >
   <head>
     {% include "head" %}
+    <style>
+      body {
+        padding-top: 120px !important;
+      }
+    </style>
   </head>
   <body data-multi-lang="{{ language.not_default? }}" data-theme-template="{{ template }}" data-sidebar-type="{{ sidebar_type }}" data-sidebar-position="{{ sidebar_position }}">
     <div class="preloader">

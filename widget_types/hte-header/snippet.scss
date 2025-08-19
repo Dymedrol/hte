@@ -1,0 +1,904 @@
+/* 01. Header Component Styles */
+
+/* test */
+
+/* Main Header Container */
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-30) var(--spacing-40);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+    z-index: 1000;
+  }
+  
+  /* Logo Link */
+  .logo-link {
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    transform: translateX(-50%);
+    text-decoration: none;
+  }
+  
+  /* Logo */
+  .logo {
+    width: 300px;
+    height: 22px;
+  }
+  
+  /* Main Navigation */
+  .main-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-20);
+    flex: 1;
+  }
+  
+  /* Navigation Dropdown (for items with arrow) */
+  .nav-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-5);
+    position: relative;
+  }
+  
+  /* Programs Dropdown Specific */
+  .programs-dropdown {
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .programs-dropdown:hover .nav-arrow {
+    transform: rotate(180deg);
+  }
+  
+  .programs-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Невидимая область для мыши между меню и dropdown */
+  .programs-dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: transparent;
+    z-index: 1000;
+  }
+  
+  /* Dropdown Menu */
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding: var(--spacing-20);
+    background: var(--hte-white);
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    outline: var(--border-width-thin) var(--hte-dark-accent) solid;
+    outline-offset: -1px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1001;
+    width: 446px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--spacing-15);
+    margin-top: 10px;
+  }
+  
+  /* Dropdown Header */
+  .dropdown-header {
+    align-self: stretch;
+    justify-content: space-between;
+    align-items: flex-start;
+    display: inline-flex;
+  }
+  
+  .dropdown-title {
+    font-family: var(--hte-small-text-16-font-family);
+    font-size: var(--hte-small-text-16-font-size);
+    font-weight: var(--hte-small-text-16-font-weight);
+    color: var(--hte-black);
+    line-height: 16px;
+  }
+  
+  .dropdown-view-all {
+    font-family: var(--hte-small-text-16-font-family);
+    font-size: var(--hte-small-text-16-font-size);
+    font-weight: var(--hte-small-text-16-font-weight);
+    color: var(--hte-black);
+    text-decoration: none;
+    opacity: var(--opacity-high);
+    line-height: 16px;
+    transition: opacity 0.3s ease;
+  }
+  
+  .dropdown-view-all:hover {
+    opacity: 1;
+    color: #000;
+  }
+  
+  /* Programs Grid */
+  .programs-grid {
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--spacing-5);
+    display: flex;
+  }
+  
+  /* Program Cards Row */
+  .programs-grid > div:not(.individual-card) {
+    align-self: stretch;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--spacing-5);
+    display: inline-flex;
+  }
+  
+  /* Program Card - Base Styles */
+  .dropdown-menu .program-card {
+    width: 132px;
+    height: 132px;
+    position: relative;
+    background: var(--hte-bg-fill);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-12);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  
+  
+  /* Premium Program */
+  .dropdown-menu .dropdown-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .dropdown-menu .dropdown-premium::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      50% 50% at 46% 51%,
+      rgba(231, 194, 129, 1) 0%,
+      rgba(223, 127, 23, 1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .dropdown-menu .dropdown-premium:hover::after {
+    opacity: 1;
+  }
+  
+  /* Base Program */
+  .dropdown-menu .dropdown-base::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-5.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .dropdown-menu .dropdown-base::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(248, 162, 123, 1) 0%,
+      rgba(199, 62, 31, 1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .dropdown-menu .dropdown-base:hover::after {
+    opacity: 1;
+  }
+  
+  /* Start Program */
+  .dropdown-menu .dropdown-start::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .dropdown-menu .dropdown-start::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(202, 188, 101, 1) 36%,
+      rgba(205, 199, 137, 1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .dropdown-menu .dropdown-start:hover::after {
+    opacity: 1;
+  }
+  
+  /* Sport Program */
+  .dropdown-menu .dropdown-sport::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-3.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .dropdown-menu .dropdown-sport::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      50% 50% at 57% 53%,
+      rgba(66, 125, 40, 1) 0%,
+      rgba(121, 151, 90, 1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .dropdown-menu .dropdown-sport:hover::after {
+    opacity: 1;
+  }
+  
+  /* Detox Program */
+  .dropdown-menu .dropdown-detox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .dropdown-menu .dropdown-detox::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(175, 181, 120, 1) 0%,
+      rgba(148, 159, 100, 1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .dropdown-menu .dropdown-detox:hover::after {
+    opacity: 1;
+  }
+  
+  /* Reload Program */
+  .dropdown-menu .dropdown-reload::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./program-4.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .dropdown-menu .dropdown-reload::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(196, 166, 126, 1) 0%,
+      rgba(179, 137, 90, 1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .dropdown-menu .dropdown-reload:hover::after {
+    opacity: 1;
+  }
+  
+  /* Hover эффекты для карточек программ */
+  .dropdown-menu .program-card {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* Белый текст при hover для всех карточек */
+  .dropdown-menu .program-card:not(.individual-card):hover .program-name {
+    color: var(--hte-white);
+  }
+  
+  
+  
+  
+  
+  
+  
+  /* Individual Program Card */
+  .dropdown-menu .individual-card {
+    width: 406px;
+    height: 132px;
+    position: relative;
+    background: var(--hte-bg-fill);
+    background-image: url('./ind-bg.jpg');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    border: var(--border-width-normal) solid transparent;
+    transition: border-color 0.3s ease;
+  }
+  
+  .dropdown-menu .individual-card:hover {
+    border-color: var(--hte-super-dark-accent);
+  }
+  
+  /* Program Card Content */
+  .program-card-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-12);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  
+  /* Program Name - только для dropdown */
+  .dropdown-menu .program-name {
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: var(--hte-micro-text-14-font-size);
+    font-weight: var(--hte-micro-text-14-font-weight);
+    color: var(--hte-black);
+    text-transform: uppercase;
+    line-height: 15.4px;
+    z-index: 2;
+  }
+  
+  
+  
+  /* Individual Program Info */
+  .individual-program-info {
+    left: var(--spacing-12);
+    top: var(--spacing-12);
+    position: absolute;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+  }
+  
+  /* Individual Program Name - такой же отступ как у обычных карточек */
+  .dropdown-menu .individual-card .program-name {
+    left: var(--spacing-12);
+    top: var(--spacing-12);
+    position: absolute;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+  }
+  
+  /* Program Description - только для dropdown */
+  .dropdown-menu .program-description {
+    width: 210px;
+    left: var(--spacing-12);
+    top: 92px;
+    position: absolute;
+    opacity: var(--opacity-high);
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    color: var(--hte-black);
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: var(--hte-micro-text-14-font-size);
+    font-weight: var(--hte-micro-text-14-font-weight);
+    line-height: 15.4px;
+    margin: 0;
+    white-space: normal;
+    z-index: 3;
+  }
+  
+  /* Navigation Links */
+  .nav-link {
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: var(--hte-micro-text-14-font-size);
+    font-weight: var(--hte-micro-text-14-font-weight);
+    color: var(--hte-black);
+    text-decoration: none;
+    white-space: nowrap;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: var(--hte-grey-text);
+  }
+  
+  /* Navigation Arrow (for dropdown) */
+  .nav-arrow {
+    width: auto;
+    height: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* User Navigation */
+  .user-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-15);
+    flex: 1;
+    justify-content: flex-end;
+  }
+  
+  /* User Links */
+  .user-links {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-20);
+  }
+  
+  /* Mobile Menu Toggle Button */
+  .menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: none;
+  }
+  
+  .menu-toggle img {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* Tablet Version (below 1280px) */
+  @media (max-width: 1279px) {
+    .header {
+      padding: var(--spacing-30) var(--spacing-20);
+      justify-content: space-between;
+    }
+    
+    .logo-link {
+      position: static;
+      transform: none;
+    }
+    
+    .logo {
+      width: 246px;
+      height: auto;
+    }
+    
+    .main-nav {
+      display: none;
+    }
+    
+    .user-nav {
+      display: none;
+    }
+    
+    .user-links {
+      display: none;
+    }
+    
+    .menu-toggle {
+      display: block;
+      position: static;
+    }
+    
+    .menu-toggle img {
+      width: 28px;
+      height: 28px;
+    }
+    
+    /* Hide dropdown on tablet */
+    .dropdown-menu {
+      display: none;
+    }
+    
+    /* Показываем мобильное меню на планшетах */
+    .mobile-menu-overlay {
+      display: block !important;
+    }
+  }
+  
+  /* Mobile Version (below 720px) */
+  @media (max-width: 719px) {
+    .header {
+      padding: var(--spacing-30) var(--spacing-20);
+    }
+    
+    .logo {
+      width: 168px;
+      height: auto;
+    }
+    
+    /* Показываем мобильное меню на мобильных устройствах */
+    .mobile-menu-overlay {
+      display: block !important;
+    }
+  }
+  
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--hte-white);
+    z-index: 1002;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    padding: var(--spacing-80) var(--spacing-20) var(--spacing-40);
+    box-sizing: border-box;
+    display: none; /* По умолчанию скрыто */
+  }
+  
+  .mobile-menu-overlay.active {
+    transform: translateX(0);
+  }
+  
+  .mobile-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-30);
+    height: calc(100vh - var(--spacing-80) - var(--spacing-40));
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: var(--spacing-5);
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .mobile-menu-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+  
+  .mobile-menu-nav .nav-dropdown {
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--spacing-5);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .mobile-menu-nav .nav-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--spacing-5);
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  .mobile-menu-nav .nav-dropdown-header .nav-arrow {
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-menu-user {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+  
+  .mobile-menu-close {
+    position: absolute;
+    top: var(--spacing-30);
+    right: var(--spacing-20);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 28px;
+    color: var(--hte-black);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    z-index: 1001;
+  }
+  
+  /* Mobile Programs Grid */
+  .mobile-programs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-15);
+    width: 100%;
+    max-width: 320px;
+    margin: 0;
+    margin-top: 0;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, margin-top 0.3s;
+    pointer-events: none;
+  }
+  
+  .mobile-programs-grid.expanded {
+    max-height: 800px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .mobile-programs-grid .program-card {
+    width: 150px !important;
+    height: 150px !important;
+    /* Фиксируем размеры карточек */
+    position: relative;
+    background: var(--hte-bg-fill);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-12);
+    text-decoration: none;
+    color: inherit;
+    transition: none; /* Отключаем анимацию для карточек */
+  }
+  
+  .mobile-programs-grid .program-card .program-name {
+    position: relative;
+    z-index: 3;
+    color: var(--hte-black);
+    font-weight: 500;
+  }
+  
+  .mobile-programs-grid .individual-card {
+    grid-column: 1 / -1;
+    width: 100% !important;
+    height: 150px !important;
+    /* Фиксируем высоту для индивидуальной карточки */
+    position: relative;
+    background: var(--hte-bg-fill);
+    background-image: url('./ind-bg.jpg');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    border: var(--border-width-normal) solid transparent;
+    transition: border-color 0.3s ease;
+  }
+  
+  .mobile-programs-grid .individual-card .program-name,
+  .mobile-programs-grid .individual-card .program-description {
+    position: relative;
+    z-index: 3;
+    color: var(--hte-black);
+  }
+  
+  .mobile-programs-grid .individual-card .program-description {
+    width: 210px;
+    white-space: normal;
+    font-size: 12px;
+  }
+  
+  /* Убеждаемся, что все псевдоэлементы применяются к мобильным карточкам */
+  .mobile-programs-grid .dropdown-premium::before,
+  .mobile-programs-grid .dropdown-base::before,
+  .mobile-programs-grid .dropdown-start::before,
+  .mobile-programs-grid .dropdown-sport::before,
+  .mobile-programs-grid .dropdown-detox::before,
+  .mobile-programs-grid .dropdown-reload::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+  
+  .mobile-programs-grid .dropdown-premium::before {
+    background-image: url('./program.png');
+  }
+  
+  .mobile-programs-grid .dropdown-base::before {
+    background-image: url('./program-5.png');
+  }
+  
+  .mobile-programs-grid .dropdown-start::before {
+    background-image: url('./program-1.png');
+  }
+  
+  .mobile-programs-grid .dropdown-sport::before {
+    background-image: url('./program-3.png');
+  }
+  
+  .mobile-programs-grid .dropdown-detox::before {
+    background-image: url('./program-2.png');
+  }
+  
+  .mobile-programs-grid .dropdown-reload::before {
+    background-image: url('./program-4.png');
+  }
+  
+  /* Градиенты для мобильных карточек */
+  .mobile-programs-grid .dropdown-premium::after,
+  .mobile-programs-grid .dropdown-base::after,
+  .mobile-programs-grid .dropdown-start::after,
+  .mobile-programs-grid .dropdown-sport::after,
+  .mobile-programs-grid .dropdown-detox::after,
+  .mobile-programs-grid .dropdown-reload::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .mobile-programs-grid .dropdown-premium::after {
+    background: radial-gradient(
+      50% 50% at 46% 51%,
+      rgba(231, 194, 129, 1) 0%,
+      rgba(223, 127, 23, 1) 100%
+    );
+  }
+  
+  .mobile-programs-grid .dropdown-base::after {
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(248, 162, 123, 1) 0%,
+      rgba(199, 62, 31, 1) 100%
+    );
+  }
+  
+  .mobile-programs-grid .dropdown-start::after {
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(202, 188, 101, 1) 36%,
+      rgba(205, 199, 137, 1) 100%
+    );
+  }
+  
+  .mobile-programs-grid .dropdown-sport::after {
+    background: radial-gradient(
+      50% 50% at 57% 53%,
+      rgba(66, 125, 40, 1) 0%,
+      rgba(121, 151, 90, 1) 100%
+    );
+  }
+  
+  .mobile-programs-grid .dropdown-detox::after {
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(175, 181, 120, 1) 0%,
+      rgba(148, 159, 100, 1) 100%
+    );
+  }
+  
+  .mobile-programs-grid .dropdown-reload::after {
+    background: radial-gradient(
+      50% 50% at 57% 59%,
+      rgba(196, 166, 126, 1) 0%,
+      rgba(179, 137, 90, 1) 100%
+    );
+  }
+  
+   
+  

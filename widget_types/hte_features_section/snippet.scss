@@ -24,27 +24,17 @@
 
 .feature-content {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   height: 100%;
-      padding: var(--spacing-35) var(--spacing-15);
+  padding: var(--spacing-40) var(--spacing-15);
+}
+
+.feature-content.on-top {
+  align-items: flex-start;
 }
 
 /* Позиционирование текста для разных карточек */
-.feature-card-left .feature-content {
-  align-items: flex-start;
-  padding-top: var(--spacing-40);
-}
-
-.feature-card-center .feature-content {
-  align-items: flex-end;
-  padding-bottom: var(--spacing-40);
-}
-
-.feature-card-right .feature-content {
-  align-items: flex-start;
-  padding-top: var(--spacing-40);
-}
 
 .feature-content h2 {
   font-family: var(--hte-h2-font-family);

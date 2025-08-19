@@ -11,6 +11,20 @@
           "type":"text"
         },
         {
+          "name":"main_text_color_1",
+          "label":"Цвет текста",
+          "value":"#ffffff",
+          "type":"color"
+        },
+        {
+          "name":"main_text_on_top_1",
+          "label":"Поднять заголовок",
+          "value":null,
+          "help":"",
+          "type":"checkbox",
+          "enable_server_reload": true
+        },
+        {
           "name":"image_1",
           "label":"Картинка",
           "value": "https://static.insales-cdn.com/files/1/7569/95452561/original/no_image_medium.jpg",
@@ -29,6 +43,20 @@
           "type":"text"
         },
         {
+          "name":"main_text_color_2",
+          "label":"Цвет текста",  
+          "value":"#ffffff",
+          "type":"color"
+        },
+        {
+          "name":"main_text_on_top_2",
+          "label":"Поднять заголовок",
+          "value":null,
+          "help":"",
+          "type":"checkbox",
+          "enable_server_reload": true
+        },
+        {
           "name":"image_2",
           "label":"Картинка",
           "value": "https://static.insales-cdn.com/files/1/7569/95452561/original/no_image_medium.jpg",
@@ -45,6 +73,20 @@
           "label":"Текст",
           "help":"",
           "type":"text"
+        },
+        {
+          "name":"main_text_color_3",
+          "label":"Цвет текста",
+          "value":"#ffffff",
+          "type":"color"
+        },
+        {
+          "name":"main_text_on_top_3",
+          "label":"Поднять заголовок",
+          "value":null,
+          "help":"",
+          "type":"checkbox",
+          "enable_server_reload": true
         },
         {
           "name":"image_3",
