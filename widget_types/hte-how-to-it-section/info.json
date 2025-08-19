@@ -1,0 +1,22 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE How to it section"
+  },
+  "handle": "hte-how-to-it-section",
+  "description": {
+    "ru": "HTE How to it section"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

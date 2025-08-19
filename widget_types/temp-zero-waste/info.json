@@ -1,0 +1,22 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "temp Zero waste block"
+  },
+  "handle": "temp-zero-waste",
+  "description": {
+    "ru": "temp Zero waste block"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

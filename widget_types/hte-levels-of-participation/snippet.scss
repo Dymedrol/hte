@@ -1,0 +1,195 @@
+/* Loyalty Program Page Styles */
+.loyalty-program-page {
+  background-color: white;
+}
+
+.loyalty-program-section {
+  padding: 0 0 var(--spacing-80) 0;
+  background-color: white;
+}
+
+.loyalty-program-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-20);
+}
+
+
+
+.loyalty-program-container p {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  color: var(--hte-black);
+  margin: 0 0 var(--spacing-20) 0;
+  opacity: var(--opacity-high);
+}
+
+.loyalty-program-container p:last-child {
+  margin-bottom: 0;
+}
+
+.loyalty-program-container h2 {
+  font-family: var(--hte-h2-font-family);
+  font-size: var(--hte-h2-font-size);
+  font-weight: var(--hte-h2-font-weight);
+  line-height: var(--hte-h2-line-height);
+  text-transform: var(--hte-h2-text-transform);
+  color: var(--hte-black);
+  margin: var(--spacing-40) 0 var(--spacing-20) 0;
+  opacity: var(--opacity-high);
+}
+
+/* Levels of Participation Component Styles */
+.levels-of-participation {
+  padding: var(--spacing-80) var(--spacing-20);
+  background-color: var(--hte-bg-fill);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.levels-of-participation .principles-container {
+  width: 100%;
+  max-width: 1230px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-30);
+}
+
+.levels-of-participation .principles-title {
+  align-self: stretch;
+  color: var(--hte-black);
+  font-size: var(--hte-h2-font-size);
+  font-family: var(--hte-font-family);
+  font-weight: var(--hte-h2-font-weight);
+  text-transform: uppercase;
+  line-height: var(--hte-h2-line-height);
+  margin: 0;
+  text-align: center;
+}
+
+.levels-of-participation .principles-cards {
+  display: flex;
+  gap: var(--spacing-20);
+  justify-content: center;
+}
+
+.levels-of-participation .principle-card {
+  width: 300px;
+  height: 200px;
+  padding: var(--spacing-30) var(--spacing-20);
+  background: var(--hte-white);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-10);
+}
+
+.levels-of-participation .principle-number {
+  width: 27px;
+  height: 27px;
+  background: var(--hte-white);
+  border-radius: 40px;
+  outline: var(--border-width-normal) var(--hte-dark-accent) solid;
+  outline-offset: calc(-1 * var(--border-width-normal));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--hte-black);
+  font-size: 12px;
+  font-family: var(--hte-font-family);
+  font-weight: 400;
+  line-height: 12px;
+}
+
+.levels-of-participation .principle-content {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+}
+
+.levels-of-participation .principle-name {
+  align-self: stretch;
+  text-align: center;
+  color: var(--hte-black);
+  font-size: var(--hte-body-18-font-size);
+  font-family: var(--hte-font-family);
+  font-weight: var(--hte-body-18-font-weight);
+  text-transform: uppercase;
+  line-height: 19.8px;
+  margin: 0;
+}
+
+.levels-of-participation .principle-description {
+  align-self: stretch;
+  opacity: var(--opacity-high);
+  text-align: center;
+  color: var(--hte-black);
+  font-size: var(--hte-body-18-font-size);
+  font-family: var(--hte-font-family);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  margin: 0;
+}
+
+
+
+/* Mobile Responsive */
+@media (max-width: 720px) {
+  .loyalty-program-section {
+    padding: 0 0 var(--spacing-40) 0;
+  }
+  
+  .loyalty-program-container {
+    padding: 0 var(--spacing-15);
+  }
+  
+
+  
+  .loyalty-program-container h2 {
+    font-size: var(--hte-h4-font-size);
+    line-height: var(--hte-h4-line-height);
+    margin: var(--spacing-30) 0 var(--spacing-15) 0;
+  }
+  
+  /* Mobile styles for Levels of Participation */
+  .levels-of-participation {
+    padding: var(--spacing-40) var(--spacing-20);
+  }
+  
+  .levels-of-participation .principles-title {
+    text-align: center;
+    font-size: var(--hte-h4-font-size);
+    line-height: var(--hte-h4-line-height);
+  }
+  
+  .levels-of-participation .principles-cards {
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+  
+  .levels-of-participation .principle-card {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    min-height: 180px;
+  }
+}
+
+/* Tablet Responsive */
+@media (max-width: 1320px) and (min-width: 721px) {
+  .loyalty-program-container {
+    padding: 0 var(--spacing-25);
+  }
+  
+  .levels-of-participation {
+    padding: var(--spacing-60) var(--spacing-25);
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Page header"
+  },
+  "handle": "hre-page-header",
+  "description": {
+    "ru": "HTE Page header"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

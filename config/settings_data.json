@@ -5,8 +5,8 @@
   "presets": {
     "custom": {
       "bg": "#FFFFFF",
-      "color-btn-bg": "#76BC21",
-      "color-accent-text": "#76BC21",
+      "color-btn-bg": "#000000",
+      "color-accent-text": "#000000",
       "color-text-dark": "#333333",
       "color-text-light": "#ffffff",
       "icons_pack": "insales-default",
@@ -41,7 +41,7 @@
       "heading-ratio": 1.5,
       "heading-weight": 600,
       "color-preset": "custom",
-      "_settings_version": 1754993301.4863691,
+      "_settings_version": 1755594819.8519151,
       "sidebar_index_show": false,
       "sidebar_page.system-template-4d22c9296573bfd50d31_position": "left",
       "sidebar_page.system-template-1edb10153fcbc13c7cae_position": "left",
@@ -54,7 +54,9 @@
       "sidebar_product.system-template-38a03d03d6ef0806fc34_position": "left",
       "sidebar_product.system-template-10c82f593780663d8f7b_position": "left",
       "sidebar_product.system-template-361da683c716ece1353e_position": "left",
-      "sidebar_product.system-template-3a5574fa027049299798_position": "left"
+      "sidebar_product.system-template-3a5574fa027049299798_position": "left",
+      "sidebar_page.system-template-ff7307fb93d5bd3e913c_position": "left",
+      "sidebar_page.system-template-94b5238f278e5c7b5dd4_position": "left"
     }
   },
   "remote_theme_id": 653,

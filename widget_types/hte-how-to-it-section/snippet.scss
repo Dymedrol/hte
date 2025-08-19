@@ -1,0 +1,9 @@
+.add-to-cart-btn {
+    text-decoration: none;
+}
+
+/* Убираем верхний отступ и добавляем нижний */
+.program-card.program-card-large {
+    margin-top: 0;
+    margin-bottom: var(--spacing-120);
+}
