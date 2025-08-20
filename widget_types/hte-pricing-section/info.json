@@ -1,0 +1,22 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Pricing section"
+  },
+  "handle": "hte-pricing-section",
+  "description": {
+    "ru": "HTE Pricing section"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

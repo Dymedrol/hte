@@ -1,0 +1,22 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Personalized mene with button section"
+  },
+  "handle": "hte-personalized-mene-with-button-section",
+  "description": {
+    "ru": "HTE Personalized mene with button section"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

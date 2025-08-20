@@ -160,7 +160,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     padding: var(--spacing-12);
     transition: all 0.3s ease;
     text-decoration: none;
@@ -177,7 +177,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('./program.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4609/95834625/original/premium-sq.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -191,11 +191,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      50% 50% at 46% 51%,
-      rgba(231, 194, 129, 1) 0%,
-      rgba(223, 127, 23, 1) 100%
-    );
+    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #655E85 0%, #C2C1C8 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -214,7 +210,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('./program-5.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4569/95834585/original/base-sq.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -228,11 +224,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      50% 50% at 57% 59%,
-      rgba(248, 162, 123, 1) 0%,
-      rgba(199, 62, 31, 1) 100%
-    );
+    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #F7FFB1 0%, #DFB416 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -251,7 +243,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('./program-1.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4593/95834609/original/start-sq.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -265,11 +257,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      50% 50% at 57% 59%,
-      rgba(202, 188, 101, 1) 36%,
-      rgba(205, 199, 137, 1) 100%
-    );
+    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #FA7C2E 0%, #C43727 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -288,7 +276,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('./program-3.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4577/95834593/original/sport-sq.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -302,11 +290,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      50% 50% at 57% 53%,
-      rgba(66, 125, 40, 1) 0%,
-      rgba(121, 151, 90, 1) 100%
-    );
+    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #C32605 0%, #FFB200 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -325,7 +309,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('./program-2.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4585/95834601/original/detox-sq.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -339,11 +323,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      50% 50% at 57% 59%,
-      rgba(175, 181, 120, 1) 0%,
-      rgba(148, 159, 100, 1) 100%
-    );
+    background: radial-gradient(ellipse 58.30% 153.71% at 61.58% 42.86%, #537C29 0%, #8E9E53 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -362,7 +342,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('./program-4.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4601/95834617/original/perezagruzka-sq.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -376,11 +356,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      50% 50% at 57% 59%,
-      rgba(196, 166, 126, 1) 0%,
-      rgba(179, 137, 90, 1) 100%
-    );
+    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #FF9330 0%, #B02A35 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -422,7 +398,7 @@
     height: 132px;
     position: relative;
     background: var(--hte-bg-fill);
-    background-image: url('./ind-bg.jpg');
+    background-image: url('https://static.insales-cdn.com/files/1/5481/95835497/original/individual_desktop-3.jpg');
     background-position: right center;
     background-repeat: no-repeat;
     background-size: auto 100%;

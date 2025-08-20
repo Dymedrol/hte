@@ -54,13 +54,13 @@
     <a href="#" class="nav-link">Полезный магазин</a>
     <a href="#" class="nav-link">Для Питомцев</a>
   </nav>
-  <a href="/" class="logo-link">
-    <img class="logo" src="{{ 'logo-Union.svg' | asset_url }}" alt="How To Eat" />
+  <a href="{{ widget_settings.logo_url }}" class="logo-link">
+    <img class="logo" src="{{ widget_settings.logo }}" alt="How To Eat" />
   </a>
   <div class="user-nav">
     <div class="user-links">
       <a href="{{ cart_url }}" class="nav-link">Корзина ({{ cart.items_count }})</a>
-      <a href="#" class="nav-link">Личный кабинет</a>
+      <a href="/client_account/session/new" class="nav-link">Личный кабинет</a>
     </div>
   </div>
   <button class="menu-toggle">
@@ -83,11 +83,11 @@
         
         <!-- Mobile Programs Grid -->
         <div class="mobile-programs-grid">
-          <a href="#" class="program-card dropdown-premium">
+          <a href="/product/premium" class="program-card dropdown-premium">
             <span class="program-name">Премиум</span>
           </a>
           
-          <a href="/product/baza class="program-card dropdown-base">
+          <a href="/product/baza" class="program-card dropdown-base">
             <span class="program-name">База</span>
           </a>
           
@@ -118,7 +118,7 @@
     </nav>
     <div class="mobile-menu-user">
       <a href="{{ cart_url }}" class="nav-link">КОРЗИНА ({{ cart.items_count }})</a>
-      <a href="#" class="nav-link">ЛИЧНЫЙ КАБИНЕТ</a>
+      <a href="/client_account/session/new" class="nav-link">ЛИЧНЫЙ КАБИНЕТ</a>
     </div>
   </div>
 </div> 

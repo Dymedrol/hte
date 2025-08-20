@@ -1,0 +1,42 @@
+.about-description-section {
+    padding: var(--spacing-80) var(--spacing-20) var(--spacing-80);
+}
+
+.about-description-container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-description-title {
+    font-family: var(--hte-h1-font-family);
+    font-size: var(--hte-h1-font-size);
+    font-weight: var(--hte-h1-font-weight);
+    color: var(--hte-black);
+    text-align: center;
+    margin: 0;
+    line-height: var(--hte-h1-line-height);
+    letter-spacing: var(--hte-h1-letter-spacing);
+    text-transform: var(--hte-h1-text-transform);
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 1320px) {
+    .about-description-section {
+        padding: var(--spacing-60) var(--spacing-20) var(--spacing-60);
+    }
+}
+
+@media (max-width: 720px) {
+    .about-description-section {
+        padding: var(--spacing-40) var(--spacing-20) var(--spacing-40);
+    }
+    
+    .about-description-title {
+        font-size: var(--hte-body-18-font-size);
+        line-height: var(--hte-body-18-line-height);
+        letter-spacing: var(--hte-body-18-letter-spacing);
+    }
+}

@@ -1,0 +1,19 @@
+.page-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+  color: var(--hte-black);
+  text-align: center;
+  margin: var(--spacing-40) 0 0 0;
+}
+
+@media (max-width: 720px) { 
+  .page-title {
+    font-size: var(--hte-h2-font-size);
+    line-height: var(--hte-h2-line-height);
+    letter-spacing: var(--hte-h2-letter-spacing);
+  }
+}

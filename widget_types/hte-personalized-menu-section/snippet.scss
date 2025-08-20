@@ -1,0 +1,212 @@
+/* Personalized Menu Section Styles - модуль персонализированного меню */
+
+.personalized-menu-section {
+  padding: var(--spacing-80) var(--spacing-20) 0;
+}
+
+.personalized-menu-section .cards-container {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--spacing-10);
+  align-items: stretch;
+}
+
+/* Desktop styles - карточки квадратные только когда в ряд */
+@media (min-width: 961px) {
+  .personalized-menu-section .card {
+    width: 50%;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.personalized-menu-section .card {
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.personalized-menu-section .card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Стили для персонализированной карточки */
+.personalized-menu-section .card-personalized {
+  background-color: var(--hte-bg-fill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-40);
+}
+
+.personalized-menu-section .card-personalized-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.personalized-menu-section .card-personalized-titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+  align-items: center;
+}
+
+.personalized-menu-section .card-personalized-super-title {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-grey-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.personalized-menu-section .card-personalized-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-black);
+  text-transform: var(--hte-h1-text-transform);
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+}
+
+.personalized-menu-section .card-personalized-image {
+  margin: var(--spacing-15) 0;
+}
+
+.personalized-menu-section .personalized-menu-img {
+  width: 150px;
+  height: 180px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+}
+
+.personalized-menu-section .card-personalized-description {
+  width: 100%;
+  max-width: var(--min-width-feature);
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-black);
+  opacity: var(--opacity-high);
+  line-height: 21.6px;
+}
+
+/* Tablet styles */
+@media (max-width: 960px) {
+  .personalized-menu-section .cards-container {
+    flex-direction: column;
+    gap: var(--spacing-10);
+  }
+  
+  .personalized-menu-section .card {
+    flex: 1;
+    min-height: 300px;
+  }
+  
+  .personalized-menu-section .card:not(.card-personalized) {
+    aspect-ratio: 1 / 1;
+  }
+  
+  .personalized-menu-section .card-personalized-wrapper {
+    height: 100%;
+    padding: var(--spacing-20) 0;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 720px) {
+  .personalized-menu-section {
+    padding: var(--spacing-10) var(--spacing-20);
+  }
+  
+  .personalized-menu-section .card {
+    flex: 1;
+    min-height: 250px;
+  }
+  
+  .personalized-menu-section .card-personalized {
+    padding: var(--spacing-20);
+  }
+  
+  .personalized-menu-section .card-personalized-wrapper {
+    height: 100%;
+    padding: var(--spacing-20) 0 var(--spacing-20) 0;
+  }
+  
+  .personalized-menu-section .card-personalized-title {
+    font-size: var(--hte-h2-font-size);
+  }
+  
+  .personalized-menu-section .card-personalized-super-title {
+    font-size: var(--hte-micro-text-14-font-size);
+  }
+  
+  .personalized-menu-section .personalized-menu-img {
+    width: 120px;
+    height: 144px;
+  }
+}
+
+/* Light Color Scheme for Personalized Menu Section */
+.personalized-menu-section.cards-light-color .card-personalized-super-title {
+  color: var(--hte-grey-text);
+}
+
+.personalized-menu-section.cards-light-color .card-personalized-title {
+  color: var(--hte-black);
+}
+
+.personalized-menu-section.cards-light-color .card-personalized-description {
+  color: var(--hte-black);
+}
+
+/* About How We Create Menu Module */
+.about-how-we-create-menu {
+    margin-top: 0;
+}
+
+.about-how-we-create-menu.personalized-menu-section {
+    padding: 0 var(--spacing-20) 0;
+}
+
+/* Light Color Scheme for About How We Create Menu */
+.about-how-we-create-menu.cards-light-color .card-personalized-super-title {
+    color: var(--hte-grey-text);
+}
+
+.about-how-we-create-menu.cards-light-color .card-personalized-title {
+    color: var(--hte-black);
+}
+
+.about-how-we-create-menu.cards-light-color .card-personalized-description {
+    color: var(--hte-black);
+}
+
+/* Responsive Design for About How We Create Menu Module */
+@media (max-width: 1320px) {
+    .about-how-we-create-menu {
+        margin-top: 0;
+    }
+    
+    .about-how-we-create-menu.personalized-menu-section {
+        padding: 0 var(--spacing-20) 0;
+    }
+}
+
+@media (max-width: 720px) {
+    .about-how-we-create-menu {
+        margin-top: 0;
+    }
+    
+    .about-how-we-create-menu.personalized-menu-section {
+        padding: 0 var(--spacing-20) 0;
+    }
+}

@@ -1,0 +1,89 @@
+/* Text Page Styles */
+.text-page {
+  background-color: white;
+}
+
+.text-section {
+  padding: 0 0 var(--spacing-80) 0;
+  background-color: white;
+}
+
+.text-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-20);
+}
+
+.text-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  line-height: var(--hte-h1-line-height);
+  text-transform: var(--hte-h1-text-transform);
+  color: var(--hte-black);
+  margin-bottom: var(--spacing-40);
+  text-align: left;
+}
+
+.text-content {
+  margin-top: var(--spacing-40);
+}
+
+.text-content p {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  color: var(--hte-black);
+  margin: 0 0 var(--spacing-20) 0;
+  opacity: var(--opacity-high);
+}
+
+.text-content p:last-child {
+  margin-bottom: 0;
+}
+
+.text-content h2 {
+  font-family: var(--hte-h2-font-family);
+  font-size: var(--hte-h2-font-size);
+  font-weight: var(--hte-h2-font-weight);
+  line-height: var(--hte-h2-line-height);
+  text-transform: var(--hte-h2-text-transform);
+  color: var(--hte-black);
+  margin: var(--spacing-40) 0 var(--spacing-20) 0;
+  opacity: var(--opacity-high);
+}
+
+.text-content h2:first-child {
+  margin-top: 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: var(--breakpoint-mobile)) {
+  .text-section {
+    padding: 0 0 var(--spacing-40) 0;
+  }
+  
+  .text-container {
+    padding: 0 var(--spacing-15);
+  }
+  
+  .text-title {
+    font-size: var(--hte-h2-font-size);
+    line-height: var(--hte-h2-line-height);
+    margin-bottom: var(--spacing-30);
+  }
+  
+  .text-content h2 {
+    font-size: var(--hte-h4-font-size);
+    line-height: var(--hte-h4-line-height);
+    margin: var(--spacing-30) 0 var(--spacing-15) 0;
+  }
+}
+
+/* Tablet Responsive */
+@media (max-width: var(--breakpoint-tablet)) and (min-width: 721px) {
+  .text-container {
+    padding: 0 var(--spacing-25);
+  }
+}

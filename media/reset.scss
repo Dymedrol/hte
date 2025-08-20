@@ -2,6 +2,21 @@
   License: none (public domain)
 */
 
+.cookie-text p, .js-cookies-button {
+  font-family: var(--hte-small-text-16-font-family)!important;
+}
+.button.button_size-l.js-cookies-button {
+	border-radius: 100px!important;
+	font-size: 16px!important;
+	color: black!important;
+	background: white!important;
+	padding: 0 30px!important;
+	margin: 5px;
+}
+.button.button_size-l {
+	height: 40px!important;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
