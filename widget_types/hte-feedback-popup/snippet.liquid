@@ -1,0 +1,66 @@
+<!-- Feedback Popup Component -->
+<div class="feedback-popup" id="feedbackPopup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <!-- Левая секция с формой -->
+    <div class="popup-left-section">
+      <div class="popup-header">
+        <h3 class="popup-title">ЗАПУТАЛИСЬ?</h3>
+        <p class="popup-description">Оставьте заявку, и наш менеджер подберет для вас идеальную программу питания</p>
+      </div>
+      
+      <div class="popup-form">
+        <div class="input-row">
+          <div class="input-field">
+            <input type="text" placeholder="Имя" id="feedbackNameInput" />
+          </div>
+          <div class="input-field">
+            <input type="tel" placeholder="Номер телефона" id="feedbackPhoneInput" />
+          </div>
+        </div>
+        
+        <div class="input-field">
+          <input type="email" placeholder="Email" id="feedbackEmailInput" required />
+          <div class="error-message">Введите email</div>
+        </div>
+        
+        <div class="input-field">
+          <textarea placeholder="Есть пожелания? Напишите здесь!" id="feedbackWishesInput" rows="3" required></textarea>
+          <div class="error-message">Введите пожелания</div>
+        </div>
+        
+        <div class="popup-checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" id="feedbackAgreement" required />
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">Оставляя e-mail, вы соглашаетесь с <a href="#" class="privacy-link">политикой конфиденциальности</a>.</span>
+          </label>
+          <div class="error-message">Согласитесь с политикой конфиденциальности</div>
+        </div>
+        
+        <button class="feedback-popup-btn" id="feedbackPopupBtn">Получить консультацию</button>
+      </div>
+      
+      <!-- Экран благодарности (скрыт по умолчанию) -->
+      <div class="popup-thanks" id="popupThanks" style="display: none;">
+        <div class="thanks-content">
+          <h3 class="thanks-title">Спасибо!</h3>
+          <p class="thanks-description">Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Правая секция с картинкой -->
+    <div class="popup-right-section">
+      <div class="food-display">
+        <div class="food-image-bg" style="background-image: url({{ 'unique-menu.jpg' | asset_url }})"></div>
+      </div>
+    </div>
+    
+    <button class="popup-close" id="feedbackPopupClose">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4L4 12M4 4L12 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>

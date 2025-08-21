@@ -1,0 +1,31 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Feedback popup"
+  },
+  "handle": "hte-feedback-popup",
+  "description": {
+    "ru": "HTE Feedback popup"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "bottom_panel",
+    "top_panel",
+    "outside",
+    "footer",
+    "after_content",
+    "sidebar",
+    "content",
+    "before_content",
+    "header"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "jquery",
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

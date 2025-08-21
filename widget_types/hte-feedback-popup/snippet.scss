@@ -1,0 +1,487 @@
+/* Feedback Popup Styles */
+.feedback-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: none;
+}
+
+.feedback-popup.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-popup .popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.feedback-popup .popup-content {
+  position: relative;
+  background-color: var(--hte-white);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-40) 0 var(--spacing-40) var(--spacing-40);
+  max-width: 1000px;
+  width: 90%;
+  min-height: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 52px;
+}
+
+/* Левая секция с формой */
+.feedback-popup .popup-left-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-30);
+  max-width: 500px;
+}
+
+.feedback-popup .popup-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+}
+
+.feedback-popup .popup-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+}
+
+.feedback-popup .popup-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  line-height: var(--hte-body-18-line-height);
+  opacity: var(--opacity-medium);
+}
+
+.feedback-popup .popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+.feedback-popup .input-row {
+  display: flex;
+  gap: var(--spacing-12);
+}
+
+.feedback-popup .input-field {
+  flex: 1;
+  position: relative;
+}
+
+.feedback-popup .input-field input,
+.feedback-popup .input-field textarea {
+  width: 100%;
+  height: 44px;
+  padding: var(--spacing-15) var(--spacing-15);
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  outline: none;
+  resize: vertical;
+}
+
+.feedback-popup .input-field textarea {
+  height: auto;
+  min-height: 80px;
+  line-height: 1.4;
+  border-radius: 20px;
+}
+
+.feedback-popup .input-field input::placeholder,
+.feedback-popup .input-field textarea::placeholder {
+  color: var(--hte-grey-text);
+}
+
+/* Стили для ошибок валидации */
+.feedback-popup .input-field.error input,
+.feedback-popup .input-field.error textarea {
+  border-color: #ff4444;
+  box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1);
+}
+
+.feedback-popup .input-field.error .error-message {
+  display: block;
+  color: #ff4444;
+  font-size: 12px;
+  margin-top: 4px;
+  font-family: var(--hte-micro-text-14-font-family);
+}
+
+.feedback-popup .input-field .error-message {
+  display: none;
+}
+
+/* Стили для галочки */
+.feedback-popup .popup-checkbox {
+  margin-top: var(--spacing-10);
+  position: relative;
+}
+
+.feedback-popup .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-10);
+  cursor: pointer;
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-black);
+  line-height: var(--hte-micro-text-14-line-height);
+}
+
+.feedback-popup .checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.feedback-popup .checkbox-custom {
+  width: var(--spacing-20);
+  height: var(--spacing-20);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.feedback-popup .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+  background: var(--hte-black);
+  border-color: var(--hte-black);
+}
+
+.feedback-popup .checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+  content: '';
+  width: var(--spacing-5);
+  height: var(--spacing-5);
+  background: var(--hte-white);
+  border-radius: 50%;
+}
+
+.feedback-popup .checkbox-text {
+  flex: 1;
+  opacity: var(--opacity-high);
+}
+
+.feedback-popup .privacy-link {
+  color: var(--hte-black);
+  text-decoration: underline;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.feedback-popup .privacy-link:hover {
+  opacity: var(--opacity-medium);
+}
+
+/* Стили для ошибки галочки */
+.feedback-popup .popup-checkbox.error .error-message {
+  display: block;
+  color: #ff4444;
+  font-size: 12px;
+  margin-top: 8px;
+  font-family: var(--hte-micro-text-14-font-family);
+}
+
+.feedback-popup .popup-checkbox .error-message {
+  display: none;
+}
+
+/* Кнопка */
+.feedback-popup-btn {
+  height: 44px;
+  padding: 0 var(--spacing-20);
+  background-color: var(--hte-black);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-white);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  line-height: var(--hte-body-18-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.feedback-popup-btn:hover {
+  background-color: transparent;
+  border: var(--border-width-normal) solid var(--hte-black);
+  color: var(--hte-black);
+}
+
+/* Правая секция с картинкой */
+.feedback-popup .popup-right-section {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  width: 400px;
+  max-width: 400px;
+  margin-right: 0;
+  // margin-top: calc(-1 * var(--spacing-40));
+  // margin-bottom: calc(-1 * var(--spacing-40));
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-8);
+}
+
+.feedback-popup .food-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.feedback-popup .food-image-bg {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background-image: url('../assets/unique-menu.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+}
+
+/* Кнопка закрытия */
+.feedback-popup .popup-close {
+  position: absolute;
+  top: var(--spacing-15);
+  right: var(--spacing-15);
+  width: var(--spacing-25);
+  height: var(--spacing-25);
+  background: var(--hte-white);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.feedback-popup .popup-close:hover {
+  background-color: var(--hte-dark-accent);
+}
+
+/* Экран благодарности */
+.feedback-popup .popup-thanks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: var(--spacing-40);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--hte-white);
+  border-radius: var(--border-radius-md);
+}
+
+.feedback-popup .thanks-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-20);
+  max-width: 400px;
+}
+
+.feedback-popup .thanks-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+}
+
+.feedback-popup .thanks-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  line-height: var(--hte-body-18-line-height);
+  opacity: var(--opacity-medium);
+}
+
+/* Адаптивность */
+@media (max-width: 1320px) {
+  .feedback-popup .popup-content {
+    max-width: 900px;
+    padding: var(--spacing-30) 0 var(--spacing-30) var(--spacing-30);
+    gap: 62px;
+  }
+  
+  .feedback-popup .popup-left-section {
+    max-width: 450px;
+  }
+  
+  .feedback-popup .popup-right-section {
+    max-width: 350px;
+    margin-top: calc(-1 * var(--spacing-30));
+    margin-bottom: calc(-1 * var(--spacing-30));
+  }
+}
+
+@media (max-width: 1024px) {
+  .feedback-popup .popup-content {
+    flex-direction: column;
+    gap: var(--spacing-30);
+    padding: var(--spacing-40);
+  }
+  
+  .feedback-popup .popup-left-section {
+    max-width: 100%;
+  }
+  
+  .feedback-popup .popup-right-section {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .feedback-popup .popup-content {
+    flex-direction: column;
+    padding: 0;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    border-radius: 0;
+    margin: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .feedback-popup .popup-content::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .feedback-popup .popup-left-section {
+    max-width: 100%;
+    justify-content: flex-start;
+    padding: var(--spacing-20);
+  }
+  
+  .feedback-popup .popup-right-section {
+    max-width: 100%;
+    width: 100%;
+    order: -1; /* Картинка сверху на мобильных */
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    display: flex; /* Показываем картинку снова на мобильных */
+  }
+  
+  .feedback-popup .food-display {
+    width: 100%;
+    height: 250px;
+  }
+  
+  .feedback-popup .food-image-bg {
+    width: 100%;
+    height: 100%;
+    min-height: auto;
+    border-radius: 0;
+    background-position: center top;
+  }
+  
+  .feedback-popup .popup-title {
+    font-size: var(--hte-h2-font-size);
+    line-height: var(--hte-h2-line-height);
+    text-align: center;
+  }
+  
+  .feedback-popup .popup-description {
+    font-size: var(--hte-small-text-16-font-size);
+    line-height: var(--hte-small-text-16-line-height);
+    text-align: center;
+  }
+  
+  .feedback-popup .input-row {
+    flex-direction: column;
+  }
+  
+  .feedback-popup .checkbox-label {
+    align-items: flex-start;
+  }
+  
+  .feedback-popup .popup-close {
+    top: var(--spacing-20);
+    right: var(--spacing-20);
+  }
+  
+  /* Адаптивность для экрана благодарности */
+  .feedback-popup .thanks-title {
+    font-size: var(--hte-h2-font-size);
+    line-height: var(--hte-h2-line-height);
+  }
+  
+  .feedback-popup .thanks-description {
+    font-size: var(--hte-small-text-16-font-size);
+    line-height: var(--hte-small-text-16-line-height);
+  }
+  
+  /* Экран благодарности на мобильных */
+  .feedback-popup .popup-thanks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0;
+  }
+}
