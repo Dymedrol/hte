@@ -5,5 +5,9 @@
   "layout-pb": 0,
   "hide-mobile": false,
   "hide-desktop": false,
-  "align": "start"
+  "align": "start",
+  "title": "Заголовок",
+  "subtitle": "Подзаголовок",
+  "button_text": "Текст кнопки",
+  "button_link": "/"
 }

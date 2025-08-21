@@ -1,4 +1,42 @@
 {
+  "content": [
+    {
+      "type": "group",
+      "name": "Настройки виджета",
+      "items": [
+        {
+          "name":"title",
+          "label":"Заголовок",
+          "help":"",
+          "type":"text"
+        },
+        {
+          "name":"subtitle",
+          "label":"Подзаголовок",
+          "help":"",
+          "type":"text"
+        },
+        {
+          "name":"button_text",
+          "label":"Текст кнопки",
+          "help":"",
+          "type":"text"
+        },
+        {
+          "name":"button_link",
+          "label":"Ссылка кнопки",
+          "help":"",
+          "type":"text"
+        },
+        {
+          "name":"image",
+          "label":"Изображение",
+          "help":"",
+          "type":"file"
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "type": "group",

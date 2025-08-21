@@ -1,0 +1,19 @@
+{
+  "layout-wide-bg": false,
+  "layout-wide-content": false,
+  "layout-pt": 0,
+  "layout-pb": 0,
+  "hide-mobile": false,
+  "hide-desktop": false,
+  "align": "start",
+  "title": "Заголовок",
+  "desable_back_color": false,
+  "card1_title": "Заголовок",
+  "card1_subtitle": "Подзаголовок",
+  "card2_title": "Заголовок",
+  "card2_subtitle": "Подзаголовок",
+  "card3_title": "Заголовок",
+  "card3_subtitle": "Подзаголовок",
+  "card4_title": "Заголовок",
+  "card4_subtitle": "Подзаголовок"
+}

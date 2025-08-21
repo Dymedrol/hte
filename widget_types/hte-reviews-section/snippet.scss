@@ -1,0 +1,182 @@
+/* Reviews Section Component */
+.reviews-section {
+  padding: var(--spacing-80) 0;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+}
+
+.reviews-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+  color: var(--hte-black);
+  text-align: center;
+  margin-bottom: var(--spacing-40);
+}
+
+.reviews-gallery {
+  overflow: hidden;
+  position: relative;
+}
+
+.reviews-track {
+  display: flex;
+  gap: var(--spacing-20);
+  animation: scroll-reviews 30s linear infinite;
+  width: max-content;
+}
+
+.reviews-track:hover {
+  animation-play-state: paused;
+}
+
+.review-card {
+  width: 430px;
+  background: var(--hte-bg-fill);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-header {
+  padding: var(--spacing-24);
+  border-bottom: var(--border-width-thin) solid var(--hte-dark-accent);
+  display: flex;
+  gap: var(--spacing-20);
+  align-items: flex-start;
+}
+
+.review-avatar {
+  width: 134px;
+  height: 153px;
+  background: var(--hte-white);
+  border-radius: var(--border-radius-sm);
+  flex-shrink: 0;
+}
+
+.review-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+}
+
+.review-name {
+  color: var(--hte-black);
+  font-family: var(--hte-h2-font-family);
+  font-size: var(--hte-h2-font-size);
+  font-weight: var(--hte-h2-font-weight);
+  line-height: var(--hte-h2-line-height);
+  text-transform: var(--hte-h2-text-transform);
+}
+
+.review-program {
+  color: var(--hte-grey-text);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+  letter-spacing: var(--hte-small-text-16-letter-spacing);
+}
+
+.review-description {
+  color: var(--hte-grey-text);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+  letter-spacing: var(--hte-small-text-16-letter-spacing);
+}
+
+.review-text {
+  padding: var(--spacing-28);
+  color: var(--hte-grey-text);
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  text-align: left;
+  flex: 1;
+}
+
+@keyframes scroll-reviews {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1320px) {
+  .reviews-section {
+    padding: var(--spacing-60) 0;
+  }
+  
+  .reviews-title {
+    font-size: var(--hte-h2-font-size);
+    margin-bottom: var(--spacing-40);
+  }
+  
+  .review-card {
+    width: 380px;
+  }
+  
+  .review-avatar {
+    width: 120px;
+    height: 137px;
+  }
+}
+
+@media (max-width: 720px) {
+  .reviews-section {
+    padding: var(--spacing-40) 0 var(--spacing-80) 0;
+  }
+  
+  .reviews-title {
+    font-size: var(--hte-h2-font-size);
+    margin-bottom: var(--spacing-30);
+    padding: 0 var(--spacing-20);
+  }
+  
+  .review-card {
+    width: 320px;
+  }
+  
+  .review-header {
+    padding: var(--spacing-20);
+    gap: var(--spacing-15);
+  }
+  
+  .review-avatar {
+    width: 100px;
+    height: 114px;
+  }
+  
+  .review-name {
+    font-size: var(--hte-h4-font-size);
+  }
+  
+  .review-program {
+    font-size: var(--hte-micro-text-14-font-size);
+    line-height: var(--hte-micro-text-14-line-height);
+  }
+  
+  .review-description {
+    font-size: var(--hte-micro-text-14-font-size);
+    line-height: var(--hte-micro-text-14-line-height);
+  }
+  
+  .review-text {
+    padding: var(--spacing-20);
+  }
+}

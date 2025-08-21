@@ -1,0 +1,368 @@
+/* Стили для страницы "О нас" */
+
+/* Основной контент */
+.main-content {
+    padding-top: var(--spacing-40);
+}
+
+/* About Description Module */
+.about-description-section {
+    padding: var(--spacing-80) var(--spacing-20) var(--spacing-80);
+}
+
+.about-description-container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-description-title {
+    font-family: var(--hte-h1-font-family);
+    font-size: var(--hte-h1-font-size);
+    font-weight: var(--hte-h1-font-weight);
+    color: var(--hte-black);
+    text-align: center;
+    margin: 0;
+    line-height: var(--hte-h1-line-height);
+    letter-spacing: var(--hte-h1-letter-spacing);
+    text-transform: var(--hte-h1-text-transform);
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* About Mission Statement Module */
+.about-mission-statement-section {
+    padding: var(--spacing-80) var(--spacing-20) var(--spacing-80);
+}
+
+.about-mission-statement-container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-mission-statement-title {
+    font-family: var(--hte-h1-font-family);
+    font-size: var(--hte-h1-font-size);
+    font-weight: var(--hte-h1-font-weight);
+    color: var(--hte-black);
+    text-align: center;
+    margin: 0;
+    line-height: var(--hte-h1-line-height);
+    letter-spacing: var(--hte-h1-letter-spacing);
+    text-transform: var(--hte-h1-text-transform);
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1320px) {
+    .about-description-section {
+        padding: var(--spacing-60) var(--spacing-20) var(--spacing-60);
+    }
+    
+    .about-mission-statement-section {
+        padding: var(--spacing-60) var(--spacing-20) var(--spacing-60);
+    }
+}
+
+@media (max-width: 720px) {
+    .main-content {
+        padding-top: var(--spacing-60);
+    }
+    
+    .about-description-section {
+        padding: var(--spacing-40) var(--spacing-20) var(--spacing-40);
+    }
+    
+    .about-description-title {
+        font-size: var(--hte-body-18-font-size);
+        line-height: var(--hte-body-18-line-height);
+        letter-spacing: var(--hte-body-18-letter-spacing);
+    }
+    
+    .about-mission-statement-section {
+        padding: var(--spacing-40) var(--spacing-20) var(--spacing-40);
+    }
+    
+    .about-mission-statement-title {
+        font-size: var(--hte-body-18-font-size);
+        line-height: var(--hte-body-18-line-height);
+        letter-spacing: var(--hte-body-18-letter-spacing);
+    }
+}
+
+/* Our Principles Module */
+.our-principles-section {
+    padding: var(--spacing-80) var(--spacing-20);
+    background-color: var(--hte-bg-fill);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.our-principles-section.principles-section-no-bg {
+    background-color: transparent;
+}
+
+.our-principles-section.principles-section-no-bg .principle-card {
+    background-color: var(--hte-bg-fill);
+}
+
+.principles-container {
+    width: 100%;
+    max-width: 1230px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-30);
+}
+
+.principles-title {
+    align-self: stretch;
+    color: var(--hte-black);
+    font-size: var(--hte-h2-font-size);
+    font-family: var(--hte-font-family);
+    font-weight: var(--hte-h2-font-weight);
+    text-transform: uppercase;
+    line-height: var(--hte-h2-line-height);
+    margin: 0;
+}
+
+.principles-cards {
+    display: flex;
+    gap: var(--spacing-10);
+    justify-content: center;
+    align-items: center;
+}
+
+.principle-card {
+    width: 300px;
+    height: 200px;
+    padding: var(--spacing-30) var(--spacing-20);
+    background: var(--hte-white);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-10);
+}
+
+.principle-number {
+    width: 27px;
+    height: 27px;
+    background: var(--hte-white);
+    border-radius: 40px;
+    outline: var(--border-width-normal) var(--hte-dark-accent) solid;
+    outline-offset: calc(-1 * var(--border-width-normal));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--hte-black);
+    font-size: 12px;
+    font-family: var(--hte-font-family);
+    font-weight: 400;
+    line-height: 12px;
+}
+
+.principle-content {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-15);
+}
+
+.principle-name {
+    align-self: stretch;
+    text-align: center;
+    color: var(--hte-black);
+    font-size: var(--hte-body-18-font-size);
+    font-family: var(--hte-font-family);
+    font-weight: var(--hte-body-18-font-weight);
+    text-transform: uppercase;
+    line-height: 19.8px;
+    margin: 0;
+}
+
+.principle-description {
+    align-self: stretch;
+    opacity: var(--opacity-high);
+    text-align: center;
+    color: var(--hte-black);
+    font-size: var(--hte-body-18-font-size);
+    font-family: var(--hte-font-family);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: var(--hte-body-18-line-height);
+    margin: 0;
+}
+
+/* Responsive Design for Our Principles Module */
+@media (max-width: 1320px) {
+    .principles-title {
+        text-align: center;
+    }
+    
+    .principles-cards {
+        flex-wrap: wrap;
+        gap: var(--spacing-20);
+    }
+    
+    .principle-card {
+        width: calc(50% - var(--spacing-10));
+        min-width: 280px;
+    }
+}
+
+@media (max-width: 720px) {
+    .our-principles-section {
+        padding: var(--spacing-40) var(--spacing-20);
+    }
+    
+    .principles-title {
+        text-align: center;
+        font-size: var(--hte-h4-font-size);
+        line-height: var(--hte-h4-line-height);
+    }
+    
+    .principles-cards {
+        flex-direction: column;
+        gap: var(--spacing-20);
+    }
+    
+    .principle-card {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        min-height: 180px;
+    }
+}
+
+/* About Personalized Menu Module */
+.about-personalized-menu {
+    margin-top: var(--spacing-80);
+}
+
+/* Responsive Design for About Personalized Menu Module */
+@media (max-width: 1320px) {
+    .about-personalized-menu {
+        margin-top: var(--spacing-60);
+    }
+}
+
+@media (max-width: 720px) {
+    .about-personalized-menu {
+        margin-top: var(--spacing-40);
+    }
+}
+
+/* About Eco Solutions Module */
+.about-eco-solutions {
+    margin-top: var(--spacing-80);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* About Founder Module */
+.about-founder {
+    /* margin-top убран, так как about-eco-solutions уже имеет margin-top: 80px */
+}
+
+/* Programs For Any Goals Module */
+.programs-for-any-goals {
+    margin-top: var(--spacing-80);
+}
+
+.programs-for-any-goals .principles-cards {
+    display: flex;
+    gap: var(--spacing-20);
+    justify-content: center;
+}
+
+.programs-for-any-goals .principle-card {
+    width: 300px;
+    height: 200px;
+    padding: var(--spacing-30) var(--spacing-20);
+    background: var(--hte-white);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-10);
+}
+
+/* Give Packaging Second Life Module */
+.give-packaging-second-life {
+    background-color: var(--hte-white);
+}
+
+.give-packaging-second-life .principles-cards {
+    display: flex;
+    gap: var(--spacing-20);
+    justify-content: center;
+}
+
+.give-packaging-second-life .principle-card {
+    width: 300px;
+    height: 200px;
+    padding: var(--spacing-30) var(--spacing-20);
+    background: var(--hte-bg-fill);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-10);
+}
+
+/* Advantage Card Content Styles */
+.about-eco-solutions .advantage-card__content {
+    gap: var(--spacing-15);
+}
+
+/* Card Personalized Description Styles */
+.about-eco-solutions .card-personalized-description {
+    width: 100%;
+    max-width: var(--min-width-feature);
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    color: var(--hte-black);
+    opacity: var(--opacity-high);
+    line-height: 21.6px;
+    margin: 0;
+    text-align: center;
+}
+
+/* Responsive Design for About Eco Solutions Module */
+@media (max-width: 1320px) {
+    .about-eco-solutions {
+        margin-top: var(--spacing-80);
+    }
+    
+    .programs-for-any-goals .principle-card,
+    .give-packaging-second-life .principle-card {
+        width: calc(50% - var(--spacing-10));
+        min-width: 280px;
+    }
+}
+
+@media (max-width: 720px) {
+    .about-eco-solutions {
+        margin-top: var(--spacing-40);
+    }
+    
+    .programs-for-any-goals .principle-card,
+    .give-packaging-second-life .principle-card {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+}
+
+

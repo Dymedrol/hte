@@ -1,7 +1,126 @@
-.add-to-cart-btn {
-    text-decoration: none;
+.how-to-it-section {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-15);
+
+    background-color: var(--hte-bg-fill);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+
+    width: 1200px;
+    height: 260px;
+    padding: var(--spacing-35);
+    margin: 0 auto;
 }
 
-.program-card-large {
-    margin: 0 auto;
+@media (max-width: 719px) {
+    .how-to-it-section  {
+        width: calc(100vw - 40px);
+        height: 405px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-20);
+        gap: var(--spacing-15);
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 1279px) and (min-width: 721px) {
+    .how-to-it-section {
+        width: calc(100vw - 40px);
+        height: 240px;
+        margin: 0 auto;
+    }
+}
+
+
+.how-to-it-section-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-15);
+    position: relative;
+    z-index: 3;
+}
+
+.how-to-it-section-title {
+    font-family: var(--hte-h1-font-family);
+    font-size: var(--hte-h1-font-size);
+    font-weight: var(--hte-h1-font-weight);
+    color: var(--hte-black);
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+@media (max-width: 719px) {
+    .how-to-it-section-title {
+        font-size: var(--hte-h2-font-size);
+    }
+}
+
+.how-to-it-section-subtitle {
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: var(--hte-body-18-line-height);
+    color: var(--hte-black);
+    margin: 0;
+    opacity: var(--opacity-high);
+    white-space: nowrap;
+}
+
+@media (max-width: 719px) {
+    .how-to-it-section-subtitle {
+        white-space: normal;
+    }
+}
+
+.how-to-it-section-button {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 var(--spacing-20);
+    background-color: var(--hte-black);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: var(--border-radius-xxl);
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    color: var(--hte-white);
+    letter-spacing: var(--hte-body-18-letter-spacing);
+    line-height: var(--hte-body-18-line-height);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.how-to-it-section-image {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 456px;
+    height: 240px;
+    object-fit: cover;
+    object-position: center;
+    z-index: 2;
+}
+
+@media (max-width: 719px) {
+    .how-to-it-section-image {
+        position: absolute;
+        top: unset;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        width: 100%;
+        height: 135px;
+        object-fit: contain;
+    }
 }
