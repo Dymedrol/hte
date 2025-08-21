@@ -329,3 +329,5 @@ class FeedbackPopupManager {
 window.feedbackPopupManager = new FeedbackPopupManager();
 window.feedbackPopupManager.init();
 
+// Что бы открыть попап feedback на кнопку или ссылку нужно либо добавть  href="#open_feedback_popup", или класс '.open-feedback-popup', либо дата-атрибут data-href="#open_feedback_popup"
+

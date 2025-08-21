@@ -1,0 +1,391 @@
+/* Subscription Popup Styles */
+.subscription-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: none;
+}
+
+.subscription-popup.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Наследуем стили от существующего попапа */
+.subscription-popup .popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.subscription-popup .popup-content {
+  position: relative;
+  background-image: url('../assets/bgpopup.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-40);
+  max-width: 900px;
+  width: 90%;
+  min-height: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-30);
+  justify-content: center;
+}
+
+.subscription-popup .popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-30);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.subscription-popup .popup-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+  text-align: center;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.subscription-popup .popup-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-white);
+  margin: 0;
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+}
+
+.subscription-popup .popup-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-white);
+  margin: 0;
+  line-height: var(--hte-body-18-line-height);
+}
+
+.subscription-popup .popup-close {
+  position: absolute;
+  top: var(--spacing-15);
+  right: var(--spacing-15);
+  width: var(--spacing-25);
+  height: var(--spacing-25);
+  background: var(--hte-white);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscription-popup .popup-close:hover {
+  background-color: var(--hte-dark-accent);
+}
+
+.subscription-popup .popup-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+.subscription-popup .input-row {
+  display: flex;
+  gap: var(--spacing-12);
+  align-items: flex-end;
+}
+
+.subscription-popup .input-field {
+  flex: 1;
+  position: relative;
+}
+
+.subscription-popup .input-field input {
+  width: 100%;
+  height: 44px;
+  padding: var(--spacing-15) var(--spacing-15);
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  outline: none;
+}
+
+.subscription-popup .input-field input::placeholder {
+  color: var(--hte-grey-text);
+}
+
+/* Стили для галочки */
+.subscription-popup .popup-checkbox {
+  margin-top: var(--spacing-10);
+  position: relative;
+}
+
+.subscription-popup .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-10);
+  cursor: pointer;
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-white);
+  line-height: var(--hte-micro-text-14-line-height);
+}
+
+.subscription-popup .checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.subscription-popup .checkbox-custom {
+  width: var(--spacing-20);
+  height: var(--spacing-20);
+  border: var(--border-width-normal) solid var(--hte-white);
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.subscription-popup .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+  background: var(--hte-white);
+  border-color: var(--hte-white);
+}
+
+.subscription-popup .checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+  content: '';
+  width: var(--spacing-5);
+  height: var(--spacing-5);
+  background: var(--hte-black);
+  border-radius: 50%;
+}
+
+.subscription-popup .checkbox-text {
+  flex: 1;
+  opacity: var(--opacity-high);
+}
+
+.subscription-popup .privacy-link {
+  color: var(--hte-white);
+  text-decoration: underline;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.subscription-popup .privacy-link:hover {
+  opacity: var(--opacity-medium);
+}
+
+/* Бабл для галочки */
+.subscription-popup .checkbox-bubble {
+  position: absolute;
+  top: calc(100% + var(--spacing-8));
+  left: 0;
+  background: var(--hte-black);
+  color: var(--hte-white);
+  padding: var(--spacing-8) var(--spacing-12);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  line-height: var(--hte-micro-text-14-line-height);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.subscription-popup .checkbox-bubble.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.subscription-popup .checkbox-bubble .bubble-arrow {
+  position: absolute;
+  top: -6px;
+  left: var(--spacing-20);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid var(--hte-black);
+}
+
+/* Экран благодарности */
+.subscription-popup .popup-thanks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+
+.subscription-popup .thanks-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-20);
+  max-width: 400px;
+}
+
+.subscription-popup .thanks-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-white);
+  margin: 0;
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+}
+
+.subscription-popup .thanks-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-white);
+  margin: 0;
+  line-height: var(--hte-body-18-line-height);
+  opacity: var(--opacity-high);
+}
+
+.subscription-popup-btn {
+  height: 44px;
+  padding: 0 var(--spacing-20);
+  background-color: var(--hte-black);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-white);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  line-height: var(--hte-body-18-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  min-width: 180px;
+}
+
+.subscription-popup-btn:hover {
+  background-color: transparent;
+  border: var(--border-width-normal) solid var(--hte-black);
+  color: var(--hte-black);
+}
+
+/* Mobile Responsive for Subscription Popup */
+@media (max-width: 1320px) {
+  .subscription-popup .popup-content {
+    max-width: 800px;
+    padding: var(--spacing-30);
+  }
+  
+  .subscription-popup .popup-form {
+    max-width: 450px;
+  }
+}
+
+@media (max-width: 720px) {
+  .subscription-popup .popup-content {
+    padding: var(--spacing-20);
+    max-width: 95%;
+    gap: var(--spacing-20);
+  }
+  
+  .subscription-popup .popup-form {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .subscription-popup .popup-title {
+    font-size: var(--hte-h2-font-size);
+    line-height: var(--hte-h2-line-height);
+    max-width: var(--min-width-feature);
+    margin: 0 auto;
+  }
+  
+  .subscription-popup .popup-description {
+    font-size: var(--hte-small-text-16-font-size);
+    line-height: var(--hte-small-text-16-line-height);
+  }
+  
+  .subscription-popup .input-row {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .subscription-popup .checkbox-label {
+    align-items: flex-start;
+  }
+  
+  .subscription-popup .checkbox-label {
+    font-size: var(--hte-micro-text-14-font-size);
+    line-height: var(--hte-micro-text-14-line-height);
+  }
+  
+  .subscription-popup .subscription-popup-btn {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  /* Адаптивность для бабла */
+  .subscription-popup .checkbox-bubble {
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    white-space: normal;
+    max-width: 200px;
+    text-align: center;
+  }
+  
+  .subscription-popup .checkbox-bubble.show {
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .subscription-popup .checkbox-bubble .bubble-arrow {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  /* Адаптивность для экрана благодарности */
+  .subscription-popup .thanks-title {
+    font-size: var(--hte-h2-font-size);
+    line-height: var(--hte-h2-line-height);
+  }
+  
+  .subscription-popup .thanks-description {
+    font-size: var(--hte-small-text-16-font-size);
+    line-height: var(--hte-small-text-16-line-height);
+  }
+}

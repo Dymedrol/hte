@@ -1,0 +1,31 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Subscription popup"
+  },
+  "handle": "hte-subscription-popup",
+  "description": {
+    "ru": "HTE Subscription popup"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "header",
+    "before_content",
+    "content",
+    "sidebar",
+    "after_content",
+    "footer",
+    "outside",
+    "top_panel",
+    "bottom_panel"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "jquery",
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

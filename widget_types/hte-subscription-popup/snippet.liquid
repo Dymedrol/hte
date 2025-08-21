@@ -1,0 +1,49 @@
+<!-- Subscription Popup Component -->
+<div class="subscription-popup" id="subscriptionPopup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content" style="background-image: url({{ 'bgpopup.jpg' | asset_url }})">
+    <!-- Основная форма подписки -->
+    <div class="popup-form" id="popupForm">
+      <div class="popup-header">
+        <h3 class="popup-title">Скидка 20%</h3>
+        <p class="popup-description">Подпишитесь на рассылку и получите -20% на&nbsp;первый заказ. Только полезные письма: акции, новые программы и советы по питанию</p>
+      </div>
+      
+      <div class="popup-inputs">
+        <div class="input-row">
+          <div class="input-field">
+            <input type="email" placeholder="Ваша почта" id="subscriptionEmailInput" />
+          </div>
+          <button class="subscription-popup-btn" id="subscriptionPopupBtn">Получить скидку</button>
+        </div>
+        
+        <div class="popup-checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" id="subscriptionAgreement" required />
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">Оставляя e-mail, вы соглашаетесь с <a href="#" class="privacy-link">политикой конфиденциальности</a>.</span>
+          </label>
+          <!-- Бабл для галочки -->
+          <div class="checkbox-bubble" id="checkboxBubble">
+            <span class="bubble-text">Поставьте галочку для продолжения</span>
+            <div class="bubble-arrow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Экран благодарности (скрыт по умолчанию) -->
+    <div class="popup-thanks" id="popupThanks" style="display: none;">
+      <div class="thanks-content">
+        <h3 class="thanks-title">Спасибо за подписку!</h3>
+        <p class="thanks-description">Проверьте вашу почту - письмо со скидкой уже отправлено!</p>
+      </div>
+    </div>
+    
+    <button class="popup-close" id="subscriptionPopupClose">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4L4 12M4 4L12 12" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
