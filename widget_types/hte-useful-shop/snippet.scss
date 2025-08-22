@@ -1,0 +1,304 @@
+/* Useful Shop Page Styles */
+
+.useful-shop-title {
+    font-family: var(--hte-h1-font-family);
+    font-size: var(--hte-h1-font-size);
+    font-weight: var(--hte-h1-font-weight);
+    color: var(--hte-black);
+    text-align: center;
+    margin: 0 0 var(--spacing-40) 0;
+    line-height: var(--hte-h1-line-height);
+    letter-spacing: var(--hte-h1-letter-spacing);
+    text-transform: var(--hte-h1-text-transform);
+}
+
+/* Useful Shop Tabs Container - identical to programs-section */
+.tabs-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: center;
+    margin-bottom: var(--spacing-40);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: var(--spacing-5);
+}
+
+.tabs-container::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-button {
+    display: inline-flex;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--spacing-30);
+    background-color: transparent;
+    border: var(--border-width-normal) solid var(--hte-dark-accent);
+    border-radius: var(--border-radius-xxl);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: var(--hte-body-18-line-height);
+    color: var(--hte-black);
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.tab-button.active,
+.tab-button:hover {
+    background-color: var(--hte-dark-accent);
+}
+
+.tab-button span {
+    white-space: nowrap;
+}
+
+/* Useful Shop Products Grid - используем существующие стили из 04-additional-products.css */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 колонки максимум */
+    gap: var(--spacing-40); /* Увеличенные вертикальные отступы */
+    margin-bottom: var(--spacing-60);
+    padding: 0 var(--spacing-40); /* Боковые отступы как в хедере */
+    width: 100%;
+    max-width: 1440px; /* Ограничиваем максимальную ширину */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Адаптивная сетка */
+@media (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 колонки на планшете */
+        gap: var(--spacing-25); /* Увеличенные отступы */
+        padding: 0 var(--spacing-20);
+    }
+}
+
+@media (max-width: 720px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки на мобильном */
+        gap: var(--spacing-20); /* Увеличенные отступы */
+        padding: 0 var(--spacing-20);
+    }
+}
+
+/* Useful Shop Pagination */
+.useful-shop-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-20);
+    margin-top: var(--spacing-60);
+    margin-bottom: var(--spacing-80);
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 27px;
+    border: var(--border-width-normal) solid var(--hte-dark-accent);
+    border-radius: var(--border-radius-sm);
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+    border-color: var(--hte-black);
+}
+
+.pagination-btn.inactive {
+    opacity: var(--opacity-medium);
+    pointer-events: none;
+}
+
+.pagination-btn img {
+    width: 11px;
+    height: 9px;
+}
+
+.pagination-next img {
+    transform: rotate(180deg);
+}
+
+.pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-15);
+}
+
+.page-number {
+    width: 27px;
+    height: 27px;
+    background: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: 12px;
+    font-weight: 450;
+    line-height: 12px;
+    transition: all 0.3s ease;
+}
+
+.page-number.active {
+    background: var(--hte-white);
+    color: var(--hte-black);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: 40px;
+}
+
+.page-number:not(.active):hover {
+    background: var(--hte-dark-accent);
+    transition: all 0.2s ease;
+}
+
+.page-dots {
+    color: var(--hte-grey-text);
+    font-family: var(--hte-micro-text-14-font-family);
+    font-size: 12px;
+    font-weight: 450;
+    line-height: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1320px) {
+    .useful-shop-title {
+        margin: 0 0 var(--spacing-30) 0;
+    }
+    
+    .tabs-container {
+        margin-bottom: var(--spacing-40);
+    }
+}
+
+@media (max-width: 720px) {
+    .useful-shop-title {
+        margin: 0 0 var(--spacing-20) 0;
+        font-size: var(--hte-h2-font-size);
+        line-height: var(--hte-h2-line-height);
+        letter-spacing: var(--hte-h2-letter-spacing);
+    }
+    
+    .tabs-container {
+        margin-bottom: var(--spacing-30);
+        gap: 6px;
+        padding: 0 var(--spacing-20);
+        justify-content: flex-start;
+    }
+    
+    .tab-button {
+        height: 38px;
+        padding: 0 var(--spacing-20);
+        font-size: var(--hte-small-text-16-font-size);
+        line-height: var(--hte-small-text-16-line-height);
+    }
+    
+    .useful-shop-pagination {
+        margin-top: var(--spacing-40);
+        margin-bottom: var(--spacing-60);
+        gap: var(--spacing-15);
+    }
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--spacing-15);
+    min-width: 0; /* Важно для правильного расчета ширины */
+    text-decoration: none;
+  }
+  
+  .product-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-color: var(--hte-white);
+    border-radius: var(--border-radius-md);
+    border: var(--border-width-thin) solid var(--hte-dark-accent);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* Изображения товаров теперь задаются через JavaScript */
+  
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-10);
+  }
+  
+  .product-info h3 {
+    font-family: var(--hte-h4-font-family);
+    font-size: var(--hte-h4-font-size);
+    font-weight: var(--hte-h4-font-weight);
+    color: var(--hte-black);
+    text-align: center;
+    letter-spacing: var(--hte-h4-letter-spacing);
+    line-height: var(--hte-h4-line-height);
+    text-transform: uppercase;
+    margin: 0;
+    text-decoration: none;
+  }
+  
+  
+  
+  /* Desktop Styles */
+  @media (min-width: 1280px) {
+    .product-card {
+      flex: 0 0 calc(25% - var(--spacing-15)); /* 4 карточки в ряд */
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1279px) {
+    
+    .products-grid {
+      gap: var(--spacing-10);
+      overflow-x: auto;
+    }
+    
+    .product-card {
+      flex: 0 0 calc(33.333% - var(--spacing-10)); /* 3 карточки в ряд */
+    }
+    
+    .product-card:nth-child(4) {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 720px) {
+    .products-grid {
+      gap: var(--spacing-10);
+      overflow-x: auto;
+    }
+    
+    .product-card {
+      flex: 0 0 calc(50% - var(--spacing-10)); /* 2 карточки в ряд */
+    }
+    
+    .product-card:nth-child(3),
+    .product-card:nth-child(4) {
+      display: none;
+    }
+    
+    .product-info h3 {
+      font-family: var(--hte-micro-text-14-font-family);
+      font-size: var(--hte-micro-text-14-font-size);
+      font-weight: var(--hte-micro-text-14-font-weight);
+    }
+  } 

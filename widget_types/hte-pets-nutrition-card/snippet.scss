@@ -1,0 +1,251 @@
+/* Pets Nutrition Card Component Styles */
+
+.pets-nutrition-card {
+  width: 100%;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: var(--spacing-40);
+}
+
+.pets-nutrition-container {
+  display: flex;
+  gap: var(--spacing-20);
+  aspect-ratio: 2 / 1;
+}
+
+.pets-nutrition-content {
+  flex: 0 0 calc(50% - var(--spacing-10));
+  background-color: var(--hte-bg-fill);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-40);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  gap: var(--spacing-20);
+}
+
+.pets-nutrition-header {
+  margin-bottom: var(--spacing-15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+.pets-nutrition-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+  color: var(--hte-black);
+  margin: 0;
+  margin-bottom: var(--spacing-15);
+}
+
+.pets-nutrition-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  color: var(--hte-black);
+  opacity: var(--opacity-high);
+  margin: 0;
+  max-width: 334px;
+}
+
+.pets-nutrition-subtitle {
+  position: absolute;
+  top: 50.5px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+  letter-spacing: var(--hte-small-text-16-letter-spacing);
+  color: var(--hte-black);
+  white-space: nowrap;
+}
+
+.pets-nutrition-footer {
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-30);
+  width: calc(100% - (var(--spacing-20)));
+  max-width: calc(100% - (var(--spacing-20)));
+}
+
+.pets-nutrition-flavors {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  color: var(--hte-black);
+  opacity: var(--opacity-high);
+  white-space: nowrap;
+}
+
+.pets-nutrition-tags {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nutrition-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 27px;
+  padding: 0 var(--spacing-10);
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  line-height: var(--hte-micro-text-14-line-height);
+  color: var(--hte-black);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pets-nutrition-image {
+  flex: 0 0 calc(50% - var(--spacing-10));
+  background-color: var(--hte-bg-fill);
+  border-radius: var(--border-radius-md);
+  background-image: url('../assets/chef.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Responsive Design */
+@media (max-width: 1020px) {
+  .pets-nutrition-card {
+    padding: var(--spacing-30);
+  }
+  
+  .pets-nutrition-container {
+    flex-direction: column;
+    gap: var(--spacing-15);
+  }
+  
+  .pets-nutrition-content {
+    flex: 1 1 100%;
+    padding: var(--spacing-20) var(--spacing-30);
+    aspect-ratio: 1 / 1;
+  }
+  
+  .pets-nutrition-image {
+    flex: 1 1 100%;
+    aspect-ratio: 1 / 1;
+  }
+  
+  .pets-nutrition-title {
+    font-size: 30px;
+  }
+  
+  .pets-nutrition-description {
+    font-size: 16px;
+  }
+  
+  .pets-nutrition-header {
+    width: 100%;
+  }
+  
+  .pets-nutrition-footer {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-15);
+  }
+}
+
+@media (max-width: 720px) {
+  .pets-nutrition-card {
+    padding: var(--spacing-20);
+  }
+  
+  .pets-nutrition-container {
+    height: auto;
+    gap: var(--spacing-10);
+  }
+  
+  .pets-nutrition-content {
+    flex: 1 1 100%;
+    padding: var(--spacing-25);
+    height: auto;
+    min-height: 400px;
+    gap: var(--spacing-20);
+    position: static;
+    justify-content: space-between;
+    aspect-ratio: unset;
+  }
+  
+  .pets-nutrition-image {
+    aspect-ratio: 1 / 1;
+  }
+  
+  .pets-nutrition-title {
+    font-size: 28px;
+  }
+  
+  .pets-nutrition-description {
+    font-size: 16px;
+  }
+  
+  .pets-nutrition-subtitle {
+    order: 1;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    font-size: 14px;
+  }
+  
+  .pets-nutrition-header {
+    order: 2;
+    width: 100%;
+  }
+  
+  .pets-nutrition-footer {
+    order: 3;
+    position: static;
+    transform: none;
+    left: auto;
+    bottom: auto;
+    gap: var(--spacing-15);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pets-nutrition-tags {
+    gap: 0;
+  }
+  
+  .nutrition-tag {
+    font-size: 12px;
+    padding: 0 var(--spacing-8);
+    height: 24px;
+  }
+  
+  .pets-nutrition-flavors {
+    font-size: 14px;
+  }
+}

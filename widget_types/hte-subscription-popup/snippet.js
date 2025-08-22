@@ -388,7 +388,7 @@ window.subscriptionPopupAutoManager = new SubscriptionPopupAutoManager();
 
 // Инициализируем после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
-  subscriptionPopupAutoManager.init()
+  subscriptionPopupAutoManager.init();
 });
 
-//Что бы открыть попап subscription на кнопку или ссылку нужно либо добавть  href="#open_subscription_popup", или класс '.open-subscription-popup', либо дата-атрибут data-href="#open_subscription_popup"
+// Что бы открыть попап subscription на кнопку или ссылку нужно либо добавить href="#open_subscription_popup", или класс '.open-subscription-popup', либо дата-атрибут data-href="#open_subscription_popup"

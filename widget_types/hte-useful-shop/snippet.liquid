@@ -1,0 +1,60 @@
+<section class="useful-shop">
+  <!-- Useful Shop Header Component -->
+  <div id="useful-shop-header">
+    <!-- Useful Shop Header Component -->
+    <h1 class="useful-shop-title">{{ collections.poleznyy-magazin.title }} </h1>
+  </div>
+  
+  <!-- Useful Shop Tabs Component -->
+  <div id="useful-shop-tabs">
+    <!-- Useful Shop Tabs Component -->
+    <div class="tabs-container">
+      <a href="/collection/poleznyy-magazin" class="tab-button {% if collection.handle == 'poleznyy-magazin' %}active{% endif %}">
+        <span>Все товары</span>
+      </a>
+      {% for collection in collections.poleznyy-magazin.subcollections  %}
+        <a href="{{ collection.url }}" class="tab-button {% if collection.current? %}active{% endif %}">
+          <span>{{ collection.title }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!-- Useful Shop Products Grid Component -->
+  <div id="useful-shop-articles-grid">
+    <!-- Useful Shop Products Grid Component -->
+    <div class="products-grid">
+      {% for product in collection.products %}
+        <a href="{{ product.url }}" class="product-card" >
+          <div class="product-image" style="background-image: url('{{ product.first_image.medium_url  }}')"></div>
+          <div class="product-info">
+            <h3>{{ product.title }}</h3>
+            <button class="add-to-cart-btn">{{ product.price | money }}</button>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!-- Useful Shop Pagination Component -->
+  {% comment %}  
+  <div id="useful-shop-pagination">
+    <!-- Useful Shop Pagination Component -->
+    <div class="useful-shop-pagination">
+      <button class="pagination-btn pagination-prev inactive">
+        <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Предыдущая страница">
+      </button>
+      <div class="pagination-pages">
+        <span class="page-number active">1</span>
+        <span class="page-number">2</span>
+        <span class="page-number">3</span>
+        <span class="page-dots">...</span>
+        <span class="page-number">4</span>
+      </div>
+      <button class="pagination-btn pagination-next">
+        <img src="{{ 'arrow-1.svg' | asset_url }}" alt="Следующая страница">
+      </button>
+    </div>
+  </div>
+  {% endcomment %}
+</section>

@@ -1,0 +1,165 @@
+/* Pets Expert Help Component Styles */
+
+.pets-expert-help {
+  width: 100%;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: var(--spacing-40);
+}
+
+.pets-expert-help-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-image: url('../assets/chef.jpg');
+  background-position: center;
+  background-size: cover;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-25);
+  min-height: 400px;
+}
+
+.pets-expert-help-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-25);
+  text-align: center;
+}
+
+.pets-expert-help-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-15);
+}
+
+.pets-expert-help-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+  color: var(--hte-white);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.pets-expert-help-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  color: var(--hte-white);
+  margin: 0;
+  max-width: 560px;
+  text-align: center;
+}
+
+.pets-expert-help-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transparent-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-15);
+  height: 44px;
+  padding: 0 var(--spacing-30);
+  background: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(7.5px);
+  border: var(--border-width-normal) solid var(--hte-white);
+  border-radius: var(--border-radius-xxl);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.transparent-button:hover {
+  background: var(--hte-white);
+}
+
+.transparent-button:hover .button-text {
+  color: var(--hte-black);
+}
+
+.transparent-button:hover .button-arrow {
+  filter: brightness(0) invert(0);
+}
+
+.button-text {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  color: var(--hte-white);
+  white-space: nowrap;
+}
+
+.button-arrow {
+  width: 15px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  transform: rotate(180deg);
+}
+
+/* Responsive Design */
+@media (max-width: 1320px) {
+  .pets-expert-help {
+    padding: var(--spacing-30);
+  }
+  
+  .pets-expert-help-container {
+    padding: var(--spacing-30);
+  }
+  
+  .pets-expert-help-title {
+    font-size: 30px;
+  }
+  
+  .pets-expert-help-description {
+    font-size: 16px;
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 720px) {
+  .pets-expert-help {
+    padding: var(--spacing-20);
+  }
+  
+  .pets-expert-help-container {
+    padding: var(--spacing-25);
+    min-height: 350px;
+  }
+  
+  .pets-expert-help-content {
+    gap: var(--spacing-20);
+  }
+  
+  .pets-expert-help-title {
+    font-size: 28px;
+  }
+  
+  .pets-expert-help-description {
+    font-size: 16px;
+    max-width: 100%;
+  }
+  
+  .transparent-button {
+    height: 44px;
+    padding: 0 var(--spacing-25);
+  }
+  
+  .button-text {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,294 @@
+/* Pets FAQ Section Styles */
+.pets-faq-section {
+  padding: var(--spacing-80) 0;
+  background-color: var(--hte-white);
+}
+
+.pets-faq-container {
+  max-width: 970px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-20);
+}
+
+.pets-faq-title {
+  font-family: var(--hte-h2-font-family);
+  font-size: var(--hte-h2-font-size);
+  font-weight: var(--hte-h2-font-weight);
+  line-height: var(--hte-h2-line-height);
+  text-transform: var(--hte-h2-text-transform);
+  color: var(--hte-black);
+  margin-bottom: var(--spacing-40);
+  text-align: center;
+}
+
+.pets-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+}
+
+.pets-faq-item {
+  background: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.pets-faq-item:hover {
+  border-color: var(--hte-border);
+  background-color: var(--hte-bg-fill);
+}
+
+.pets-faq-item[data-open="true"] {
+  border-color: var(--hte-border);
+}
+
+.pets-faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-20);
+  cursor: pointer;
+}
+
+.pets-faq-question {
+  font-family: var(--hte-h4-font-family);
+  font-size: var(--hte-h4-font-size);
+  font-weight: var(--hte-h4-font-weight);
+  line-height: var(--hte-h4-line-height);
+  text-transform: var(--hte-h4-text-transform);
+  color: var(--hte-black);
+  flex: 1;
+  margin: 0;
+  padding-right: var(--spacing-20);
+}
+
+.pets-faq-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hte-black);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.pets-faq-item[data-open="true"] .pets-faq-icon {
+  transform: rotate(45deg);
+}
+
+.pets-faq-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 var(--spacing-20) 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+.pets-faq-item[data-open="true"] .pets-faq-content {
+  max-height: 1800px;
+  opacity: 1;
+  padding: var(--spacing-20) var(--spacing-20) var(--spacing-20);
+}
+
+.pets-faq-content p {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  color: var(--hte-black);
+  margin: 0;
+  opacity: var(--opacity-high);
+}
+
+/* Pets FAQ Dishes Grid Styles */
+.pets-faq-dishes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-15);
+  margin-top: var(--spacing-20);
+}
+
+.pets-dish-card {
+  background: var(--hte-bg-fill) url('../assets/pet-program-bg.jpg') no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-20);
+  padding-bottom: var(--spacing-60);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  transition: all 0.3s ease;
+  max-width: 290px;
+}
+
+
+
+.pets-dish-header {
+  margin-bottom: var(--spacing-20);
+}
+
+.pets-dish-buttons {
+  display: flex;
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-25);
+  justify-content: flex-start;
+}
+
+.pets-dish-button {
+  background: var(--hte-dark-accent);
+  color: var(--hte-black);
+  padding: var(--spacing-10) var(--spacing-15);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+  letter-spacing: var(--hte-small-text-16-letter-spacing);
+  white-space: nowrap;
+}
+
+.pets-dish-title {
+  font-family: var(--hte-h4-font-family);
+  font-size: 24px;
+  font-weight: var(--hte-h4-font-weight);
+  line-height: var(--hte-h4-line-height);
+  text-transform: var(--hte-h4-text-transform);
+  color: var(--hte-black);
+  margin: 0;
+  text-align: left;
+}
+
+.pets-dish-ingredients {
+  margin-top: var(--spacing-20);
+}
+
+.pets-dish-ingredients ul {
+  list-style: disc;
+  margin: 0;
+  padding-left: var(--spacing-20);
+}
+
+.pets-dish-ingredients li {
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  line-height: var(--hte-small-text-16-line-height);
+  letter-spacing: var(--hte-small-text-16-letter-spacing);
+  color: var(--hte-black);
+  margin-bottom: var(--spacing-15);
+  opacity: var(--opacity-high);
+}
+
+.pets-dish-ingredients li:last-child {
+  margin-bottom: 0;
+}
+
+/* Tablet Responsive */
+@media (max-width: 1320px) {
+  .pets-faq-container {
+    max-width: 800px;
+    padding: 0 var(--spacing-25);
+  }
+  
+  .pets-faq-section {
+    padding: var(--spacing-60) 0;
+  }
+  
+  /* Tablet Dishes Grid */
+  .pets-faq-dishes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-15);
+    justify-content: center;
+  }
+  
+  .pets-dish-card {
+    padding: var(--spacing-15);
+    padding-bottom: var(--spacing-60);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 720px) {
+  .pets-faq-section {
+    padding: var(--spacing-40) 0;
+  }
+  
+  .pets-faq-container {
+    padding: 0 var(--spacing-15);
+  }
+  
+  .pets-faq-title {
+    font-size: var(--hte-h4-font-size);
+    line-height: var(--hte-h4-line-height);
+    margin-bottom: var(--spacing-30);
+  }
+  
+  .pets-faq-list {
+    gap: var(--spacing-15);
+  }
+  
+  .pets-faq-header {
+    padding: var(--spacing-15);
+  }
+  
+  .pets-faq-question {
+    font-size: var(--hte-body-18-font-size);
+    line-height: var(--hte-body-18-line-height);
+    padding-right: var(--spacing-15);
+  }
+  
+  .pets-faq-content {
+    padding: 0 var(--spacing-15) 0;
+  }
+  
+  .pets-faq-item[data-open="true"] .pets-faq-content {
+    padding: var(--spacing-15) var(--spacing-15) var(--spacing-15);
+  }
+  
+  /* Mobile Dishes Grid */
+  .pets-faq-dishes-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    grid-template-columns: unset !important;
+    grid-template-rows: unset !important;
+    grid-auto-flow: unset !important;
+    grid-auto-columns: unset !important;
+    grid-auto-rows: unset !important;
+    overflow-x: auto;
+    gap: var(--spacing-15);
+    margin-top: var(--spacing-15);
+    padding-bottom: var(--spacing-10);
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .pets-faq-dishes-grid::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .pets-dish-card {
+    min-width: 280px;
+    width: auto !important;
+    flex-shrink: 0;
+    padding: var(--spacing-15);
+    padding-bottom: var(--spacing-60);
+  }
+  
+  .pets-dish-title {
+    font-size: var(--hte-h4-font-size);
+    line-height: var(--hte-h4-line-height);
+  }
+  
+  .pets-dish-buttons {
+    margin-bottom: var(--spacing-20);
+  }
+  
+  .pets-dish-button {
+    padding: var(--spacing-8) var(--spacing-12);
+    font-size: 14px;
+  }
+}
