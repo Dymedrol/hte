@@ -1,0 +1,30 @@
+{
+  "type": "SimpleWidgetType",
+  "name": {
+    "ru": "HTE Quiz popup"
+  },
+  "handle": "hte-quiz-popup",
+  "description": {
+    "ru": "HTE Quiz popup"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "header",
+    "before_content",
+    "content",
+    "sidebar",
+    "after_content",
+    "footer",
+    "outside",
+    "top_panel",
+    "bottom_panel"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ]
+}

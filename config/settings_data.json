@@ -41,7 +41,7 @@
       "heading-ratio": 1.5,
       "heading-weight": 600,
       "color-preset": "custom",
-      "_settings_version": 1755690035.047875,
+      "_settings_version": 1755796267.1172938,
       "sidebar_index_show": false,
       "sidebar_page.system-template-4d22c9296573bfd50d31_position": "left",
       "sidebar_page.system-template-1edb10153fcbc13c7cae_position": "left",
@@ -60,7 +60,9 @@
       "sidebar_page.system-template-d6802ad252ebbf5e0feb_position": "left",
       "sidebar_page.system-template-a0238a3b4ba0d2ee9394_position": "left",
       "sidebar_page.system-template-6ebff2764c255818d47a_position": "left",
-      "sidebar_page.system-template-06f7c3ae08b30cf3d660_position": "left"
+      "sidebar_page.system-template-06f7c3ae08b30cf3d660_position": "left",
+      "sidebar_collection.system-template-bbc95eaa70c7a85c4eeb_position": "left",
+      "collection.system-template-bbc95eaa70c7a85c4eeb_count": 12
     }
   },
   "remote_theme_id": 653,
