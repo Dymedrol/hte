@@ -156,12 +156,6 @@ function setupSlider(elements) {
     e.stopPropagation();
     updateGallery(currentIndex + 1);
   });
-  
-  // Add to cart button
-  addToCartBtn.addEventListener('click', function() {
-    // Simple cart functionality
-    alert('Товар добавлен в корзину!');
-  });
 }
 
 // Инициализация при загрузке DOM
