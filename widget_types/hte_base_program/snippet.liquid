@@ -230,16 +230,14 @@
   <div>
     <input type="text" name="delivery_dates_massive" value="">
   </div>
+  
+  <div>
+    <input type="text" name="comment" value="">
+  </div> 
 
-  <button type="submit" data-item-add>
+  <button type="submit" id="addToCartBtn">
     Добавить в корзину
   </button>
-
-  {% if account.quick_checkout.enabled %}
-    <button data-quick-checkout="[data-product-id='{{ product.id }}']">
-      Купить в 1 клик
-    </button>
-  {% endif %}
 </form>
 
 <script>

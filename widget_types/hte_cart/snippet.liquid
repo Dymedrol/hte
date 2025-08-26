@@ -16,129 +16,190 @@
           <!-- Левая колонка с товарами -->
           <div class="cart-items-left">
             {% for item in cart.items %}
-              <div class="cart-item" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}">
-                <div class="item-counter" style="display: none;">
-                  <div class="counter" data-quantity>
-                    <button
-                      type="button"
-                      data-quantity-change="-1"
-                      class="counter-button button button_size-s is-count-down ">
-                      <span class="icon icon-minus"></span>
-                    </button>
-                    <input
-                      type="text"
-                      value="{{ item.quantity }}"
-                      name="cart[quantity][{{item.id}}]"
-                      class="counter-input form-control form-control_size-s" />
-                    <button
-                      type="button"
-                      data-quantity-change="1"
-                      class="counter-button button button_size-s is-count-up ">
-                      <span class="icon icon-plus"></span>
-                    </button>
+              {% if item.product.canonical_collection.url contains 'program' %}
+                <div class="cart-item cart-item_program" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}" data-sss="{{ item.product.canonical_collection.url }}">
+                  <div class="item-counter" style="display: none;">
+                    <div class="counter" data-quantity>
+                      <button
+                        type="button"
+                        data-quantity-change="-1"
+                        class="counter-button button button_size-s is-count-down ">
+                        <span class="icon icon-minus"></span>
+                      </button>
+                      <input
+                        type="text"
+                        value="{{ item.quantity }}"
+                        name="cart[quantity][{{item.id}}]"
+                        class="counter-input form-control form-control_size-s" />
+                      <button
+                        type="button"
+                        data-quantity-change="1"
+                        class="counter-button button button_size-s is-count-up ">
+                        <span class="icon icon-plus"></span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div class="cart-item-content">
-                  <div class="cart-item-main">
-                    <div class="cart-item-image" style="background-image: url({{ item.variant.first_image.medium_url }});"></div>
-                    
-                    <div class="cart-item-details">
-                      <div class="cart-item-top">
-                        <div class="cart-item-header">
-                          <div class="cart-item-info">
-                            <h2 class="cart-item-title">{{ item.product.title }}</h2>
-                            {% if item.variant.option_values.size %}
-                              <div class="cart-item-tags">
-                                {% for option_value in item.variant.option_values %}
-                                  <span class="tag">{{ option_value.title }}</span>
-                                {% endfor %}                                          
-                              </div>
-                            {% endif %}
+                  <div class="cart-item-content">
+                    <div class="cart-item-main">
+                      <div class="cart-item-image" style="background-image: url({{ item.variant.first_image.medium_url }});"></div>
+                      
+                      <div class="cart-item-details">
+                        <div class="cart-item-top">
+                          <div class="cart-item-header">
+                            <div class="cart-item-info">
+                              <h2 class="cart-item-title">{{ item.product.title }}</h2>
+                              {% if item.variant.option_values.size %}
+                                <div class="cart-item-tags">
+                                  {% for option_value in item.variant.option_values %}
+                                    <span class="tag">{{ option_value.title }}</span>
+                                  {% endfor %}                                          
+                                </div>
+                              {% endif %}
+                            </div>
+                            <button class="remove-item-btn js-item-delete" aria-label="Удалить товар" data-item-delete="{{ item.id }}" type="submit">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 6L18 18M6 18L18 6" stroke="#9D9D9D" stroke-width="1.5"/>
+                              </svg>
+                            </button>
                           </div>
-                          <button class="remove-item-btn js-item-delete" aria-label="Удалить товар" data-item-delete="{{ item.id }}" type="submit">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                              <path d="M6 6L18 18M6 18L18 6" stroke="#9D9D9D" stroke-width="1.5"/>
-                            </svg>
-                          </button>
+                          
+                          <div class="cart-meal-options" data-item-accessories>
+                            {% for accessory_line in item.accessory_lines %}
+                              <div class="meal-option-item">
+                                <span data-item-accessory-value-id="{{ accessory_line.accessory_value_id }}">{{ accessory_line.accessory_value_name }}</span>
+                              </div>
+                            {% endfor %}
+                            <div class="allergen-item">
+                              <span>Исключения: TODO</span>
+                            </div>
+                          </div>
                         </div>
                         
-                        <div class="cart-meal-options" data-item-accessories>
-                          {% for accessory_line in item.accessory_lines %}
-                            <div class="meal-option-item">
-                              <span data-item-accessory-value-id="{{ accessory_line.accessory_value_id }}">{{ accessory_line.accessory_value_name }}</span>
+                        <div class="cart-item-toggles">
+                          <div class="toggle-item">
+                            <div class="toggle-switch">
+                              <div class="toggle-circle"></div>
                             </div>
-                          {% endfor %}
-                          <div class="allergen-item">
-                            <span>Исключения: TODO</span>
+                            <span>Исключить воду</span>
                           </div>
+                          <div class="toggle-item">
+                            <div class="toggle-switch">
+                              <div class="toggle-circle"></div>
+                            </div>
+                            <span>Убрать приборы</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="cart-item-bottom">
+                      <div class="delivery-info">
+                        <div class="delivery-row">
+                          <div class="info-icon" data-tooltip="Все дни кроме 18 августа, 19 августа">i</div>
+                          <span class="delivery-label" id="delivery-date-label">Доставка:</span>
+                          <span class="delivery-value">TODO</span>
+                        </div>
+                        <div class="delivery-row">
+                          <div class="info-icon" data-tooltip="Доставка этого рациона осуществляется каждые 2 часа">i</div>
+                          <span class="delivery-label" id="delivery-time-label">Время:</span>
+                          <span class="delivery-value">TODO</span>
                         </div>
                       </div>
                       
-                      <div class="cart-item-toggles">
-                        <div class="toggle-item">
-                          <div class="toggle-switch">
-                            <div class="toggle-circle"></div>
-                          </div>
-                          <span>Исключить воду</span>
+                      <div class="price-breakdown">
+                        <div class="price-row">
+                          <span class="price-label">Программа:</span>
+                          <span class="price-value">
+                            <span class="price-amount">{{ item.variant.price | money }}</span>
+                            <span class="price-multiplier"> * {{ item.quantity }} дней = </span>
+                            <span class="price-total">{{ item.variant.price | times: item.quantity | money }}</span>
+                          </span>
                         </div>
-                        <div class="toggle-item">
-                          <div class="toggle-switch">
-                            <div class="toggle-circle"></div>
-                          </div>
-                          <span>Убрать приборы</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="cart-item-bottom">
-                    <div class="delivery-info">
-                      <div class="delivery-row">
-                        <div class="info-icon" data-tooltip="Все дни кроме 18 августа, 19 августа">i</div>
-                        <span class="delivery-label" id="delivery-date-label">Доставка:</span>
-                        <span class="delivery-value">TODO</span>
-                      </div>
-                      <div class="delivery-row">
-                        <div class="info-icon" data-tooltip="Доставка этого рациона осуществляется каждые 2 часа">i</div>
-                        <span class="delivery-label" id="delivery-time-label">Время:</span>
-                        <span class="delivery-value">TODO</span>
-                      </div>
-                    </div>
-                    
-                    <div class="price-breakdown">
-                      <div class="price-row">
-                        <span class="price-label">Программа:</span>
-                        <span class="price-value">
-                          <span class="price-amount">{{ item.variant.price | money }}</span>
-                          <span class="price-multiplier"> * {{ item.quantity }} дней = </span>
-                          <span class="price-total">{{ item.variant.price | times: item.quantity | money }}</span>
-                        </span>
-                      </div>
 
-                      {% assign total_accessories_price = 0 %}
-                      {% assign accessories_prices = item.accessory_lines | map: 'accessory_value_price' %}
-                      {% for price in accessories_prices %}
-                        {% assign total_accessories_price = total_accessories_price | plus: price %}
-                      {% endfor %}
-                      <div class="price-row">
-                        <span class="price-label">Допы:</span>
-                        <span class="price-value">
-                          <span class="price-amount">{{ total_accessories_price | times: item.quantity | money }}</span>
-                        </span>
-                      </div>
-                      <div class="price-row total">
-                        <span class="price-label">Итого:</span>
-                        <span class="price-value">
-                          <span class="price-amount">{{ item.total_price | money }}</span>
-                        </span>
-                      </div>
-                      <div class="mobile-remove-link">
-                        <a href="#" class="remove-item-link">Удалить из корзины</a>
+                        {% assign total_accessories_price = 0 %}
+                        {% assign accessories_prices = item.accessory_lines | map: 'accessory_value_price' %}
+                        {% for price in accessories_prices %}
+                          {% assign total_accessories_price = total_accessories_price | plus: price %}
+                        {% endfor %}
+                        <div class="price-row">
+                          <span class="price-label">Допы:</span>
+                          <span class="price-value">
+                            <span class="price-amount">{{ total_accessories_price | times: item.quantity | money }}</span>
+                          </span>
+                        </div>
+                        <div class="price-row total">
+                          <span class="price-label">Итого:</span>
+                          <span class="price-value">
+                            <span class="price-amount">{{ item.total_price | money }}</span>
+                          </span>
+                        </div>
+                        <div class="mobile-remove-link">
+                          <a href="#" class="remove-item-link">Удалить из корзины</a>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              {% else %}
+                <div class="cart-item">
+                  <div class="cart-item-content">
+                      <div class="cart-item-main">
+                          <div class="cart-item-image" style="background-image: url({{ item.variant.first_image.medium_url }});"></div>
+                          
+                          <div class="cart-item-details">
+                              <div class="cart-item-top">
+                                  <div class="cart-item-header">
+                                      <div class="cart-item-info">
+                                          <h2 class="cart-item-title">СМУЗИ МОЛОКО МИНДАЛЬНОЕ, КЛУБНИКА, ГРУША, АПЕЛЬСИН</h2>
+                                      </div>
+                                      <button class="remove-item-btn" aria-label="Удалить товар">
+                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                              <path d="M6 6L18 18M6 18L18 6" stroke="#9D9D9D" stroke-width="1.5"></path>
+                                          </svg>
+                                      </button>
+                                  </div>
+                                  
+                                  <div class="cart-item-extra-info">
+                                      <div class="cart-item-quantity">
+                                          <div class="quantity-controls">
+                                              <button class="quantity-btn minus">-</button>
+                                              <span class="quantity-value">1 шт.</span>
+                                              <button class="quantity-btn plus">+</button>
+                                          </div>
+                                                                              <div class="quantity-price">
+                                          <span class="price-total">Итого: <span class="price-amount">700 ₽</span></span>
+                                      </div>
+                                      </div>
+                                      
+                                                                      <div class="cart-item-program-info">
+                                      <div class="program-badge with-icon">
+                                          <span>Добавить в программу</span>
+                                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                              <path d="M4 6L8 10L12 6" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                          </svg>
+                                          <div class="program-dropdown">
+                                              <div class="program-list">
+                                                  <div class="program-item" data-program="premium">ПРЕМИУМ</div>
+                                                  <div class="program-item" data-program="base">БАЗА</div>
+                                                  <div class="program-item" data-program="start">СТАРТ</div>
+                                                  <div class="program-item" data-program="sport">СПОРТ</div>
+                                                  <div class="program-item" data-program="detox">ДЕТОКС</div>
+                                                  <div class="program-item" data-program="perezagruzka">ПЕРЕЗАГРУЗКА</div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="program-note">
+                                          <div class="info-icon" data-tooltip="Добавьте это блюдо из меню в свою программу, чтобы получать его вместе с выбранным рационом" style="--tooltip-left: 50%; --tooltip-transform: translateX(-50%);">i</div>
+                                          <span>Добавьте это блюдо из меню в свою программу, чтобы получать его вместе с выбранным рационом</span>
+                                      </div>
+                                  </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
         

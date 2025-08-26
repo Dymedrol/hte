@@ -534,6 +534,7 @@ function logSelectedConfiguration() {
         // Если нет выбранных аллергенов, показываем текст из конфигурации
         allergensText = config.allergens.texts.allergenText;
       }
+      
     }
   }
     console.log(`4. ⚠️ Выбранные аллергены: ${allergensText}`);
@@ -776,6 +777,18 @@ function initTimeSlotEventListeners() {
     timeItems.forEach(item => {
       item.addEventListener('click', () => {
         const timeValue = item.getAttribute('data-time');
+        
+        // Убираем класс selected со всех временных слотов
+        document.querySelectorAll('.time-slot').forEach(slot => {
+          slot.classList.remove('selected');
+        });
+        
+        // Добавляем класс selected к выбранному временному слоту
+        const timeSlot = item.querySelector('.time-slot');
+        if (timeSlot) {
+          timeSlot.classList.add('selected');
+        }
+        
         if (deliveryTimeInput) {
           deliveryTimeInput.value = timeValue;
           selectedDeliveryTime = timeValue;
@@ -841,6 +854,97 @@ function updateDeliveryInfo() {
     deliveryInfoElement.textContent = deliveryText;
     deliveryInfoElement.classList.remove('updating');
   }, 150); // Половина времени анимации для плавности
+}
+
+// Функция для формирования строки с информацией о заказе
+function generateOrderInfoString() {
+  console.log('🔍 Формирование строки с информацией о заказе...');
+  console.log('📅 window.selectedDeliveryDates:', window.selectedDeliveryDates);
+  console.log('⏰ window.selectedDeliveryTime:', window.selectedDeliveryTime);
+  
+  const parts = [];
+  
+  // 1. Выбранные аллергены
+  let allergensText = 'Не выбрано';
+  const config = window.PRODUCT_CONFIG || window.PROGRAM_CONFIG;
+  
+  if (config?.allergens) {
+    if (config.allergens.enabled === false) {
+      allergensText = config.allergens.texts?.allergenText || 'Аллергены не исключаются';
+    } else {
+      // Получаем выбранные аллергены из DOM элементов
+      const selectedAllergenItems = document.querySelectorAll('.allergen-item.selected');
+      if (selectedAllergenItems.length > 0) {
+        const allergenNames = Array.from(selectedAllergenItems).map(item => {
+          const allergenName = item.querySelector('.allergen-name');
+          return allergenName ? allergenName.textContent : 'Неизвестный аллерген';
+        });
+        allergensText = allergenNames.join(', ');
+      } else if (config.allergens.texts?.allergenText) {
+        // Если нет выбранных аллергенов, показываем текст из конфигурации
+        allergensText = config.allergens.texts.allergenText;
+      }
+    }
+  }
+  parts.push(`Аллергены: ${allergensText}`);
+  
+  // 2. Даты доставки
+  let deliveryDatesText = 'Не выбрано';
+  if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
+    const formattedDates = window.selectedDeliveryDates.map(date => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    });
+    
+    if (formattedDates.length === 1) {
+      deliveryDatesText = formattedDates[0];
+    } else {
+      deliveryDatesText = `${formattedDates[0]} - ${formattedDates[formattedDates.length - 1]}`;
+    }
+  }
+  parts.push(`Даты доставки: ${deliveryDatesText}`);
+  
+  // 3. Время доставки
+  let deliveryTimeText = 'Не выбрано';
+  if (window.selectedDeliveryTime) {
+    deliveryTimeText = window.selectedDeliveryTime;
+  } else {
+    const selectedTimeSlot = document.querySelector('.time-slot.selected');
+    if (selectedTimeSlot) {
+      deliveryTimeText = selectedTimeSlot.textContent.trim();
+    } else if (config?.deliveryTimeSlots && config.deliveryTimeSlots.length > 0) {
+      // Если время не выбрано, берем первое доступное
+      const firstSlot = config.deliveryTimeSlots[0];
+      deliveryTimeText = firstSlot.value;
+    }
+  }
+  parts.push(`Время доставки: ${deliveryTimeText}`);
+  
+  // 4. Массив дат
+  let datesArrayText = '[]';
+  if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
+    const formattedDatesArray = window.selectedDeliveryDates.map(date => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `"${day}.${month}.${year}"`;
+    });
+    datesArrayText = `[${formattedDatesArray.join(', ')}]`;
+  }
+  parts.push(`Массив дат: ${datesArrayText}`);
+  
+  // Объединяем все части с разделителем "|"
+  return parts.join('|');
+}
+
+// Инициализируем глобальные переменные
+if (!window.selectedDeliveryDates) {
+  window.selectedDeliveryDates = [];
+}
+if (!window.selectedDeliveryTime) {
+  window.selectedDeliveryTime = null;
 }
 
 // Функция инициализации попапа
@@ -955,7 +1059,7 @@ function initQuantityPopup() {
   // Функция для обновления дат доставки
   function updateDeliveryDates() {
     // Очищаем массив дат
-    deliveryDates = [];
+    window.selectedDeliveryDates = [];
     
     // Если есть выбранные даты в календаре
     if (window.calendarDaysCount > 0 && window.calendarStartDate && window.calendarEndDate) {
@@ -972,12 +1076,14 @@ function initQuantityPopup() {
           );
         
         if (!isExcluded) {
-          deliveryDates.push(new Date(currentDate));
+          window.selectedDeliveryDates.push(new Date(currentDate));
         }
         
         currentDate.setDate(currentDate.getDate() + 1);
       }
     }
+    
+    console.log('✅ Обновлены даты доставки:', window.selectedDeliveryDates);
   }
   
   // Делаем функцию глобально доступной
@@ -1320,6 +1426,7 @@ function initQuantityPopup() {
       day.classList.remove('selected', 'range-start', 'range-end', 'range-middle', 'range-preview', 'excluded');
     });
     
+    
     // Сбрасываем состояние календаря
     if (window.calendarInstance) {
       window.calendarInstance.startDate = null;
@@ -1327,6 +1434,8 @@ function initQuantityPopup() {
       window.calendarInstance.excludedDates = [];
       window.calendarInstance.activeInput = 'start';
     }
+
+
     
     // Обновляем даты доставки
     if (window.updateDeliveryDates) {
@@ -1397,9 +1506,14 @@ function initQuantityPopup() {
   
   // Добавляем обработчик клика для кнопки "Заказать доставку"
   const addToCartPopupBtn = document.getElementById('addToCartPopupBtn');
+
+  
   if (addToCartPopupBtn) {
     addToCartPopupBtn.addEventListener('click', () => {
       console.log('🛒 Кнопка "Заказать доставку" нажата');
+      
+      // Формируем строку с информацией о заказе
+      const orderInfoString = generateOrderInfoString();
       
       // Находим форму hte-product-form
       const form = document.getElementById('hte-product-form');
@@ -1408,10 +1522,19 @@ function initQuantityPopup() {
         return;
       }
       
+      // Находим поле comment и устанавливаем значение
+      const commentInput = form.querySelector('input[name="comment"]');
+      if (commentInput) {
+        commentInput.value = orderInfoString;
+        console.log('✅ Информация о заказе добавлена в поле comment:', orderInfoString);
+      } else {
+        console.log('❌ Поле comment не найдено в форме');
+      }
+      
       // Находим кнопку с атрибутом data-item-add в форме
-      const addToCartBtn = form.querySelector('[data-item-add]');
+      const addToCartBtn = form.querySelector('#addToCartBtn');
       if (!addToCartBtn) {
-        console.log('❌ Кнопка с атрибутом data-item-add не найдена в форме');
+        console.log('❌ Кнопка с атрибутом #addToCartBtn не найдена в форме');
         return;
       }
       
@@ -1419,26 +1542,12 @@ function initQuantityPopup() {
       addToCartBtn.click();
       
       console.log('✅ Кнопка добавления в корзину программно нажата');
-      
-      // Делаем переход на страницу /cart_items
-      setTimeout(() => {
-        window.location.href = '/cart_items';
-        console.log('✅ Переход на страницу /cart_items выполнен');
-      }, 100);
     });
     console.log('✅ Обработчик клика для кнопки "Заказать доставку" добавлен');
   } else {
     console.log('❌ Кнопка addToCartPopupBtn не найдена');
   }
 }
-
-// Инициализация при загрузке DOM - УБИРАЕМ АВТОМАТИЧЕСКУЮ ИНИЦИАЛИЗАЦИЮ
-// document.addEventListener('DOMContentLoaded', () => {
-//   // Ждем загрузки компонентов
-//   setTimeout(() => {
-//     initQuantityPopup();
-//   }, 100);
-// });
 
 // Делаем функцию глобально доступной для вызова из других скриптов
 window.initQuantityPopup = initQuantityPopup;
@@ -1468,4 +1577,45 @@ window.markGlutenCheckbox = markGlutenCheckbox;
 window.markBreakfastCheckbox = markBreakfastCheckbox;
 
 // Делаем функцию для отметки чекбокса "Убрать ужин и перекус" глобально доступной
-window.markDinnerCheckbox = markDinnerCheckbox; 
+window.markDinnerCheckbox = markDinnerCheckbox;
+
+// Делаем функцию для формирования строки с информацией о заказе глобально доступной
+window.generateOrderInfoString = generateOrderInfoString;
+
+// Добавляем обработчик для формы hte-product-form
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('hte-product-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      // Формируем строку с информацией о заказе
+      const orderInfoString = generateOrderInfoString();
+      
+      // Находим поле comment и устанавливаем значение
+      const commentInput = form.querySelector('input[name="comment"]');
+      if (commentInput) {
+        commentInput.value = orderInfoString;
+        console.log('✅ Информация о заказе добавлена в поле comment при отправке формы:', orderInfoString);
+      } else {
+        console.log('❌ Поле comment не найдено в форме');
+      }
+    });
+    
+    // Добавляем обработчик для кнопки с id addToCartBtn
+    const addToCartBtn = form.querySelector('#addToCartBtn');
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener('click', function(e) {
+        // Формируем строку с информацией о заказе
+        const orderInfoString = generateOrderInfoString();
+        
+        // Находим поле comment и устанавливаем значение
+        const commentInput = form.querySelector('input[name="comment"]');
+        if (commentInput) {
+          commentInput.value = orderInfoString;
+          console.log('✅ Информация о заказе добавлена в поле comment при клике на кнопку:', orderInfoString);
+        } else {
+          console.log('❌ Поле comment не найдено в форме');
+        }
+      });
+    }
+  }
+}); 
