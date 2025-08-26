@@ -738,9 +738,6 @@
 }
 
 /* Исключительный случай для pixel perfect */
-.quantity-btn.plus {
-    padding-top: 7px;
-}
 
 .quantity-btn:hover {
     border-color: var(--hte-black);
@@ -756,6 +753,18 @@
     line-height: var(--hte-small-text-16-line-height);
     min-width: 50px;
     text-align: center;
+}
+
+.quantity-input {
+    width: fit-content;
+    border: none;
+    color: var(--hte-black);
+    font-family: var(--hte-small-text-16-font-family);
+    font-size: var(--hte-small-text-16-font-size);
+    font-weight: var(--hte-small-text-16-font-weight);
+    line-height: var(--hte-small-text-16-line-height);
+    text-align: center;
+    field-sizing: content;
 }
 
 .quantity-price {
