@@ -24,7 +24,8 @@
 }
 
 .breadcrumb-link {
-  text-decoration: none;
+  color: var(--hte-grey-text);
+  text-decoration: underline;
   transition: color 0.3s ease;
 }
 
