@@ -1549,6 +1549,10 @@ function initQuantityPopup() {
   }
 }
 
+EventBus.subscribe('add_items:insales:cart', function (data) {
+  window.location.href = '/cart_items';
+});
+
 // Делаем функцию глобально доступной для вызова из других скриптов
 window.initQuantityPopup = initQuantityPopup;
 
