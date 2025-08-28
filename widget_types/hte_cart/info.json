@@ -17,8 +17,8 @@
   "widget_category_handle": "cart",
   "libraries": [
     "micromodal",
-    "jquery",
     "commonjs_v2",
+    "jquery",
     "my-layout"
   ]
 }

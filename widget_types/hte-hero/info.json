@@ -16,8 +16,8 @@
   "generation": 4,
   "widget_category_handle": "banner",
   "libraries": [
-    "jquery",
     "commonjs_v2",
+    "jquery",
     "my-layout"
   ]
 }

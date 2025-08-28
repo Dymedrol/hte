@@ -13,10 +13,10 @@
   "generation": 4,
   "widget_category_handle": "headers",
   "libraries": [
+    "commonjs_v2",
     "vanilla-lazyload",
     "cut-list",
     "jquery",
-    "commonjs_v2",
     "body-scroll-lock",
     "my-layout"
   ]

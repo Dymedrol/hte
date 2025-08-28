@@ -16,8 +16,8 @@
   "generation": 4,
   "widget_category_handle": "footers",
   "libraries": [
-    "jquery",
     "commonjs_v2",
+    "jquery",
     "my-layout"
   ]
 }
