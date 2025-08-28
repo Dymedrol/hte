@@ -17,7 +17,7 @@
           <div class="cart-items-left">
             {% for item in cart.items %}
               {% if item.product.canonical_collection.url contains 'program' %}
-                <div class="cart-item cart-item_program" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}" data-canonical-collection="{{ item.product.canonical_collection.url }}">
+                <div class="cart-item cart-item_program" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}" data-canonical-collection="{{ item.product.canonical_collection.url }}" data-product-handle="{{ item.product.handle }}">
                   <div class="item-counter" style="display: none;">
                     <div class="counter" data-quantity>
                       <button
@@ -39,6 +39,7 @@
                       </button>
                     </div>
                   </div>
+                  <input data-comment type="text" name="cart[order_line_comments][{{ item.id }}]" value='{{ item.comment }}' style="display: none;"/>
                   <div class="cart-item-content">
                     <div class="cart-item-main">
                       <div class="cart-item-image" style="background-image: url({{ item.variant.first_image.medium_url }});"></div>
