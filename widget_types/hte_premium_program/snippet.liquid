@@ -240,7 +240,9 @@
   </button>
 </form>
 
+
 <script>
+    {% comment %}
     window.PROGRAM_CONFIG = {
         "programName": "ПРЕМИУМ",
         "startDate": "2025-01-01",
@@ -333,8 +335,8 @@
             "price": 0
             }
         ]
-    } 
-
+    }
+          
     window.PROGRAM_DISHES_DATA = {
         "1000-classic": {
             "programName": "ПРЕМИУМ",
@@ -2262,6 +2264,8 @@
         }
     }
 
+    {% endcomment %}
+
     window.ALLERGENS_CONFIG = {
         "data": [
             {
@@ -2773,7 +2777,13 @@
     }
 
     window.currentTime = new Date(2025, 8, 1, 0, 0, 0);
-</script>    
+</script> 
+
+
+<!-- xxx yyy -->
+<script>{{ widget_settings.json-program_config |  strip_html }}</script>
+
+<script>{{ widget_settings.json-program_dishes-data |  strip_html }}</script>
 
 <!-- Основные скрипты -->
 <script src="{{ '02-allergens-config.js' | asset_url }}"></script>

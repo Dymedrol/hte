@@ -70,19 +70,22 @@
                                 <span data-item-accessory-value-id="{{ accessory_line.accessory_value_id }}">{{ accessory_line.accessory_value_name }}</span>
                               </div>
                             {% endfor %}
-                              <div class="allergen-item">
-                               <span>Исключения: 
-                                 {% assign comment_parts = item.comment | split: '|' %}
-                                 {% for part in comment_parts %}
-                                   {% if part contains 'Аллергены:' %}
-                                     {% assign allergen_part = part | split: 'Аллергены:' %}
-                                     {% if allergen_part.size > 1 %}
-                                       {{ allergen_part[1] | strip }}
-                                     {% endif %}
-                                   {% endif %}
-                                 {% endfor %}
-                               </span>
-                             </div>
+                              {% assign comment_parts = item.comment | split: '|' %}
+                              {% assign allergen_text = '' %}
+                              {% for part in comment_parts %}
+                                {% if part contains 'Аллергены:' %}
+                                  {% assign allergen_part = part | split: 'Аллергены:' %}
+                                  {% if allergen_part.size > 1 %}
+                                    {% assign allergen_text = allergen_part[1] | strip %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              
+                              {% unless allergen_text contains 'Аллерген не выбран' %}
+                                <div class="allergen-item">
+                                  <span>Исключения: {{ allergen_text }}</span>
+                                </div>
+                              {% endunless %}
                           </div>
                         </div>
                         

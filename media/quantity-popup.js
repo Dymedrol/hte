@@ -865,28 +865,36 @@ function generateOrderInfoString() {
   const parts = [];
   
   // 1. Выбранные аллергены
-  let allergensText = 'Не выбрано';
+  let allergensText = 'Аллерген не выбран';
   const config = window.PRODUCT_CONFIG || window.PROGRAM_CONFIG;
   
   if (config?.allergens) {
     if (config.allergens.enabled === false) {
       allergensText = config.allergens.texts?.allergenText || 'Аллергены не исключаются';
+      console.log('🔧 Аллергены отключены в конфигурации:', allergensText);
     } else {
       // Получаем выбранные аллергены из DOM элементов
       const selectedAllergenItems = document.querySelectorAll('.allergen-item.selected');
+      console.log('🔍 Найдено выбранных аллергенов:', selectedAllergenItems.length);
+      
       if (selectedAllergenItems.length > 0) {
         const allergenNames = Array.from(selectedAllergenItems).map(item => {
           const allergenName = item.querySelector('.allergen-name');
           return allergenName ? allergenName.textContent : 'Неизвестный аллерген';
         });
         allergensText = allergenNames.join(', ');
-      } else if (config.allergens.texts?.allergenText) {
-        // Если нет выбранных аллергенов, показываем текст из конфигурации
-        allergensText = config.allergens.texts.allergenText;
+        console.log('✅ Выбранные аллергены:', allergenNames);
+      } else {
+        // Если не выбран ни один аллерген, записываем "Аллерген не выбран"
+        allergensText = 'Аллерген не выбран';
+        console.log('❌ Не выбран ни один аллерген');
       }
     }
+  } else {
+    console.log('⚠️ Конфигурация аллергенов не найдена');
   }
   parts.push(`Аллергены: ${allergensText}`);
+  console.log('📝 Итоговый текст аллергенов:', allergensText);
   
   // 2. Даты доставки
   let deliveryDatesText = 'Не выбрано';
