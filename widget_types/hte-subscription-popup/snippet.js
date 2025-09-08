@@ -3,7 +3,7 @@ class SubscriptionPopupAutoManager {
   constructor() {
     this.storageKey = 'subscription_popup_closed';
     this.subscribedKey = 'subscription_popup_subscribed';
-    this.delayMs = 30000; // 30 секунд
+    this.delayMs = 10000; // 10 секунд
     this.rememberHours = 48; // 48 часов
     this.subscribedMonths = 6; // 6 месяцев (полгода)
     this.isInitialized = false;

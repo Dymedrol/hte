@@ -5,6 +5,7 @@
  */
 
 
+
 class ProductSection {
   constructor() {
     this.config = null;
@@ -67,6 +68,23 @@ class ProductSection {
       }
       
       // Создаем менеджеры
+      if (typeof DateManager === 'undefined') {
+        console.error('DateManager class not found');
+        return false;
+      }
+      if (typeof DishesManager === 'undefined') {
+        console.error('DishesManager class not found');
+        return false;
+      }
+      if (typeof PriceManager === 'undefined') {
+        console.error('PriceManager class not found');
+        return false;
+      }
+      if (typeof UIManager === 'undefined') {
+        console.error('UIManager class not found');
+        return false;
+      }
+      
       this.dateManager = new DateManager(this.config);
       this.dishesManager = new DishesManager(this.config, this.dateManager);
       this.priceManager = new PriceManager(this.config);
@@ -120,13 +138,23 @@ class ProductSection {
     const configCalories = this.config.getAvailableCalories();
     
     // Проверяем, есть ли множественные файлы данных (Premium случай)
-    if (window.ALL_DISHES_DATA && typeof window.ALL_DISHES_DATA === 'object' && !Array.isArray(window.ALL_DISHES_DATA)) {
+    if (window.PROGRAM_DISHES_DATA && typeof window.PROGRAM_DISHES_DATA === 'object' && !Array.isArray(window.PROGRAM_DISHES_DATA)) {
       // Premium случай: множественные файлы данных
-      const dataKeys = Object.keys(window.ALL_DISHES_DATA);
+      const dataKeys = Object.keys(window.PROGRAM_DISHES_DATA);
       // console.log(`Premium validation: found ${dataKeys.length} data files`);
       
       // Проверяем, что все комбинации калорийности и диеты загружены
-      const expectedKeys = Object.keys(this.config.PRODUCT_CONFIG?.dataFiles || {});
+      const configCalories = this.config.getAvailableCalories();
+      const configDiets = this.config.getAvailableDiets();
+      const expectedKeys = [];
+      
+      // Генерируем ожидаемые ключи на основе калорийности и диет
+      configCalories.forEach(calories => {
+        configDiets.forEach(diet => {
+          expectedKeys.push(`${calories}-${diet}`);
+        });
+      });
+      
       if (dataKeys.length !== expectedKeys.length) {
         return false;
       }
@@ -152,9 +180,9 @@ class ProductSection {
     let dishesDataToValidate;
     
     // Для Premium программы берем первый файл данных для валидации
-    if (this.config.PRODUCT_CONFIG?.dataFiles) {
-      const firstDataKey = Object.keys(this.config.dishesData)[0];
-      dishesDataToValidate = this.config.dishesData[firstDataKey];
+    if (window.PROGRAM_DISHES_DATA && typeof window.PROGRAM_DISHES_DATA === 'object') {
+      const firstDataKey = Object.keys(window.PROGRAM_DISHES_DATA)[0];
+      dishesDataToValidate = window.PROGRAM_DISHES_DATA[firstDataKey];
     } else {
       dishesDataToValidate = this.config.dishesData;
     }

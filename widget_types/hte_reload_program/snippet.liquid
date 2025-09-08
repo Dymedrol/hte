@@ -236,182 +236,21 @@
 </form>
 
 <script>
-    window.PROGRAM_CONFIG = {
-      "programName": "ПЕРЕЗАГРУЗКА",
-      "startDate": "2025-01-01",
-      "deliverySchedule": "every-day",
-      "basePrice": 0,
-      "deliveryTimeSlots": [
-        {
-          "value": "06:00-07:00",
-          "label": "06:00 — 07:00"
-        },
-        {
-          "value": "07:00-08:00",
-          "label": "07:00 — 08:00"
-        },
-        {
-          "value": "08:00-09:00",
-          "label": "08:00 — 09:00"
-        },
-        {
-          "value": "09:00-10:00",
-          "label": "09:00 — 10:00"
-        }
-      ],
-      "description": {
-        "title": "ДЛЯ ТЕХ, КТО ХОЧЕТ ПОЧУВСТВОВАТЬ СЕБЯ БОДРЕЕ, ЛЕГЧЕ И УВИДЕТЬ РЕЗУЛЬТАТ",
-        "text": "Короткий курс для быстрого перезапуска организма. За 10 дней вы получите не только эффективное и безопасное снижение веса, но и восстановите энергию. Каждый приём пищи — сочетание цельных продуктов, не вызывающих скачков сахара. Рацион обеспечивает стабильный уровень глюкозы. Уникальность программы — в полном отсутствии десертов и смарт-комбинациях, которые позволяют достичь результатов мягко и без стресса."
-      },
-      "dataFiles": {
-        "1300-classic": "data/perezagruzka/perezagruzka-1300-classic.json"
-      },
-      "allergens": {
-        "enabled": false,
-        "maxAllergens": 0,
-        "allergenPrice": 0,
-        "freeAllergenIds": [],
-        "texts": {
-          "allergenText": "Аллергены не исключаются"
-        }
-      },
-      "calorieOptions": [
-        {
-          "value": "1300",
-          "label": "1300",
-          "unit": "ккал",
-          "price": 5800
-        }
-      ],
-      "dietTypes": [
-        {
-          "value": "classic",
-          "label": "Классика",
-          "price": 0
-        }
-      ]
-    }
-
-    window.PROGRAM_DISHES_DATA = {
-        "1300-classic": {
-            "programName": "ПЕРЕЗАГРУЗКА",
-            "calorieOption": "1300",
-            "dietType": "classic",
-            "totalDays": 3,
-            "mealOptions": [],
-            "dishesByDay": {
-                "day-1": {
-                    "dishes": [
-                        {
-                            "id": 1,
-                            "name": "Перезагрузка 1300 Классика - Лосось с киноа и овощами",
-                            "image": "https://static.insales-cdn.com/files/1/1529/96421369/original/reload_1.jpg",
-                            "nutrition": "580,48,22,28",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        },
-                        {
-                            "id": 2,
-                            "name": "Омлет с авокадо и шпинатом",
-                            "image": "https://static.insales-cdn.com/files/1/1545/96421385/original/reload_2.jpg",
-                            "nutrition": "520,42,28,18",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        },
-                        {
-                            "id": 3,
-                            "name": "Салат с креветками и авокадо",
-                            "image": "https://static.insales-cdn.com/files/1/1537/96421377/original/reload_3.jpg",
-                            "nutrition": "480,40,20,26",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        }
-                    ]
-                },
-                "day-2": {
-                    "dishes": [
-                        {
-                            "id": 4,
-                            "name": "Индейка с брокколи и киноа",
-                            "image": "https://static.insales-cdn.com/files/1/2945/90614657/original/dishes-5.jpg",
-                            "nutrition": "560,52,18,26",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        },
-                        {
-                            "id": 5,
-                            "name": "Греческий йогурт с ягодами и орехами",
-                            "image": "https://static.insales-cdn.com/files/1/2465/90614177/original/dishes-3.jpg",
-                            "nutrition": "460,38,22,30",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        },
-                        {
-                            "id": 6,
-                            "name": "Протеиновый коктейль с бананом",
-                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
-                            "nutrition": "420,38,16,32",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        }
-                    ]
-                },
-                "day-3": {
-                    "dishes": [
-                        {
-                            "id": 7,
-                            "name": "Куриная грудка с овощами",
-                            "image": "https://static.insales-cdn.com/files/1/2513/90614225/original/dishes-1.jpg",
-                            "nutrition": "540,50,20,24",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        },
-                        {
-                            "id": 8,
-                            "name": "Творожный пудинг с медом",
-                            "image": "https://static.insales-cdn.com/files/1/2937/90614649/original/dishes-6.jpg",
-                            "nutrition": "320,30,16,22",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        },
-                        {
-                            "id": 9,
-                            "name": "Ореховая смесь с сухофруктами",
-                            "image": "https://static.insales-cdn.com/files/1/2809/90614521/original/dishes-4.jpg",
-                            "nutrition": "280,26,14,18",
-                            "isBreakfast": false,
-                            "isSnack": false,
-                            "isDinner": false,
-                            "isSoup": false
-                        }
-                    ]
-                }
-            }
-        }
-    };
-
     window.ALLERGENS_CONFIG = {
 
     };
 
-    window.currentTime = new Date(2025, 8, 1, 0, 0, 0);
-</script>    
+    // Устанавливаем текущее время по московскому времени (UTC+3)
+    // Используется для корректного отображения дат в календаре и расчета доступности доставки
+    const moscowOffset = 3; // Москва UTC+3
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    window.currentTime = new Date(utc + (moscowOffset * 3600000));
+</script>
+
+<script>{{ widget_settings.json-program_config |  strip_html }}</script>
+
+<script>{{ widget_settings.json-program_dishes-data |  strip_html }}</script>
 
 <!-- Основные скрипты -->
 <script src="{{ '02-allergens-config.js' | asset_url }}"></script>

@@ -1,8 +1,9 @@
 /* Date Picker Calendar Styles - Идентичные стили существующего календаря */
 
 
+
 .date-picker-calendar {
-    position: absolute;
+    position: fixed;
     width: 241px;
     height: auto;
     background: var(--hte-white);

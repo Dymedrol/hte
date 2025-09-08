@@ -524,6 +524,9 @@
   .product-thumbnails {
     max-width: 100%;
   }
+  .breadcrumbs {
+    display:none!important;
+  }
 }
 
 @media (max-width: 360px) {

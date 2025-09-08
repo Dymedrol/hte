@@ -2,6 +2,7 @@
 
 /* Product Section */
 
+
 .product-section {
   display: flex;
   align-items: flex-start;
@@ -1275,6 +1276,9 @@
 
 /* Mobile Responsive for Popup */
 @media (max-width: 720px) {
+  .allergen-dropdown {
+    left: 0;
+  }
   .popup-content {
     flex-direction: column;
     padding: var(--spacing-15);
@@ -1310,6 +1314,10 @@
 
 /* Mobile Responsive Styles */
 @media (max-width: 1279px) {
+
+  .allergen-dropdown {
+    left: 0;
+  }
   .product-section {
     flex-direction: column;
     gap: var(--spacing-40);

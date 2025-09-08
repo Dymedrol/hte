@@ -1,0 +1,175 @@
+.co-checkout-title, .co-title,  .co-title--h1 {
+    font-family: var(--hte-h1-font-family);
+    font-size: var(--hte-h1-font-size) !important;
+    font-weight: var(--hte-h1-font-weight) !important;
+    color: var(--hte-black);
+    letter-spacing: var(--hte-h1-letter-spacing);
+    line-height: var(--hte-h1-line-height);
+    text-transform: var(--hte-h1-text-transform);
+    margin: 0;
+}
+
+.co-menu-toggle {
+    font-family: var(--hte-h1-font-family) !important;
+    font-size: var(--hte-h1-font-size) !important;
+    font-weight: var(--hte-h1-font-weight) !important;
+    color: var(--hte-black) !important;
+    letter-spacing: var(--hte-h1-letter-spacing) !important;
+    line-height: var(--hte-h1-line-height) !important;
+    text-transform: var(--hte-h1-text-transform) !important;
+}
+
+.co-input-label {
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    color: var(--hte-black);
+    letter-spacing: var(--hte-body-18-letter-spacing);
+    line-height: var(--hte-body-18-line-height);
+    opacity: var(--opacity-high);
+    margin: 0;
+}
+
+.co-input-field {
+    width: 100% !important;
+    height: 44px !important;
+    padding: var(--spacing-15) var(--spacing-15) !important;
+    background-color: var(--hte-white) !important;
+    border: var(--border-width-thin) solid var(--hte-dark-accent) !important;
+    border-radius: var(--border-radius-xxl) !important;
+    font-family: var(--hte-small-text-16-font-family) !important;
+    font-size: var(--hte-small-text-16-font-size) !important;
+    font-weight: var(--hte-small-text-16-font-weight) !important;
+    color: var(--hte-black) !important;
+    outline: none !important; 
+    resize: vertical !important;
+}
+
+.co-button {
+    height: 44px !important;
+    padding: 0 var(--spacing-20) !important;
+    background-color: var(--hte-black) !important;
+    border: var(--border-width-normal) solid var(--hte-black) !important;
+    border-radius: var(--border-radius-xxl) !important;
+    font-family: var(--hte-body-18-font-family) !important;
+    font-size: var(--hte-body-18-font-size) !important;
+    font-weight: var(--hte-body-18-font-weight) !important;
+    color: var(--hte-white) !important;
+    letter-spacing: var(--hte-body-18-letter-spacing) !important;
+    line-height: var(--hte-body-18-line-height) !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    text-decoration: none !important;
+    outline: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.co-button--link {
+    height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--hte-black) !important;
+    background-color: transparent !important;
+}
+
+.co-button--link:after {
+    border-bottom: 0 !important;
+}
+
+.co-menu-link {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--hte-black) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important;
+}
+
+.co-table {
+    border-radius: 20px !important;
+    background: var(--HTE---new-light-accent, #F9F9F4) !important;
+    border: 0 !important;
+    padding: 32px !important;
+}
+
+.co-table-row {
+    border-bottom: 0 !important;
+}
+
+.co-table-cell.co-table-cell--head {
+    padding: 28px 1rem;
+    color: var(--how---black, #1A1A1A) !important;
+    font-family: "Futura PT" !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 110% !important; /* 19.8px */
+    text-transform: uppercase !important;
+    border-bottom: 0 !important;
+}
+
+.co-table-row--striped:nth-child(even) {
+    background-color: transparent !important;
+}
+
+.co-table-cell.co-table-cell--body {
+    padding: 28px 1rem;
+    color: var(--how---black, #1A1A1A) !important;
+    font-family: "Futura PT" !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 120% !important; /* 21.6px */
+    letter-spacing: -0.18px !important;
+    border-bottom: 0 !important;
+}
+
+.co-order_history-total_title {
+    color: var(--how---black, #1A1A1A) !important;
+    font-family: "Futura PT" !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 120% !important; /* 21.6px */
+    letter-spacing: -0.18px !important;
+}
+
+.co-order_history-total_sum.co-price {
+    color: var(--how---black, #1A1A1A) !important;
+    font-family: "Futura PT" !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 120% !important; /* 21.6px */
+    letter-spacing: -0.18px !important;
+}
+
+.co-discount-title {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important;
+}
+
+.co-discount-description {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--hte-black) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important;
+}

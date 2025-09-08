@@ -4,6 +4,7 @@
  */
 
 
+
 class DishesManager {
   constructor(config, dateManager) {
     this.config = config;
@@ -68,13 +69,13 @@ class DishesManager {
    */
   getCurrentDishesData() {
     // Для Premium программы - получаем данные из соответствующего файла
-    if (this.config.PRODUCT_CONFIG?.dataFiles) {
+    if (window.PROGRAM_DISHES_DATA && typeof window.PROGRAM_DISHES_DATA === 'object') {
       const selectedCalories = this.getSelectedCalories();
       const selectedDiet = this.getSelectedDiet();
       
       if (selectedCalories && selectedDiet) {
         const dataKey = `${selectedCalories}-${selectedDiet}`;
-        const currentData = this.dishesData[dataKey];
+        const currentData = window.PROGRAM_DISHES_DATA[dataKey];
         
         if (currentData) {
           return currentData;
@@ -82,9 +83,9 @@ class DishesManager {
       }
       
       // Если не найдены текущие данные, возвращаем первый файл
-      const firstKey = Object.keys(this.dishesData)[0];
+      const firstKey = Object.keys(window.PROGRAM_DISHES_DATA)[0];
 
-      return this.dishesData[firstKey];
+      return window.PROGRAM_DISHES_DATA[firstKey];
     }
     
     // Для других программ - возвращаем dishesData как есть

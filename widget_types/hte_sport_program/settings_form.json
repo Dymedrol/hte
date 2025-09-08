@@ -5,29 +5,16 @@
       "name": "{{ messages.delimiter }}",
       "items": [
         {
-          "name": "delemeter",
-          "options": [
-            [
-              "/",
-              "1"
-            ],
-            [
-              "-",
-              "2"
-            ],
-            [
-              ">",
-              "3"
-            ],
-            [
-             ".",
-             "4"
-           ]
-          ],
-          "value": null,
-          "label": "{{ messages.delimiter }}",
-          "general": true,
-          "type": "select"
+          "name":"json-program_config",
+          "label":"PROGRAM_CONFIG",
+          "help":"Объект window.PROGRAM_CONFIG",
+          "type":"rich-text"
+        },
+        {
+          "name":"json-program_dishes-data",
+          "label":"PROGRAM_DISHES_DATA",
+          "help":"Объект window.PROGRAM_DISHES_DATA",
+          "type":"rich-text"
         }
       ]
     }

@@ -1,7 +1,7 @@
 /* Cart Items Section */
 .cart-items-section {
     width: 100%;
-    padding: var(--spacing-120) var(--spacing-40);
+    padding: 0 var(--spacing-40) var(--spacing-120) var(--spacing-40);
     background-color: var(--hte-white);
 }
 
@@ -350,6 +350,7 @@
     font-size: var(--hte-body-18-font-size);
     font-weight: var(--hte-body-18-font-weight);
     line-height: 120%;
+    text-align: left;
 }
 
 .delivery-value {
@@ -940,7 +941,7 @@
 
 @media (max-width: 720px) {
     .cart-items-section {
-        padding: var(--spacing-120) var(--spacing-20);
+        padding:  0 var(--spacing-20) var(--spacing-120) var(--spacing-20);
     }
     
     .cart-items-container {

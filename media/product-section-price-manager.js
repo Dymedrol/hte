@@ -4,6 +4,7 @@
  */
 
 
+
 class PriceManager {
   constructor(config) {
     this.config = config;
@@ -115,13 +116,13 @@ class PriceManager {
    */
   getCurrentMealOptions() {
     // Для Premium программы - получаем из соответствующего файла данных
-    if (this.config.PRODUCT_CONFIG?.dataFiles) {
+    if (window.PROGRAM_DISHES_DATA && typeof window.PROGRAM_DISHES_DATA === 'object') {
       const selectedCalories = this.getSelectedCalories();
       const selectedDiet = this.getSelectedDiet();
       
       if (selectedCalories && selectedDiet) {
         const dataKey = `${selectedCalories}-${selectedDiet}`;
-        const mealOptions = this.config.dishesData?.[dataKey]?.mealOptions;
+        const mealOptions = window.PROGRAM_DISHES_DATA?.[dataKey]?.mealOptions;
         
         if (mealOptions) {
           return mealOptions;

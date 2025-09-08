@@ -4,6 +4,7 @@
  */
 
 
+
 class ProductSectionConfig {
   constructor() {
     this.PRODUCT_CONFIG = null;
@@ -172,6 +173,20 @@ class ProductSectionConfig {
   }
 
   /**
+   * Получает доступные типы диет из конфигурации
+   * @returns {Array<string>} - массив доступных типов диет
+   */
+  getAvailableDiets() {
+    if (this.PRODUCT_CONFIG?.dietTypes) {
+      return this.PRODUCT_CONFIG.dietTypes.map(diet => diet.value);
+    } else if (this.dishesData?.dietType) {
+      // Для Premium данных, где dietType - единственное значение
+      return [this.dishesData.dietType];
+    }
+    return []; // нет данных
+  }
+
+  /**
    * Получает базовую цену
    * @returns {number} - базовая цена
    */
@@ -230,7 +245,7 @@ class ProductSectionConfig {
    */
   getProgramDuration() {
     // Для Premium программы - получаем длительность из первого файла данных
-    if (this.PRODUCT_CONFIG?.dataFiles) {
+    if (this.dishesData && typeof this.dishesData === 'object') {
       const firstDataKey = Object.keys(this.dishesData)[0];
       const firstData = this.dishesData[firstDataKey];
       if (firstData?.dishesByDay) {

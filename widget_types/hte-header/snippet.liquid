@@ -107,14 +107,17 @@
             <span class="program-name">Перезагрузка</span>
           </a>
           
-          <div class="program-card individual-card" onclick="location.href='/page/individual-program'">
+          <div class="program-card individual-card" onclick="location.href='/page/individual-program'" style="gap: var(--spacing-5);">
             <span class="program-name">Индивидуальная программа</span>
             <p class="program-description">Программа питания специально для вас, с учетом всех потребностей</p>
           </div>
         </div>
       </div>
-      <a href="#" class="nav-link">ПОЛЕЗНЫЙ МАГАЗИН</a>
+      <a href="/collection/poleznyy-magazin" class="nav-link">ПОЛЕЗНЫЙ МАГАЗИН</a>
       <a href="/page/pets" class="nav-link">ДЛЯ ПИТОМЦЕВ</a>
+      <a href="/blogs/blog" class="nav-link">БЛОГ</a>
+      <a href="/page/about" class="nav-link">О НАС</a>
+      <a href="/page/contacts" class="nav-link">КОНТАКТЫ</a>
     </nav>
     <div class="mobile-menu-user">
       <a href="{{ cart_url }}" class="nav-link">КОРЗИНА ({{ cart.items_count }})</a>

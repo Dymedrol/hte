@@ -21,14 +21,14 @@ class ProductSectionInitializer {
       const mainConfig = window.PROGRAM_CONFIG;
       const dishesData = window.PROGRAM_DISHES_DATA;
       
-      // Ждем загрузки аллергенов если они еще не загружены
-      if (!window.ALLERGENS_CONFIG && typeof loadAllergensConfig === 'function') {
-        try {
-          await loadAllergensConfig();
-        } catch (error) {
-          console.error('❌ Ошибка загрузки аллергенов:', error);
-        }
-      }
+             // Ждем загрузки аллергенов если они еще не загружены
+       if (!window.ALLERGENS_CONFIG && typeof window.loadAllergensConfig === 'function') {
+         try {
+           await window.loadAllergensConfig();
+         } catch (error) {
+           console.error('❌ Ошибка загрузки аллергенов:', error);
+         }
+       }
       
       this.config = {
         configPath: 'data/premium/premium-config.json',
@@ -37,7 +37,7 @@ class ProductSectionInitializer {
         programInfo: {
           name: mainConfig.programName || '',
           description: mainConfig.description || {},
-          duration: mainConfig.totalDays || 30,
+          duration: 30, // Для Premium программы используем фиксированную длительность
           image: mainConfig.image || '',
           popupImage: mainConfig.popupImage || ''
         },
@@ -638,14 +638,19 @@ class ProductSectionInitializer {
         return false;
       }
       
-      // Для Premium программы dishesPath может отсутствовать, так как используются dataFiles
-      if (!this.config.dishesPath && !this.config.mainConfig?.dataFiles) {
-        console.error('Missing dishesPath or dataFiles in configuration');
+      // Для Premium программы dishesPath может отсутствовать, так как используются PROGRAM_DISHES_DATA
+      if (!this.config.dishesPath && !window.PROGRAM_DISHES_DATA) {
+        console.error('Missing dishesPath or PROGRAM_DISHES_DATA in configuration');
         return false;
       }
 
       // Инициализируем Product Section
-      const success = await initProductSection({
+      if (typeof window.initProductSection !== 'function') {
+        console.error('initProductSection function not found. Make sure product-section-main.js is loaded before product-section-init.js');
+        return false;
+      }
+      
+      const success = await window.initProductSection({
         configPath: this.config.configPath,
         dishesPath: this.config.dishesPath || null, // Может быть null для Premium
         allergensConfig: this.config.allergensConfig,
@@ -682,8 +687,8 @@ class ProductSectionInitializer {
         }
         
         // Инициализируем additional-products
-        if (typeof initAdditionalProducts === 'function') {
-          initAdditionalProducts();
+        if (typeof window.initAdditionalProducts === 'function') {
+          window.initAdditionalProducts();
         }
       }, 100);
 

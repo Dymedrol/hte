@@ -425,8 +425,8 @@
   
   
   /* Program Name - только для dropdown */
-  .dropdown-menu .program-name {
-    font-family: var(--hte-micro-text-14-font-family);
+  .dropdown-menu .program-name, .program-name {
+    font-family: var(--hte-font-family);
     font-size: var(--hte-micro-text-14-font-size);
     font-weight: var(--hte-micro-text-14-font-weight);
     color: var(--hte-black);
@@ -744,7 +744,7 @@
     /* Фиксируем высоту для индивидуальной карточки */
     position: relative;
     background: var(--hte-bg-fill);
-    background-image: url('./ind-bg.jpg');
+    background-image: url('https://static.insales-cdn.com/files/1/5481/95835497/original/individual_desktop-3.jpg');
     background-position: right center;
     background-repeat: no-repeat;
     background-size: auto 100%;
@@ -787,27 +787,27 @@
   }
   
   .mobile-programs-grid .dropdown-premium::before {
-    background-image: url('./program.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4609/95834625/original/premium-sq.png');
   }
   
   .mobile-programs-grid .dropdown-base::before {
-    background-image: url('./program-5.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4569/95834585/original/base-sq.png');
   }
   
   .mobile-programs-grid .dropdown-start::before {
-    background-image: url('./program-1.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4593/95834609/original/start-sq.png');
   }
   
   .mobile-programs-grid .dropdown-sport::before {
-    background-image: url('./program-3.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4577/95834593/original/sport-sq.png');
   }
   
   .mobile-programs-grid .dropdown-detox::before {
-    background-image: url('./program-2.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4585/95834601/original/detox-sq.png');
   }
   
   .mobile-programs-grid .dropdown-reload::before {
-    background-image: url('./program-4.png');
+    background-image: url('https://static.insales-cdn.com/files/1/4601/95834617/original/perezagruzka-sq.png');
   }
   
   /* Градиенты для мобильных карточек */
@@ -877,4 +877,6 @@
   }
   
    
-  
+  .mobile-menu-user {
+    margin-bottom: 80px;
+  }

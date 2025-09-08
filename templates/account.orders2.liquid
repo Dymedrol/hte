@@ -1,0 +1,106 @@
+{% content_for 'title' %}
+История заказов
+{% end_content_for %}
+<div class='co-checkout-block--padded'>
+  {% if orders == empty %}
+  <p>Вы не сделали ещё ни одного заказа</p>
+  {% else %}
+
+  {%paginate orders by 25%}
+  <table class='co-table co-table--to_card'>
+    <tr class='co-table-row co-table-row--head'>
+      <td class='co-table-cell co-table-cell--head'>
+      Дата оформления
+      </td>
+      <td class='co-table-cell co-table-cell--head'>
+      Номер заказа
+      </td>
+      <td class='co-table-cell co-table-cell--head'>
+      Статус
+      </td>
+      <td class='co-table-cell co-table-cell--head co-table-cell--hide@sm'>
+      Оплата
+      </td>
+      <td class='co-table-cell co-table-cell--head co-table-cell--hide@sm'>
+      Сумма заказа
+      </td>
+    </tr>
+    {%for order in orders %}
+    <tr class='co-table-row co-table-row--body co-table-row--striped'>
+      <td class='co-table-cell co-table-cell--body' data-title="Дата оформления">
+        {{ order.creation_date | date: '%d.%m.%Y %H:%M' }}
+      </td>
+      <td class='co-table-cell co-table-cell--body' data-title="Номер заказа">
+      <a class="co-link" href="{{ order.url }}">{{ order.number }}</a>
+      </td>
+      <td class='co-table-cell co-table-cell--body' data-title="Статус">
+        {{ order.customer_status }}
+      </td>
+      <td class='co-table-cell co-table-cell--body co-table-cell--hide@sm' data-title="Оплата">
+        {% if order.paid? %}
+        Оплачен
+        {% else %}
+        Не оплачен
+        {% endif %}
+      </td>
+      <td class='co-table-cell co-table-cell--body co-table-cell--hide@sm' data-title="Сумма заказа">
+        {{ order.total_price | money }}
+      </td>
+    </tr>
+    {% endfor %}
+    <tr class='co-table-row co-table-row--foot'>
+      <td class='co-table-cell co-table-cell--foot' colspan="5">
+        <div class='co-order_history-total_title'>Сумма выполненных заказов:</div>
+        <div class='co-order_history-total_sum co-price'>{{ client.turnover | money }}</div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="co-pagination">
+    {% if paginate.current_page > 1 %}
+      <a href="{{paginate.previous.url}}" class="co-pagination_link">
+        <div class="
+          co-pagination_button
+          co-pagination_button_handle
+        ">
+          <
+        </div>
+      </a>
+    {% endif %}
+
+    {% for button in paginate.parts %}
+      {% assign previous_index = forloop.index0 | minus: 1 %}
+
+      {% if button.url == null %}
+        {% assign url = paginate.parts[previous_index].title | to_integer | plus: 1 | string | prepend: '?page='  %}
+      {% else %}
+        {% assign url = button.url %}
+      {% endif %}
+      <a href="{{url}}" class="co-pagination_link">
+        <div class="
+          co-pagination_button
+          {% if button.title == paginate['current_page'] %}
+            co-pagination_button__active
+          {% else %}
+            co-pagination_button__inactive
+          {%  endif %}
+        ">
+          {{ button.title }}
+        </div>
+      </a>
+    {% endfor %}
+
+    {% if paginate.current_page < paginate.pages %}
+      <a href="{{paginate.next.url}}" class="co-pagination_link">
+        <div class="
+          co-pagination_button
+          co-pagination_button_handle
+        ">
+          >
+        </div>
+      </a>
+    {% endif %}
+  </div>
+  {% endpaginate %}
+  {% endif %}
+</div>
