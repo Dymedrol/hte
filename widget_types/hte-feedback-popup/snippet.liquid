@@ -5,8 +5,8 @@
     <!-- Левая секция с формой -->
     <div class="popup-left-section">
       <div class="popup-header">
-        <h3 class="popup-title">ЗАПУТАЛИСЬ?</h3>
-        <p class="popup-description">Оставьте заявку, и наш менеджер подберет для вас идеальную программу питания</p>
+        <h3 class="popup-title">{{ widget_settings.title }}</h3>
+        <p class="popup-description">{{ widget_settings.subtitle }}</p>
       </div>
       
       <form class="popup-form" method="post" action="/client_account/feedback" data-feedback-form-wrapper>
@@ -78,7 +78,7 @@
               value="" 
             />
             <span class="checkbox-custom"></span>
-            <span class="checkbox-text">Оставляя e-mail, вы соглашаетесь с <a href="#" class="privacy-link">политикой конфиденциальности</a>.</span>
+            <span class="checkbox-text">Оставляя e-mail, вы соглашаетесь с <a href="/page/privacy-policy" class="privacy-link">политикой конфиденциальности</a>.</span>
           </label>
           <div class="error-message" data-feedback-form-field-error></div>
         </div>
@@ -102,7 +102,7 @@
     <!-- Правая секция с картинкой -->
     <div class="popup-right-section">
       <div class="food-display">
-        <div class="food-image-bg" style="background-image: url({{ 'unique-menu.jpg' | asset_url }})"></div>
+        <div class="food-image-bg" style="background-image: url({{widget_settings.image}})"></div>
       </div>
     </div>
     

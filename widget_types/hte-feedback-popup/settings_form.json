@@ -1,4 +1,30 @@
 {
+  "content": [
+    {
+      "type": "group",
+      "name": "{{ messages.content }}",
+      "items": [
+        {
+          "name": "title",
+          "label": "Заголовок", 
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Подзаголовок", 
+          "value": "Подзаголовок",
+          "type": "text"
+        },  
+        {
+          "name": "image",
+          "label": "Изображение", 
+          "value": null,
+          "type": "file"
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "type": "group",
