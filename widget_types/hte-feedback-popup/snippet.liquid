@@ -9,45 +9,94 @@
         <p class="popup-description">Оставьте заявку, и наш менеджер подберет для вас идеальную программу питания</p>
       </div>
       
-      <div class="popup-form">
+      <form class="popup-form" method="post" action="/client_account/feedback" data-feedback-form-wrapper>
+
+        <!-- Экран благодарности (скрыт по умолчанию) -->
+        <div class="popup-thanks" id="popupThanks" style="display: none;">
+          <div class="thanks-content">
+            <h3 class="thanks-title">Спасибо!</h3>
+            <p class="thanks-description">Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.</p>
+          </div>
+        </div>
+
         <div class="input-row">
-          <div class="input-field">
-            <input type="text" placeholder="Имя" id="feedbackNameInput" />
+          <div class="input-field" data-feedback-form-field-area>
+            <input 
+            name="name" 
+            placeholder="Имя"
+            data-feedback-form-field='{
+              "isRequired": true, 
+              "errorMessage": "Неправильно заполнено поле Имя"
+            }' 
+            type="text" 
+            value="" />
+            <div class="error-message" data-feedback-form-field-error></div>  
           </div>
-          <div class="input-field">
-            <input type="tel" placeholder="Номер телефона" id="feedbackPhoneInput" />
+          <div class="input-field" data-feedback-form-field-area>
+            <input 
+              name="phone"
+              placeholder="Номер телефона"
+              data-feedback-form-field='{
+                "isRequired": true, 
+                "errorMessage": "Неправильно заполнено поле Телефон", 
+                "phoneNumberLength": 11
+              }'
+              type="text" 
+              autocomplete="off" 
+              value="" />  
+            <div class="error-message" data-feedback-form-field-error></div>
           </div>
         </div>
         
-        <div class="input-field">
-          <input type="email" placeholder="Email" id="feedbackEmailInput" required />
-          <div class="error-message">Введите email</div>
+        <div class="input-field" data-feedback-form-field-area>
+          <input 
+          name="from"
+          placeholder="Email" 
+          data-feedback-form-field='{"errorMessage": "Неправильно заполнено поле email"}' 
+          type="text" 
+          value="" /> 
+          <div class="error-message" data-feedback-form-field-error></div>
         </div>
         
-        <div class="input-field">
-          <textarea placeholder="Есть пожелания? Напишите здесь!" id="feedbackWishesInput" rows="3" required></textarea>
-          <div class="error-message">Введите пожелания</div>
+        <div class="input-field" data-feedback-form-field-area>
+          <textarea
+          rows="3"
+          required 
+          name="content"
+          placeholder="Есть пожелания? Напишите здесь!" 
+          data-feedback-form-field='{"errorMessage": "Введите пожелания"}'
+          ></textarea> 
+          <div class="error-message" data-feedback-form-field-error></div>
         </div>
         
-        <div class="popup-checkbox">
+        <div class="popup-checkbox" data-feedback-form-field-area>
           <label class="checkbox-label">
-            <input type="checkbox" id="feedbackAgreement" required />
+            <input 
+              data-feedback-form-agree='{"errorMessage": "Необходимо подтвердить согласие"}' 
+              type="checkbox" 
+              name="agree" 
+              value="" 
+            />
             <span class="checkbox-custom"></span>
             <span class="checkbox-text">Оставляя e-mail, вы соглашаетесь с <a href="#" class="privacy-link">политикой конфиденциальности</a>.</span>
           </label>
-          <div class="error-message">Согласитесь с политикой конфиденциальности</div>
+          <div class="error-message" data-feedback-form-field-error></div>
         </div>
-        
+
+        {% if settings.feedback_captcha_enabled %}
+          <div data-feedback-form-field-area class="feedback__field-area">
+            <div data-feedback-form-recaptcha='{
+              "isRequired": true, 
+              "errorMessage": "{{messages.recaptcha_error | escape }}"
+            }' 
+            class="feedback__recaptcha"></div>
+            <div data-feedback-form-field-error class="feedback__field-error"></div>
+          </div>
+        {% endif %}
+
+        <input type="text" value="Заявка на подбор питания" name="subject" style="display: none;"/>
         <button class="feedback-popup-btn" id="feedbackPopupBtn">Получить консультацию</button>
-      </div>
-      
-      <!-- Экран благодарности (скрыт по умолчанию) -->
-      <div class="popup-thanks" id="popupThanks" style="display: none;">
-        <div class="thanks-content">
-          <h3 class="thanks-title">Спасибо!</h3>
-          <p class="thanks-description">Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.</p>
-        </div>
-      </div>
+      </form>
     </div>
     
     <!-- Правая секция с картинкой -->

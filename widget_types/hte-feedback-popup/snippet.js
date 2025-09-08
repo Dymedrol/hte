@@ -31,7 +31,7 @@ class FeedbackPopupManager {
     this.setupCloseTracking();
     
     // Настраиваем валидацию формы
-    this.setupFormValidation();
+    // this.setupFormValidation();
     
     // Настраиваем открытие по ссылке
     this.setupContactLink();
@@ -277,30 +277,44 @@ class FeedbackPopupManager {
 
   // Показывает сообщение об успехе
   showSuccessMessage() {
-    // Скрываем заголовок, форму и картинку
-    const popupHeader = document.querySelector('.feedback-popup .popup-header');
     const popupForm = document.querySelector('.feedback-popup .popup-form');
-    const popupRightSection = document.querySelector('.feedback-popup .popup-right-section');
     const popupThanks = document.getElementById('popupThanks');
+    const popupRightSection = document.querySelector('.feedback-popup .popup-right-section');
     
-    if (popupHeader && popupForm && popupRightSection && popupThanks) {
-      // Скрываем заголовок
-      popupHeader.style.display = 'none';
-      // Скрываем форму
-      popupForm.style.display = 'none';
-      // Скрываем картинку
-      popupRightSection.style.display = 'none';
+    if (popupForm && popupThanks) {
+      // Скрываем конкретные элементы формы, но не #popupThanks
+      const elementsToHide = [
+        '.input-row',
+        '.input-field',
+        '.popup-checkbox',
+        '.feedback__field-area',
+        'input[name="subject"]',
+        '.feedback-popup-btn'
+      ];
+      
+      elementsToHide.forEach(selector => {
+        const elements = popupForm.querySelectorAll(selector);
+        elements.forEach(element => {
+          element.style.display = 'none';
+        });
+      });
+      
+      // Скрываем правую секцию с картинкой
+      if (popupRightSection) {
+        popupRightSection.style.display = 'none';
+      }
+      
       // Показываем экран благодарности
       popupThanks.style.display = 'flex';
       
-      // Автоматически закрываем попап через 3 секунды
+      // Автоматически закрываем попап через 5 секунд
       setTimeout(() => {
         const popup = document.getElementById('feedbackPopup');
         if (popup) {
           popup.classList.remove('active');
           document.body.style.overflow = '';
         }
-      }, 3000);
+      }, 5000);
     }
   }
 
@@ -328,6 +342,15 @@ class FeedbackPopupManager {
 // Создаем глобальный экземпляр
 window.feedbackPopupManager = new FeedbackPopupManager();
 window.feedbackPopupManager.init();
+
+EventBus.subscribe('send-feedback:insales:ui_feedback', function (data) {
+  console.log('Форма успешно отправлена', data);
+  
+  // Используем метод класса для показа экрана благодарности
+  if (window.feedbackPopupManager) {
+    window.feedbackPopupManager.showSuccessMessage();
+  }
+});
 
 // Что бы открыть попап feedback на кнопку или ссылку нужно либо добавть  href="#open_feedback_popup", или класс '.open-feedback-popup', либо дата-атрибут data-href="#open_feedback_popup"
 
