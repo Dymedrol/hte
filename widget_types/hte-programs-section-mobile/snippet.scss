@@ -1,0 +1,96 @@
+.programs-section-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-20);
+    width: 100%;
+    padding: var(--spacing-40) 0;
+}
+
+.programs-title {
+    font-size: var(--hte-h2-font-size);
+    font-family: var(--hte-h1-font-family);
+    font-weight: var(--hte-h1-font-weight);
+    color: var(--hte-black);
+    text-align: center;
+    margin: 0;
+}
+
+.programs-section-mobile-layout {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--spacing-10);
+    padding: 0 20px;
+}
+
+.programs-section-mobile-layout-item {
+    position: relative;
+    width: calc(50% - 5px);
+    aspect-ratio: 1/1;
+
+    background: var(--hte-bg-fill);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: var(--spacing-20);
+    text-decoration: none;
+}
+
+.programs-section-mobile-layout-item_individual {
+    width: 100%;
+    aspect-ratio: 1/0.5;
+}
+
+.programs-section-mobile-layout-item-title {
+    font-family: var(--hte-font-family);
+    font-size: var(--hte-micro-text-14-font-size);
+    font-weight: var(--hte-micro-text-14-font-weight);
+    color: var(--hte-black);
+    text-transform: uppercase;
+    line-height: 15.4px;
+    z-index: 2;
+}
+
+.programs-section-mobile-layout-item-description {
+    width: 210px;
+    font-family: var(--hte-body-18-font-family);
+    font-size: 12px;
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: var(--hte-body-18-line-height);
+    color: var(--hte-black);
+    margin: 0;
+    opacity: var(--opacity-high);
+}
+
+.programs-section-mobile-layout-item-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.quiz-button {
+    display: inline-flex;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--spacing-30);
+    background-color: var(--hte-black);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: var(--border-radius-xxl);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: var(--hte-body-18-line-height);
+    color: var(--hte-white);
+    white-space: nowrap;
+}
