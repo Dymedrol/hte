@@ -68,6 +68,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
 }
 
 
@@ -165,5 +166,11 @@
     
     .advantage-card--tall {
         height: 500px;
+    }
+}
+
+@media (max-width: 719px) {
+    .hidden-mobile {
+        display: none;
     }
 }

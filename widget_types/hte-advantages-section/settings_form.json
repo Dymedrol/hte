@@ -2,32 +2,133 @@
   "content": [
     {
       "type": "group",
-      "name": "{{ messages.delimiter }}",
+      "name": "Первая карточка",
       "items": [
         {
-          "name": "delemeter",
-          "options": [
-            [
-              "/",
-              "1"
-            ],
-            [
-              "-",
-              "2"
-            ],
-            [
-              ">",
-              "3"
-            ],
-            [
-             ".",
-             "4"
-           ]
-          ],
+          "name": "card1-title",
+          "label": "Заголовок",
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "card1-is-hidden",
+          "label": "Скрыть карточку на мобильных устройствах",
           "value": null,
-          "label": "{{ messages.delimiter }}",
-          "general": true,
-          "type": "select"
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "Вторая карточка",
+      "items": [
+        {
+          "name": "card2-title",
+          "label": "Заголовок",
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "card2-image",
+          "label": "Изображение",
+          "value": null,
+          "type": "file"
+        },
+        {
+          "name": "card2-is-hidden",
+          "label": "Скрыть карточку на мобильных устройствах",
+          "value": null,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "Третья карточка",
+      "items": [
+        {
+          "name": "card3-title",
+          "label": "Заголовок",
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "card3-is-hidden",
+          "label": "Скрыть карточку на мобильных устройствах",
+          "value": null,
+          "type": "checkbox"
+        },
+        {
+          "name": "card3-image",
+          "label": "Изображение",
+          "value": null,
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "Четвертая карточка",
+      "items": [
+        {
+          "name": "card4-title",
+          "label": "Заголовок",
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "card4-is-hidden",
+          "label": "Скрыть карточку на мобильных устройствах",
+          "value": null,
+          "type": "checkbox"
+        },
+        {
+          "name": "card4-image",
+          "label": "Изображение",
+          "value": null,
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "Пятая карточка",
+      "items": [
+        {
+          "name": "card5-title",
+          "label": "Заголовок",
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "card5-is-hidden",
+          "label": "Скрыть карточку на мобильных устройствах",
+          "value": null,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "Шестая карточка",
+      "items": [
+        {
+          "name": "card6-title",
+          "label": "Заголовок",
+          "value": "Заголовок",
+          "type": "text"
+        },
+        {
+          "name": "card6-is-hidden",
+          "label": "Скрыть карточку на мобильных устройствах",
+          "value": null,
+          "type": "checkbox"
+        },
+        {
+          "name": "card6-image",
+          "label": "Изображение",
+          "value": null,
+          "type": "file"
         }
       ]
     }
