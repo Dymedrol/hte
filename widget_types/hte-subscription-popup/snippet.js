@@ -118,7 +118,7 @@ class SubscriptionPopupAutoManager {
     this.setupCloseTracking();
     
     // Настраиваем валидацию формы (работает всегда)
-    this.setupFormValidation();
+    // this.setupFormValidation();
     
     // Настраиваем открытие по ссылке
     this.setupSubscriptionLink();
@@ -145,56 +145,6 @@ class SubscriptionPopupAutoManager {
         this.showPopup();
       }
     }, this.delayMs);
-  }
-
-  // Настраивает валидацию формы (работает всегда)
-  setupFormValidation() {
-    const subscribeBtn = document.getElementById('subscriptionPopupBtn');
-    const agreementCheckbox = document.getElementById('subscriptionAgreement');
-
-    if (!subscribeBtn) return;
-
-    // Обработчик нажатия на кнопку подписки
-    subscribeBtn.addEventListener('click', () => {
-      // Проверяем, что email введен и галочка поставлена
-      const emailInput = document.getElementById('subscriptionEmailInput');
-      
-      if (emailInput && agreementCheckbox) {
-        const email = emailInput.value.trim();
-        const isAgreed = agreementCheckbox.checked;
-        
-        if (email && isAgreed) {
-          // Пользователь подписался - показываем экран благодарности
-          this.showThanksScreen();
-          // Запоминаем подписку
-          this.rememberUserSubscribed();
-          
-          console.log('🎉 Подписка оформлена!');
-        } else {
-          // Показываем ошибки валидации (всегда, независимо от памяти)
-          if (!email) {
-            console.log('❌ Введите email');
-            // Можно добавить подсветку поля email
-          }
-          if (!isAgreed) {
-            console.log('❌ Согласитесь с политикой конфиденциальности');
-            // Показываем бабл для галочки (всегда)
-            this.showCheckboxBubble();
-          }
-        }
-      }
-    });
-
-    // Обработчик изменения галочки - скрываем бабл при постановке
-    if (agreementCheckbox) {
-      agreementCheckbox.addEventListener('change', () => {
-        if (agreementCheckbox.checked) {
-          this.hideCheckboxBubble();
-        }
-      });
-    }
-
-    console.log('✅ Валидация формы настроена');
   }
 
   // Настраивает отслеживание закрытия попапа

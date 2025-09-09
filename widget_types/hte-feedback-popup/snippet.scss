@@ -30,13 +30,14 @@
   position: relative;
   background-color: var(--hte-white);
   border-radius: var(--border-radius-md);
-  padding: var(--spacing-40) 0 var(--spacing-40) var(--spacing-40);
+  padding: var(--spacing-8);
   max-width: 1000px;
   width: 90%;
   min-height: 450px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   display: flex;
   gap: 52px;
+  justify-content: space-between;
 }
 
 /* Левая секция с формой */
@@ -253,13 +254,9 @@
   display: flex;
   align-items: stretch;
   justify-content: flex-end;
-  width: 400px;
-  max-width: 400px;
+  width: 420px;
+  max-width: 420px;
   margin-right: 0;
-  // margin-top: calc(-1 * var(--spacing-40));
-  // margin-bottom: calc(-1 * var(--spacing-40));
-  padding-top: var(--spacing-8);
-  padding-bottom: var(--spacing-8);
 }
 
 .feedback-popup .food-display {
@@ -360,8 +357,8 @@
 @media (max-width: 1320px) {
   .feedback-popup .popup-content {
     max-width: 900px;
-    padding: var(--spacing-30) var(--spacing-30) var(--spacing-30) var(--spacing-30);
-    gap: 62px;
+    padding: var(--spacing-8);
+    justify-content: space-between;
   }
   
   .feedback-popup .popup-left-section {
@@ -369,7 +366,8 @@
   }
   
   .feedback-popup .popup-right-section {
-    max-width: 350px;
+    max-width: 420px;
+    height: 600px;
   }
 }
 
@@ -386,6 +384,11 @@
   
   .feedback-popup .popup-right-section {
     display: none;
+  }
+
+  .feedback-popup .popup-right-section {
+    max-width: 420px;
+    height: auto;
   }
 }
 
