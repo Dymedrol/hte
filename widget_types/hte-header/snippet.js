@@ -1,6 +1,11 @@
 // Флаг для предотвращения повторной инициализации
 let headerInitialized = false;
 
+// Переменные для отслеживания прокрутки
+let lastScrollTop = 0;
+let scrollThreshold = 1; // Минимальное расстояние прокрутки для срабатывания
+let ticking = false;
+
 // Функция инициализации header
 function initHeader() {
   if (headerInitialized) {
@@ -31,6 +36,11 @@ function initHeader() {
 
     menuToggle.addEventListener('click', () => {
       mobileMenu.classList.add('active');
+      // Показываем хедер при открытии мобильного меню
+      const header = document.querySelector('.header');
+      if (header) {
+        header.classList.remove('hidden');
+      }
       disableScroll();
     });
 
@@ -173,6 +183,217 @@ function initHeader() {
       }
     });
   }
+
+  // Функция обработки прокрутки
+  function handleScroll() {
+    // Пробуем разные способы получения позиции прокрутки
+    const currentScrollTop = window.pageYOffset || 
+                           document.documentElement.scrollTop || 
+                           document.body.scrollTop || 
+                           window.scrollY || 
+                           0;
+    
+    const header = document.querySelector('.header');
+    const mobileMenu = document.querySelector('.mobile-menu-overlay');
+    
+    // console.log('Scroll position methods:', {
+    //   pageYOffset: window.pageYOffset,
+    //   documentElementScrollTop: document.documentElement.scrollTop,
+    //   bodyScrollTop: document.body.scrollTop,
+    //   windowScrollY: window.scrollY,
+    //   finalValue: currentScrollTop
+    // });
+    
+    // console.log('Scroll event:', {
+    //   currentScrollTop,
+    //   lastScrollTop,
+    //   scrollThreshold,
+    //   difference: Math.abs(currentScrollTop - lastScrollTop)
+    // });
+    
+    if (!header) {
+      console.log('Header not found');
+      return;
+    }
+
+    // Не скрываем хедер если мобильное меню открыто
+    if (mobileMenu && mobileMenu.classList.contains('active')) {
+      console.log('Mobile menu is active, skipping scroll logic');
+      return;
+    }
+
+    // Проверяем, достаточно ли прокрутили для срабатывания
+    const scrollDifference = Math.abs(currentScrollTop - lastScrollTop);
+    // console.log('Scroll check:', {
+    //   currentScrollTop,
+    //   lastScrollTop,
+    //   scrollDifference,
+    //   scrollThreshold,
+    //   isDifferenceEnough: scrollDifference >= scrollThreshold
+    // });
+    
+    if (scrollDifference < scrollThreshold) {
+      // console.log('Scroll difference too small:', scrollDifference);
+      return;
+    }
+
+    // Управление фоном хедера
+    if (currentScrollTop > 0) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+
+    // Если прокручиваем вниз и не в самом верху страницы
+    if (currentScrollTop > lastScrollTop && currentScrollTop > 0) {
+      // Скрываем хедер
+      header.classList.add('hidden');
+      // console.log('Header hidden - scrolling down', {
+      //   currentScrollTop,
+      //   lastScrollTop,
+      //   hasHiddenClass: header.classList.contains('hidden')
+      // });
+    } 
+    // Если прокручиваем вверх
+    else if (currentScrollTop < lastScrollTop) {
+      // Показываем хедер
+      header.classList.remove('hidden');
+      // console.log('Header shown - scrolling up', {
+      //   currentScrollTop,
+      //   lastScrollTop,
+      //   hasHiddenClass: header.classList.contains('hidden')
+      // });
+    } else {
+      // console.log('No action taken:', {
+      //   currentScrollTop,
+      //   lastScrollTop,
+      //   condition1: currentScrollTop > lastScrollTop,
+      //   condition2: currentScrollTop > 0,
+      //   condition3: currentScrollTop < lastScrollTop
+      // });
+    }
+
+    lastScrollTop = currentScrollTop;
+    ticking = false;
+  }
+
+  // Оптимизированная функция прокрутки с requestAnimationFrame
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(handleScroll);
+      ticking = true;
+    }
+  }
+
+  // Добавляем обработчики прокрутки к разным элементам
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('scroll', onScroll, { passive: true });
+  document.documentElement.addEventListener('scroll', onScroll, { passive: true });
+  document.body.addEventListener('scroll', onScroll, { passive: true });
+  
+  // Также пробуем добавить к основному контейнеру страницы
+  const mainContainer = document.querySelector('main') || 
+                       document.querySelector('#main') || 
+                       document.querySelector('.main') ||
+                       document.querySelector('[role="main"]');
+  
+  if (mainContainer) {
+    mainContainer.addEventListener('scroll', onScroll, { passive: true });
+    console.log('Added scroll listener to main container:', mainContainer);
+  }
+  
+  // Инициализация фона хедера при загрузке
+  const initialScrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+  const header = document.querySelector('.header');
+  if (header) {
+    if (initialScrollTop > 0) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  }
+  
+  console.log('Header scroll functionality initialized');
+  console.log('Scroll event listeners added to window, document, html, body');
+  
+  // Функция для поиска прокручиваемого элемента
+  function findScrollableElement() {
+    const elements = [
+      window,
+      document.documentElement,
+      document.body,
+      document.querySelector('main'),
+      document.querySelector('#main'),
+      document.querySelector('.main'),
+      document.querySelector('[role="main"]'),
+      document.querySelector('.content'),
+      document.querySelector('#content'),
+      document.querySelector('.page-content'),
+      document.querySelector('.site-content')
+    ];
+    
+    for (let element of elements) {
+      if (element && element.scrollTop > 0) {
+        console.log('Found scrollable element:', element, 'scrollTop:', element.scrollTop);
+        return element;
+      }
+    }
+    
+    // Проверяем, какой элемент может прокручиваться
+    for (let element of elements) {
+      if (element && element.scrollHeight > element.clientHeight) {
+        console.log('Found potentially scrollable element:', element, {
+          scrollHeight: element.scrollHeight,
+          clientHeight: element.clientHeight
+        });
+      }
+    }
+    
+    return null;
+  }
+
+  // Тестируем, что обработчик работает
+  setTimeout(() => {
+    console.log('Testing scroll detection...');
+    const testScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    console.log('Current scroll position:', testScrollTop);
+    
+    // Ищем прокручиваемый элемент
+    findScrollableElement();
+    
+    // Тестируем CSS класс
+    const header = document.querySelector('.header');
+    if (header) {
+      console.log('Header element found:', header);
+      console.log('Header classes:', header.className);
+      console.log('Header computed styles:', {
+        transform: window.getComputedStyle(header).transform,
+        transition: window.getComputedStyle(header).transition
+      });
+      
+      // Тестируем добавление класса (убрано для продакшена)
+      // console.log('Testing CSS class addition...');
+      // header.classList.add('hidden');
+      // console.log('Added hidden class, transform:', window.getComputedStyle(header).transform);
+      // setTimeout(() => {
+      //   header.classList.remove('hidden');
+      //   console.log('Removed hidden class, transform:', window.getComputedStyle(header).transform);
+      // }, 2000);
+    }
+  }, 1000);
 }
 
-initHeader();
+// Инициализируем после загрузки DOM
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHeader);
+} else {
+  initHeader();
+}
+
+// Дополнительная инициализация через небольшую задержку для гарантии
+setTimeout(() => {
+  if (!headerInitialized) {
+    console.log('Re-initializing header after timeout');
+    initHeader();
+  }
+}, 100);

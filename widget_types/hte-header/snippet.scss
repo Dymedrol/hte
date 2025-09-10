@@ -13,7 +13,19 @@
     left: 0;
     right: 0;
     background-color: transparent;
+    backdrop-filter: none;
     z-index: 1000;
+    transform: translateY(0);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out;
+  }
+  
+  .header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+  }
+  
+  .header.hidden {
+    transform: translateY(-100%);
   }
   
   /* Logo Link */
