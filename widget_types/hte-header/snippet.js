@@ -196,44 +196,20 @@ function initHeader() {
     const header = document.querySelector('.header');
     const mobileMenu = document.querySelector('.mobile-menu-overlay');
     
-    // console.log('Scroll position methods:', {
-    //   pageYOffset: window.pageYOffset,
-    //   documentElementScrollTop: document.documentElement.scrollTop,
-    //   bodyScrollTop: document.body.scrollTop,
-    //   windowScrollY: window.scrollY,
-    //   finalValue: currentScrollTop
-    // });
-    
-    // console.log('Scroll event:', {
-    //   currentScrollTop,
-    //   lastScrollTop,
-    //   scrollThreshold,
-    //   difference: Math.abs(currentScrollTop - lastScrollTop)
-    // });
     
     if (!header) {
-      console.log('Header not found');
       return;
     }
 
     // Не скрываем хедер если мобильное меню открыто
     if (mobileMenu && mobileMenu.classList.contains('active')) {
-      console.log('Mobile menu is active, skipping scroll logic');
       return;
     }
 
     // Проверяем, достаточно ли прокрутили для срабатывания
     const scrollDifference = Math.abs(currentScrollTop - lastScrollTop);
-    // console.log('Scroll check:', {
-    //   currentScrollTop,
-    //   lastScrollTop,
-    //   scrollDifference,
-    //   scrollThreshold,
-    //   isDifferenceEnough: scrollDifference >= scrollThreshold
-    // });
     
     if (scrollDifference < scrollThreshold) {
-      // console.log('Scroll difference too small:', scrollDifference);
       return;
     }
 
@@ -248,29 +224,11 @@ function initHeader() {
     if (currentScrollTop > lastScrollTop && currentScrollTop > 0) {
       // Скрываем хедер
       header.classList.add('hidden');
-      // console.log('Header hidden - scrolling down', {
-      //   currentScrollTop,
-      //   lastScrollTop,
-      //   hasHiddenClass: header.classList.contains('hidden')
-      // });
     } 
     // Если прокручиваем вверх
     else if (currentScrollTop < lastScrollTop) {
       // Показываем хедер
       header.classList.remove('hidden');
-      // console.log('Header shown - scrolling up', {
-      //   currentScrollTop,
-      //   lastScrollTop,
-      //   hasHiddenClass: header.classList.contains('hidden')
-      // });
-    } else {
-      // console.log('No action taken:', {
-      //   currentScrollTop,
-      //   lastScrollTop,
-      //   condition1: currentScrollTop > lastScrollTop,
-      //   condition2: currentScrollTop > 0,
-      //   condition3: currentScrollTop < lastScrollTop
-      // });
     }
 
     lastScrollTop = currentScrollTop;
@@ -299,7 +257,6 @@ function initHeader() {
   
   if (mainContainer) {
     mainContainer.addEventListener('scroll', onScroll, { passive: true });
-    console.log('Added scroll listener to main container:', mainContainer);
   }
   
   // Инициализация фона хедера при загрузке
@@ -313,74 +270,7 @@ function initHeader() {
     }
   }
   
-  console.log('Header scroll functionality initialized');
-  console.log('Scroll event listeners added to window, document, html, body');
-  
-  // Функция для поиска прокручиваемого элемента
-  function findScrollableElement() {
-    const elements = [
-      window,
-      document.documentElement,
-      document.body,
-      document.querySelector('main'),
-      document.querySelector('#main'),
-      document.querySelector('.main'),
-      document.querySelector('[role="main"]'),
-      document.querySelector('.content'),
-      document.querySelector('#content'),
-      document.querySelector('.page-content'),
-      document.querySelector('.site-content')
-    ];
-    
-    for (let element of elements) {
-      if (element && element.scrollTop > 0) {
-        console.log('Found scrollable element:', element, 'scrollTop:', element.scrollTop);
-        return element;
-      }
-    }
-    
-    // Проверяем, какой элемент может прокручиваться
-    for (let element of elements) {
-      if (element && element.scrollHeight > element.clientHeight) {
-        console.log('Found potentially scrollable element:', element, {
-          scrollHeight: element.scrollHeight,
-          clientHeight: element.clientHeight
-        });
-      }
-    }
-    
-    return null;
-  }
 
-  // Тестируем, что обработчик работает
-  setTimeout(() => {
-    console.log('Testing scroll detection...');
-    const testScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    console.log('Current scroll position:', testScrollTop);
-    
-    // Ищем прокручиваемый элемент
-    findScrollableElement();
-    
-    // Тестируем CSS класс
-    const header = document.querySelector('.header');
-    if (header) {
-      console.log('Header element found:', header);
-      console.log('Header classes:', header.className);
-      console.log('Header computed styles:', {
-        transform: window.getComputedStyle(header).transform,
-        transition: window.getComputedStyle(header).transition
-      });
-      
-      // Тестируем добавление класса (убрано для продакшена)
-      // console.log('Testing CSS class addition...');
-      // header.classList.add('hidden');
-      // console.log('Added hidden class, transform:', window.getComputedStyle(header).transform);
-      // setTimeout(() => {
-      //   header.classList.remove('hidden');
-      //   console.log('Removed hidden class, transform:', window.getComputedStyle(header).transform);
-      // }, 2000);
-    }
-  }, 1000);
 }
 
 // Инициализируем после загрузки DOM
@@ -393,7 +283,6 @@ if (document.readyState === 'loading') {
 // Дополнительная инициализация через небольшую задержку для гарантии
 setTimeout(() => {
   if (!headerInitialized) {
-    console.log('Re-initializing header after timeout');
     initHeader();
   }
 }, 100);
