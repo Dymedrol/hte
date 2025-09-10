@@ -42,7 +42,7 @@
                 </div>
                 
                 <!-- Карточка 6: Готовим без рафинированной муки -->
-                <div class="advantage-card advantage-card--6 advantage-card--tall" {% if widget_settings.card6-is-hidden %}hidden-mobile{% endif %}" {% if widget_settings.card6-image %}style="background-image: url({{ widget_settings.card6-image | image_url: 500, format: 'webp', resizing_type: 'fit_width', quality: 100 }})"{% endif %}>
+                <div class="advantage-card advantage-card--6 advantage-card--tall {% if widget_settings.card6-is-hidden %}hidden-mobile{% endif %}" {% if widget_settings.card6-image %}style="background-image: url({{ widget_settings.card6-image | image_url: 500, format: 'webp', resizing_type: 'fit_width', quality: 100 }})"{% endif %}>
                     <div class="advantage-card__content">
                         <h3 class="advantage-card__title">{{ widget_settings.card6-title }}</h3>
                     </div>
