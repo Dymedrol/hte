@@ -2,32 +2,8 @@
   "content": [
     {
       "type": "group",
-      "name": "Баннер",
+      "name": "Кнопка",
       "items": [
-        {
-          "name": "title",
-          "label": "Заголовок",
-          "value": "",
-          "type": "text"
-        },
-        {
-          "name": "subtitle",
-          "label": "Подзаголовок",
-          "value": "",
-          "type": "text"
-        },
-        {
-          "name": "image",
-          "label": "Изображение",
-          "value": "",
-          "type": "file"
-        },
-        {
-          "name": "image_mobile",
-          "label": "Изображение для мобильных",
-          "value": "",
-          "type": "file"
-        },
         {
           "name": "button_text",
           "label": "Текст кнопки",

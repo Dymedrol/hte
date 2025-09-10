@@ -1,0 +1,26 @@
+.hte-button-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hte-button {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 var(--spacing-20);
+    background-color: var(--hte-black);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: var(--border-radius-xxl);
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    color: var(--hte-white);
+    letter-spacing: var(--hte-body-18-letter-spacing);
+    line-height: var(--hte-body-18-line-height);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}

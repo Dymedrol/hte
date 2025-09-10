@@ -2,10 +2,10 @@
 <section class="hero-section">
   <div class="hero-content">
     <div class="hero-text-group">
-      <h1 class="hero-title">Сервис доставки здорового&nbsp;питания</h1>
-      <p class="hero-subtitle">Сбалансированные рационы из натуральных продуктов высокого&nbsp;качества. Гастрономия с заботой о себе.</p>
+      <h1 class="hero-title">{{ widget_settings.title }}</h1>
+      <p class="hero-subtitle">{{ widget_settings.subtitle }}</p>
     </div>
-    <a href="/collection/programmy" class="add-to-cart-btn">Выбрать программу питания</a>
+    <a href="{{ widget_settings.button_link }}" class="add-to-cart-btn">{{ widget_settings.button_text }}</a>
   </div>
 </section> 
 
@@ -13,4 +13,17 @@
   body {
     padding-top: 0 !important;
   }
+
+  {% if widget_settings.image %}
+    .hero-section  {
+      background-image: url({{ widget_settings.image | image_url: 1920, format: 'webp', resizing_type: 'fit_width' }}) !important;
+    }
+  {% endif %}
+  {% if widget_settings.image_mobile %}
+    @media (max-width: 768px) {
+      .hero-section  {
+        background-image: url({{ widget_settings.image_mobile | image_url: 720, format: 'webp', resizing_type: 'fit_width' }}) !important;
+      }
+    }
+  {% endif %}
 </style>

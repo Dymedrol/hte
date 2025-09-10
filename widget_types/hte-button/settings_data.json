@@ -6,8 +6,6 @@
   "hide-mobile": false,
   "hide-desktop": false,
   "align": "start",
-  "title": "Заголовок",
-  "subtitle": "Подзаголовок",
   "button_text": "Текст кнопки",
-  "button_link": "/" 
+  "button_link": "/"
 }
