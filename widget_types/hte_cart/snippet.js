@@ -1,8 +1,213 @@
-
-
 EventBus.subscribe('delete_items:insales:cart', function(data) {
     window.location.reload();
 });
+
+// Функция для определения ближайшего времени доставки
+function updateDeliveryNoteSummary() {
+    const deliveryNoteElement = document.querySelector('.delivery-note-summary');
+    if (!deliveryNoteElement) return;
+    
+    const programItems = document.querySelectorAll('.cart-item.cart-item_program');
+    
+    console.log('Найдено программ в корзине:', programItems.length);
+    
+    if (programItems.length > 0) {
+        // Есть программы - анализируем даты доставки из комментариев
+        let earliestDeliveryInfo = null;
+        
+        programItems.forEach((item, index) => {
+            const commentInput = item.querySelector('input[data-comment]');
+            if (!commentInput) return;
+            
+            const comment = commentInput.value || '';
+            console.log(`Программа ${index + 1}, комментарий:`, comment);
+            
+            const commentParts = comment.split('|');
+            
+            let deliveryDate = null;
+            let deliveryTime = null;
+            
+            commentParts.forEach(part => {
+                const trimmedPart = part.trim();
+                
+                // Ищем дату доставки
+                if (trimmedPart.startsWith('Даты доставки:')) {
+                    const datePart = trimmedPart.split('Даты доставки:')[1]?.trim();
+                    if (datePart) {
+                        deliveryDate = datePart;
+                        console.log(`Найдена дата доставки: ${datePart}`);
+                    }
+                }
+                
+                // Ищем время доставки
+                if (trimmedPart.startsWith('Время доставки:')) {
+                    const timePart = trimmedPart.split('Время доставки:')[1]?.trim();
+                    if (timePart) {
+                        deliveryTime = timePart;
+                        console.log(`Найдено время доставки: ${timePart}`);
+                    }
+                }
+            });
+            
+            if (deliveryDate && deliveryTime) {
+                // Парсим дату для сравнения
+                const parsedDate = parseDeliveryDate(deliveryDate);
+                console.log(`Парсированная дата:`, parsedDate);
+                
+                if (parsedDate) {
+                    // Если это первая найденная дата или дата раньше текущей самой ранней
+                    if (!earliestDeliveryInfo || parsedDate < earliestDeliveryInfo.date) {
+                        earliestDeliveryInfo = {
+                            date: parsedDate,
+                            time: deliveryTime
+                        };
+                        console.log(`Новая самая ранняя дата: ${deliveryDate} с ${deliveryTime}`);
+                    }
+                }
+            }
+        });
+        
+        if (earliestDeliveryInfo) {
+            const formattedDate = formatDeliveryDate(earliestDeliveryInfo.date);
+            deliveryNoteElement.textContent = `Ближайшая доставка: ${formattedDate} с ${earliestDeliveryInfo.time}`;
+            console.log(`Установлена ближайшая доставка: ${formattedDate} с ${earliestDeliveryInfo.time}`);
+        } else {
+            console.log('Не удалось найти даты в программах, используем логику по времени');
+            // Если не удалось найти даты в программах, используем логику по времени
+            updateDeliveryNoteByTime(deliveryNoteElement);
+        }
+    } else {
+        console.log('Нет программ в корзине, используем логику по времени');
+        // Нет программ - используем логику по времени
+        updateDeliveryNoteByTime(deliveryNoteElement);
+    }
+}
+
+// Функция для обновления времени доставки на основе текущего времени
+function updateDeliveryNoteByTime(deliveryNoteElement) {
+    if (!window.currentTime) {
+        // Если currentTime не определен, используем текущее время
+        window.currentTime = new Date();
+    }
+    
+    const currentTime = new Date(window.currentTime);
+    const currentHour = currentTime.getHours();
+    const currentMinute = currentTime.getMinutes();
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+    const cutoffTimeInMinutes = 13 * 60 + 30; // 13:30
+    
+    let deliveryDate;
+    
+    if (currentTimeInMinutes < cutoffTimeInMinutes) {
+        // До 13:30 - доставка завтра
+        deliveryDate = new Date(currentTime);
+        deliveryDate.setDate(deliveryDate.getDate() + 1);
+    } else {
+        // После 13:30 - доставка послезавтра
+        deliveryDate = new Date(currentTime);
+        deliveryDate.setDate(deliveryDate.getDate() + 2);
+    }
+    
+    const formattedDate = formatDeliveryDate(deliveryDate);
+    deliveryNoteElement.textContent = `Ближайшая доставка: ${formattedDate} с 6:00 до 10:00`;
+}
+
+// Функция для парсинга даты доставки из строки
+function parseDeliveryDate(dateString) {
+    console.log(`Парсинг даты: "${dateString}"`);
+    
+    // Поддерживаем различные форматы дат
+    const datePatterns = [
+        /(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)/i,
+        /(\d{1,2})\.(\d{1,2})\.(\d{4})/,
+        /(\d{1,2})\/(\d{1,2})\/(\d{4})/,
+        /(\d{4})-(\d{1,2})-(\d{1,2})/,
+        /(\d{1,2})\.(\d{1,2})\.(\d{2})/,
+        /(\d{1,2})\/(\d{1,2})\/(\d{2})/
+    ];
+    
+    const monthNames = {
+        'января': 0, 'февраля': 1, 'марта': 2, 'апреля': 3, 'мая': 4, 'июня': 5,
+        'июля': 6, 'августа': 7, 'сентября': 8, 'октября': 9, 'ноября': 10, 'декабря': 11
+    };
+    
+    for (let i = 0; i < datePatterns.length; i++) {
+        const pattern = datePatterns[i];
+        const match = dateString.match(pattern);
+        if (match) {
+            console.log(`Найден паттерн ${i + 1}:`, match);
+            
+            if (i === 0) {
+                // Формат "19 марта"
+                const day = parseInt(match[1]);
+                const monthName = match[2].toLowerCase();
+                const month = monthNames[monthName];
+                if (month !== undefined) {
+                    const currentYear = new Date().getFullYear();
+                    const result = new Date(currentYear, month, day);
+                    console.log(`Результат парсинга:`, result);
+                    return result;
+                }
+            } else if (i === 1) {
+                // Формат "19.03.2024"
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = parseInt(match[3]);
+                const result = new Date(year, month, day);
+                console.log(`Результат парсинга:`, result);
+                return result;
+            } else if (i === 2) {
+                // Формат "19/03/2024"
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = parseInt(match[3]);
+                const result = new Date(year, month, day);
+                console.log(`Результат парсинга:`, result);
+                return result;
+            } else if (i === 3) {
+                // Формат "2024-03-19"
+                const year = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const day = parseInt(match[3]);
+                const result = new Date(year, month, day);
+                console.log(`Результат парсинга:`, result);
+                return result;
+            } else if (i === 4) {
+                // Формат "19.03.24"
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = 2000 + parseInt(match[3]);
+                const result = new Date(year, month, day);
+                console.log(`Результат парсинга:`, result);
+                return result;
+            } else if (i === 5) {
+                // Формат "19/03/24"
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = 2000 + parseInt(match[3]);
+                const result = new Date(year, month, day);
+                console.log(`Результат парсинга:`, result);
+                return result;
+            }
+        }
+    }
+    
+    console.log(`Не удалось распарсить дату: "${dateString}"`);
+    return null;
+}
+
+// Функция для форматирования даты в нужный формат
+function formatDeliveryDate(date) {
+    const months = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+    
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    
+    return `${day} ${month}`;
+}
 
 // Функция для управления meal-option-item для premium продуктов
 function managePremiumMealOptions() {
@@ -171,6 +376,9 @@ $(document).ready(function() {
     // Инициализируем состояние toggle-switch
     initializeToggleSwitches();
     
+    // Обновляем информацию о ближайшей доставке
+    updateDeliveryNoteSummary();
+    
     // Используем делегирование событий для обработки всех toggle-switch
     document.addEventListener('click', handleToggleSwitchClick);
     
@@ -200,6 +408,7 @@ $(document).ready(function() {
                 setTimeout(() => {
                     managePremiumMealOptions();
                     initializeToggleSwitches();
+                    updateDeliveryNoteSummary();
                 }, 100);
             }
         });
@@ -216,6 +425,7 @@ $(document).ready(function() {
         setTimeout(() => {
             managePremiumMealOptions();
             initializeToggleSwitches();
+            updateDeliveryNoteSummary();
         }, 100);
     });
     
@@ -225,6 +435,7 @@ $(document).ready(function() {
         setTimeout(() => {
             managePremiumMealOptions();
             initializeToggleSwitches();
+            updateDeliveryNoteSummary();
         }, 100);
     });
     
@@ -234,6 +445,7 @@ $(document).ready(function() {
         setTimeout(() => {
             managePremiumMealOptions();
             initializeToggleSwitches();
+            updateDeliveryNoteSummary();
         }, 100);
     });
     
@@ -243,6 +455,7 @@ $(document).ready(function() {
         setTimeout(() => {
             managePremiumMealOptions();
             initializeToggleSwitches();
+            updateDeliveryNoteSummary();
         }, 100);
     });
     
@@ -252,6 +465,7 @@ $(document).ready(function() {
         setTimeout(() => {
             managePremiumMealOptions();
             initializeToggleSwitches();
+            updateDeliveryNoteSummary();
         }, 100);
     });
     
@@ -261,6 +475,7 @@ $(document).ready(function() {
         setTimeout(() => {
             managePremiumMealOptions();
             initializeToggleSwitches();
+            updateDeliveryNoteSummary();
         }, 100);
     });
 });
