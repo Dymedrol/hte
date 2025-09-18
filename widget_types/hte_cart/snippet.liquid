@@ -140,7 +140,7 @@
                       </div>
                       
                       <div class="price-breakdown">
-                        <div class="price-row">
+                        <div class="price-row price-row_hide_mobile">
                           <span class="price-label">Программа:</span>
                           <span class="price-value">
                             <span class="price-amount">{{ item.variant.price | money }}</span>
@@ -154,7 +154,7 @@
                         {% for price in accessories_prices %}
                           {% assign total_accessories_price = total_accessories_price | plus: price %}
                         {% endfor %}
-                        <div class="price-row">
+                        <div class="price-row price-row_hide_mobile">
                           <span class="price-label">Допы:</span>
                           <span class="price-value">
                             <span class="price-amount">{{ total_accessories_price | times: item.quantity | money }}</span>

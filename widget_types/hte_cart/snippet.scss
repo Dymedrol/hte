@@ -947,22 +947,25 @@
     .cart-items-container {
         gap: var(--spacing-20);
     }
-    
-    .cart-item-main {
-        flex-direction: column;
-        gap: var(--spacing-20);
+
+    .cart-item-toggles {
+        display: none;
     }
     
-
+    .cart-item-main {
+        flex-direction: row;
+        gap: var(--spacing-20);
+    }
     
     .cart-items-left {
         width: 100%;
     }
     
     .cart-item-image {
-        width: 100%;
+        width: 120px;
         height: auto;
         aspect-ratio: 3/4;
+        border: 1px solid var(--hte-dark-accent);
     }
     
     /* Для обычных товаров (не программ) - квадратная картинка */
@@ -998,5 +1001,9 @@
         line-height: var(--hte-small-text-16-line-height);
         text-decoration: underline;
         text-decoration-color: var(--hte-grey-text);
+    }
+
+    .price-row_hide_mobile {
+        display: none;
     }
 }
