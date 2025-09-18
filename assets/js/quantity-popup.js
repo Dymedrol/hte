@@ -795,6 +795,9 @@ function initTimeSlotEventListeners() {
           window.selectedDeliveryTime = selectedDeliveryTime;
         }
         
+        // Обновляем состояние кнопки добавления в корзину
+        updateAddToCartButtonState();
+        
         // Обновляем информацию о доставке с новым временем
         updateDeliveryInfo();
         
@@ -854,6 +857,60 @@ function updateDeliveryInfo() {
     deliveryInfoElement.textContent = deliveryText;
     deliveryInfoElement.classList.remove('updating');
   }, 150); // Половина времени анимации для плавности
+}
+
+// Функция для проверки валидности выбора даты и времени доставки
+function validateDeliverySelection() {
+  console.log('🔍 Проверка валидности выбора даты и времени доставки...');
+  
+  // Проверяем выбор даты
+  const startDateInput = document.getElementById('startDateInput');
+  const hasDateSelected = startDateInput && startDateInput.value.trim() !== '';
+  
+  // Проверяем выбор времени
+  const deliveryTimeInput = document.getElementById('deliveryTimeInput');
+  const hasTimeSelected = deliveryTimeInput && deliveryTimeInput.value.trim() !== '';
+  
+  // Также проверяем глобальные переменные
+  const hasGlobalDate = window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0;
+  const hasGlobalTime = window.selectedDeliveryTime && window.selectedDeliveryTime.trim() !== '';
+  
+  // Проверяем выбранные временные слоты в DOM
+  const selectedTimeSlot = document.querySelector('.time-slot.selected');
+  const hasTimeSlotSelected = selectedTimeSlot !== null;
+  
+  const isValid = (hasDateSelected || hasGlobalDate) && (hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
+  
+  console.log('📅 Дата выбрана:', hasDateSelected || hasGlobalDate);
+  console.log('⏰ Время выбрано:', hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
+  console.log('✅ Валидация пройдена:', isValid);
+  
+  return isValid;
+}
+
+// Функция для обновления состояния кнопки добавления в корзину
+function updateAddToCartButtonState() {
+  const addToCartPopupBtn = document.getElementById('addToCartPopupBtn');
+  if (!addToCartPopupBtn) {
+    console.log('❌ Кнопка addToCartPopupBtn не найдена для обновления состояния');
+    return;
+  }
+  
+  const isValid = validateDeliverySelection();
+  
+  if (isValid) {
+    addToCartPopupBtn.disabled = false;
+    addToCartPopupBtn.classList.remove('disabled');
+    addToCartPopupBtn.style.opacity = '1';
+    addToCartPopupBtn.style.cursor = 'pointer';
+    console.log('✅ Кнопка добавления в корзину активирована');
+  } else {
+    addToCartPopupBtn.disabled = true;
+    addToCartPopupBtn.classList.add('disabled');
+    addToCartPopupBtn.style.opacity = '0.5';
+    addToCartPopupBtn.style.cursor = 'not-allowed';
+    console.log('❌ Кнопка добавления в корзину деактивирована');
+  }
 }
 
 // Функция для формирования строки с информацией о заказе
@@ -1092,6 +1149,9 @@ function initQuantityPopup() {
     }
     
     console.log('✅ Обновлены даты доставки:', window.selectedDeliveryDates);
+    
+    // Обновляем состояние кнопки добавления в корзину
+    updateAddToCartButtonState();
   }
   
   // Делаем функцию глобально доступной
@@ -1193,6 +1253,9 @@ function initQuantityPopup() {
           const formattedDate = `${selectedDate} ${month} ${year}`;
           startDateInput.value = formattedDate;
           
+          // Обновляем состояние кнопки добавления в корзину
+          updateAddToCartButtonState();
+          
           // Закрываем календарь
           startDateCalendar.classList.remove('active');
           
@@ -1271,6 +1334,9 @@ function initQuantityPopup() {
           if (startDateInput) {
             startDateInput.value = formattedDate;
           }
+          
+          // Обновляем состояние кнопки добавления в корзину
+          updateAddToCartButtonState();
           
           // Закрываем календарь
           calendarElement.classList.remove('active');
@@ -1428,6 +1494,9 @@ function initQuantityPopup() {
       deliveryTimeInput.value = '';
     }
     
+    // Обновляем состояние кнопки добавления в корзину
+    updateAddToCartButtonState();
+    
     // Очищаем CSS стили календаря
     const calendarDays = document.querySelectorAll('.calendar-day');
     calendarDays.forEach(day => {
@@ -1520,6 +1589,13 @@ function initQuantityPopup() {
     addToCartPopupBtn.addEventListener('click', () => {
       console.log('🛒 Кнопка "Заказать доставку" нажата');
       
+      // Проверяем валидность выбора даты и времени
+      if (!validateDeliverySelection()) {
+        console.log('❌ Нельзя добавить в корзину: не выбраны дата и/или время доставки');
+        alert('Пожалуйста, выберите дату и время доставки перед добавлением товара в корзину.');
+        return;
+      }
+      
       // Формируем строку с информацией о заказе
       const orderInfoString = generateOrderInfoString();
       
@@ -1555,6 +1631,9 @@ function initQuantityPopup() {
   } else {
     console.log('❌ Кнопка addToCartPopupBtn не найдена');
   }
+  
+  // Инициализируем состояние кнопки добавления в корзину
+  updateAddToCartButtonState();
 }
 
 EventBus.subscribe('add_items:insales:cart', function (data) {
@@ -1591,8 +1670,10 @@ window.markBreakfastCheckbox = markBreakfastCheckbox;
 // Делаем функцию для отметки чекбокса "Убрать ужин и перекус" глобально доступной
 window.markDinnerCheckbox = markDinnerCheckbox;
 
-// Делаем функцию для формирования строки с информацией о заказе глобально доступной
+// Делаем функции глобально доступными
 window.generateOrderInfoString = generateOrderInfoString;
+window.validateDeliverySelection = validateDeliverySelection;
+window.updateAddToCartButtonState = updateAddToCartButtonState;
 
 // Добавляем обработчик для формы hte-product-form
 document.addEventListener('DOMContentLoaded', function() {
