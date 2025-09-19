@@ -501,6 +501,10 @@
     line-height: var(--hte-small-text-16-line-height);
     text-decoration: underline;
     text-decoration-color: var(--hte-black);
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
 }
 
 /* Секция оформления */
