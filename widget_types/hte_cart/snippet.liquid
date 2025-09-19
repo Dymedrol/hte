@@ -283,7 +283,7 @@
                   </div>
                 </div>
                 
-                <button class="checkout-btn">Перейти к оформлению</button>
+                <button class="checkout-btn" id="checkoutBtn" disabled>Перейти к оформлению</button>
                 
                 <div class="delivery-note-summary">
                   Ближайшая доставка: загрузка...
@@ -334,48 +334,116 @@
     </div>
     
     <div class="popup-body">
-      <!-- Поле ввода адреса -->
-      <div class="address-input-section">
-        <div class="input-group">
-          <input 
-            type="text" 
-            id="addressInput" 
-            class="address-input" 
-            placeholder="Введите адрес или выберите на карте"
-            autocomplete="off"
-          />
-          <button type="button" id="searchAddressBtn" class="search-btn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+      <!-- Шаг 1: Выбор адреса на карте -->
+      <div class="step-container" id="step1">
+        <!-- Поле ввода адреса -->
+        <div class="address-input-section">
+          <div class="input-group">
+            <input 
+              type="text" 
+              id="addressInput" 
+              class="address-input" 
+              placeholder="Введите адрес или выберите на карте"
+              autocomplete="off"
+            />
+            <button type="button" id="searchAddressBtn" class="search-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div id="addressSuggestions" class="address-suggestions"></div>
+        </div>
+        
+        <!-- Контейнер для карты -->
+        <div class="map-section">
+          <div id="yandexMap" class="yandex-map"></div>
+          <div class="map-controls">
+            <button type="button" id="useCurrentLocation" class="location-btn">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 1C5.24 1 3 3.24 3 6C3 9.5 8 15 8 15S13 9.5 13 6C13 3.24 10.76 1 8 1ZM8 8.25C6.76 8.25 5.75 7.24 5.75 6C5.75 4.76 6.76 3.75 8 3.75C9.24 3.75 10.25 4.76 10.25 6C10.25 7.24 9.24 8.25 8 8.25Z" fill="currentColor"/>
+              </svg>
+              Мое местоположение
+            </button>
+          </div>
+        </div>
+        
+        <!-- Выбранный адрес -->
+        <div class="selected-address-section">
+          <div class="selected-address-info">
+            <div class="address-label">Выбранный адрес:</div>
+            <div id="selectedAddress" class="selected-address">Адрес не выбран</div>
+          </div>
+          <button type="button" id="confirmAddressBtn" class="confirm-btn" disabled>
+            Подтвердить адрес
           </button>
         </div>
-        <div id="addressSuggestions" class="address-suggestions"></div>
       </div>
-      
-      <!-- Контейнер для карты -->
-      <div class="map-section">
-        <div id="yandexMap" class="yandex-map"></div>
-        <div class="map-controls">
-          <button type="button" id="useCurrentLocation" class="location-btn">
+
+      <!-- Шаг 2: Детали доставки -->
+      <div class="step-container" id="step2">
+        <!-- Адрес из первого шага (только для чтения) -->
+        <div class="confirmed-address-section">
+          <div class="address-label">Адрес доставки:</div>
+          <div id="confirmedAddress" class="confirmed-address"></div>
+          <button type="button" id="backToStep1Btn" class="back-btn">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M8 1C5.24 1 3 3.24 3 6C3 9.5 8 15 8 15S13 9.5 13 6C13 3.24 10.76 1 8 1ZM8 8.25C6.76 8.25 5.75 7.24 5.75 6C5.75 4.76 6.76 3.75 8 3.75C9.24 3.75 10.25 4.76 10.25 6C10.25 7.24 9.24 8.25 8 8.25Z" fill="currentColor"/>
+              <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            Мое местоположение
+            Изменить адрес
           </button>
         </div>
-      </div>
-      
-      <!-- Выбранный адрес -->
-      <div class="selected-address-section">
-        <div class="selected-address-info">
-          <div class="address-label">Выбранный адрес:</div>
-          <div id="selectedAddress" class="selected-address">Адрес не выбран</div>
+
+        <!-- Детали доставки -->
+        <div class="delivery-details-section">
+          <div class="form-group">
+            <div class="toggle-container">
+              <input type="checkbox" id="houseTypeToggle" class="toggle-input">
+              <label for="houseTypeToggle" class="toggle-label">
+                <span class="toggle-switch">
+                  <span class="toggle-slider"></span>
+                </span>
+                <span class="toggle-text">Частный дом</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" id="apartmentInput" class="form-input" placeholder="Квартира">
+            </div>
+            <div class="form-group">
+              <input type="text" id="floorInput" class="form-input" placeholder="Этаж">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" id="entranceInput" class="form-input" placeholder="Подъезд">
+            </div>
+            <div class="form-group">
+              <input type="text" id="intercomInput" class="form-input" placeholder="Домофон">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input 
+              id="courierCommentInput" 
+              class="form-input" 
+              placeholder="Комментарий для курьера"
+              maxlength="300"
+            >
+            <span class="char-counter" id="charCounter">0/300</span>
+          </div>
         </div>
-        <button type="button" id="confirmAddressBtn" class="confirm-btn" disabled>
-          Подтвердить адрес
-        </button>
+
+        <!-- Кнопка подтверждения -->
+        <div class="final-confirmation-section">
+          <button type="button" id="finalConfirmBtn" class="final-confirm-btn">
+            Привезти сюда
+          </button>
+        </div>
       </div>
     </div>
   </div>
