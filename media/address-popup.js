@@ -41,6 +41,7 @@ class AddressPopupManager {
         this.suggestions = [];
         this.geocoder = null;
         this.currentStep = 1;
+        this.deliveryZones = null;
         
         this.init();
     }
@@ -203,14 +204,119 @@ class AddressPopupManager {
                 controls: ['zoomControl', 'fullscreenControl']
             });
             
+            // Отключаем ненужные кнопки
+            this.map.controls.remove('routeButtonControl'); // "Как добраться"
+            this.map.controls.remove('trafficControl'); // "Доехать на такси"
+            this.map.controls.remove('typeSelector'); // "Открыть в Яндекс картах"
+            this.map.controls.remove('rulerControl'); // "Создать свою карту"
+            
             // Инициализируем геокодер
             this.geocoder = ymaps.geocode;
             
             // Добавляем обработчик клика по карте
             this.map.events.add('click', (e) => this.onMapClick(e));
             
+            // Загружаем зоны доставки
+            this.loadDeliveryZones();
+            
             console.log('✅ Яндекс карта инициализирована');
         });
+    }
+    
+    // Загрузка зон доставки
+    loadDeliveryZones() {
+        if (!this.map) return;
+        
+        // GeoJSON данные зон доставки
+        const zonesData = [
+            {
+                "type": "FeatureCollection",
+                "metadata": {"name": "map_zones"},
+                "features": [{
+                    "type": "Feature",
+                    "id": 4212529,
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[[37.53248257695315,55.75011699897059],[37.537267637835726,55.75141191568539],[37.532268000231994,55.75292461422045],[37.53190321980597,55.75155713731801],[37.53215104653224,55.75085988111901],[37.53248257695315,55.75011699897059]]]
+                    },
+                    "properties": {
+                        "description": "Сити 1",
+                        "fill": "#1e98ff",
+                        "fill-opacity": 0.6,
+                        "stroke": "#1e98ff",
+                        "stroke-width": "5",
+                        "stroke-opacity": 0.9
+                    }
+                }]
+            },
+            {
+                "type": "FeatureCollection",
+                "metadata": {"name": "map_zones"},
+                "features": [{
+                    "type": "Feature",
+                    "id": 4212537,
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[[37.53453178464038,55.74669191761924],[37.53640933095079,55.745911247302686],[37.54070086537463,55.746661659378084],[37.54505677281481,55.74828346821939],[37.54089398442371,55.7522287801537],[37.533319426165654,55.75021986770592],[37.53329796849352,55.74773883847245],[37.53453178464038,55.74669191761924]]]
+                    },
+                    "properties": {
+                        "description": "Сити 2",
+                        "fill": "#177bc9",
+                        "fill-opacity": 0.6,
+                        "stroke": "#177bc9",
+                        "stroke-width": "5",
+                        "stroke-opacity": 0.9
+                    }
+                }]
+            },
+            {
+                "type": "FeatureCollection",
+                "metadata": {"name": "map_zones"},
+                "features": [{
+                    "type": "Feature",
+                    "id": 4212649,
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[[37.5064609091796,55.60111992929819],[37.57134890966789,55.57953804441696],[37.63898349218743,55.568839901073595],[37.69288516455071,55.57564814913548],[37.78785477775908,55.61899858530381],[37.83742404394525,55.653178427384134],[37.843603853515575,55.755925588079585],[37.833990816406214,55.82478842681217],[37.726874117187464,55.88581148943177],[37.57306552343746,55.90973096317616],[37.408957247070234,55.87152990755072],[37.36535525732415,55.768895069488],[37.38612628393546,55.713599484790905],[37.43436313085933,55.65977790041621],[37.5064609091796,55.60111992929819]]]
+                    },
+                    "properties": {
+                        "description": "Курьером в пределах МКАД",
+                        "fill": "#1bad03",
+                        "fill-opacity": 0.1,
+                        "stroke": "#97a100",
+                        "stroke-width": "5",
+                        "stroke-opacity": 0.9
+                    }
+                }]
+            },
+            {
+                "type": "FeatureCollection",
+                "metadata": {"name": "map_zones"},
+                "features": [{
+                    "type": "Feature",
+                    "id": 4212641,
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[[36.949448507995726,55.93440650068838],[36.86842433807372,55.74972967959321],[36.9185494601438,55.69120710611395],[37.023606222839426,55.64502459403604],[37.009186667175236,55.61200356381504],[36.984467428894106,55.54237374047321],[36.99820033905028,55.53147070602599],[37.125229757995385,55.45662522438377],[37.229599875183226,55.42227329237873],[37.35044948455803,55.40977423456701],[37.48228542205822,55.35347930649619],[37.64708034393298,55.334696444094504],[37.828354757995484,55.34721934633287],[38.05906764862059,55.37225322418111],[38.20600978729243,55.45194263814179],[38.302140158386074,55.53692260275264],[38.361191672058055,55.624826811592875],[38.4271096408079,55.70245337414583],[38.438095968932906,55.7799253966545],[38.44358913299535,55.88812692394725],[38.37217800018306,55.97755074295318],[38.24034206268305,56.032950983558],[38.075547140807814,56.08212870226475],[37.89976589080825,56.143512325739046],[37.72947780487095,56.157310093884256],[37.49876491424564,56.1557772542049],[37.49637935203488,56.138712006136984],[37.38031856414771,56.13469448027331],[37.298951071472125,56.122231018448225],[37.23200313446037,56.098827107472815],[37.17535488006587,56.078672952076445],[37.134382488252704,56.06849588008205],[37.03184596893314,56.02679933995201],[36.949448507995726,55.93440650068838]]]
+                    },
+                    "properties": {
+                        "description": "МКАД + 35 км",
+                        "fill": "#ff931e",
+                        "fill-opacity": 0.2,
+                        "stroke": "#ff931e",
+                        "stroke-width": "5",
+                        "stroke-opacity": 0.9
+                    }
+                }]
+            }
+        ];
+        
+        // Добавляем зоны на карту
+        zonesData.forEach(zoneData => {
+            ymaps.geoQuery(zoneData).addToMap(this.map);
+        });
+        
+        console.log('✅ Зоны доставки загружены на карту');
     }
     
     // Обработчик клика по карте
@@ -225,16 +331,65 @@ class AddressPopupManager {
                 const address = firstGeoObject.getAddressLine();
                 this.selectedAddress = address;
                 
+                // Определяем зону доставки
+                const deliveryZone = this.getDeliveryZone(coords);
+                
                 // Обновляем UI
-                this.updateSelectedAddress(address);
-                this.updateConfirmButton(true);
+                this.updateSelectedAddress(address, deliveryZone);
+                this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
                 
                 // Добавляем маркер на карту
                 this.addMarker(coords, address);
                 
                 console.log('📍 Выбрана точка:', address, coords);
+                console.log('🚚 Зона доставки:', deliveryZone);
             }
         });
+    }
+    
+    // Определение зоны доставки по координатам
+    getDeliveryZone(coords) {
+        console.log('🔍 Проверяем зону для координат:', coords);
+        
+        // Проверяем, попадает ли точка в зоны доставки
+        const zones = [
+            { name: 'Сити 1', coords: [[37.53248257695315,55.75011699897059],[37.537267637835726,55.75141191568539],[37.532268000231994,55.75292461422045],[37.53190321980597,55.75155713731801],[37.53215104653224,55.75085988111901],[37.53248257695315,55.75011699897059]] },
+            { name: 'Сити 2', coords: [[37.53453178464038,55.74669191761924],[37.53640933095079,55.745911247302686],[37.54070086537463,55.746661659378084],[37.54505677281481,55.74828346821939],[37.54089398442371,55.7522287801537],[37.533319426165654,55.75021986770592],[37.53329796849352,55.74773883847245],[37.53453178464038,55.74669191761924]] },
+            { name: 'Курьером в пределах МКАД', coords: [[37.5064609091796,55.60111992929819],[37.57134890966789,55.57953804441696],[37.63898349218743,55.568839901073595],[37.69288516455071,55.57564814913548],[37.78785477775908,55.61899858530381],[37.83742404394525,55.653178427384134],[37.843603853515575,55.755925588079585],[37.833990816406214,55.82478842681217],[37.726874117187464,55.88581148943177],[37.57306552343746,55.90973096317616],[37.408957247070234,55.87152990755072],[37.36535525732415,55.768895069488],[37.38612628393546,55.713599484790905],[37.43436313085933,55.65977790041621],[37.5064609091796,55.60111992929819]] },
+            { name: 'МКАД + 35 км', coords: [[36.949448507995726,55.93440650068838],[36.86842433807372,55.74972967959321],[36.9185494601438,55.69120710611395],[37.023606222839426,55.64502459403604],[37.009186667175236,55.61200356381504],[36.984467428894106,55.54237374047321],[36.99820033905028,55.53147070602599],[37.125229757995385,55.45662522438377],[37.229599875183226,55.42227329237873],[37.35044948455803,55.40977423456701],[37.48228542205822,55.35347930649619],[37.64708034393298,55.334696444094504],[37.828354757995484,55.34721934633287],[38.05906764862059,55.37225322418111],[38.20600978729243,55.45194263814179],[38.302140158386074,55.53692260275264],[38.361191672058055,55.624826811592875],[38.4271096408079,55.70245337414583],[38.438095968932906,55.7799253966545],[38.44358913299535,55.88812692394725],[38.37217800018306,55.97755074295318],[38.24034206268305,56.032950983558],[38.075547140807814,56.08212870226475],[37.89976589080825,56.143512325739046],[37.72947780487095,56.157310093884256],[37.49876491424564,56.1557772542049],[37.49637935203488,56.138712006136984],[37.38031856414771,56.13469448027331],[37.298951071472125,56.122231018448225],[37.23200313446037,56.098827107472815],[37.17535488006587,56.078672952076445],[37.134382488252704,56.06849588008205],[37.03184596893314,56.02679933995201],[36.949448507995726,55.93440650068838]] }
+        ];
+        
+        // Простая проверка попадания точки в полигон (алгоритм ray casting)
+        for (const zone of zones) {
+            const isInside = this.isPointInPolygon(coords, zone.coords);
+            console.log(`🔍 Проверка зоны "${zone.name}":`, isInside);
+            if (isInside) {
+                console.log(`✅ Найдена зона: ${zone.name}`);
+                return zone.name;
+            }
+        }
+        
+        console.log('❌ Зона не найдена');
+        return 'Зона доставки не определена';
+    }
+    
+    // Проверка попадания точки в полигон (алгоритм ray casting)
+    isPointInPolygon(point, polygon) {
+        // point: [широта, долгота] - формат Яндекс карт
+        // polygon: [[долгота, широта], ...] - формат GeoJSON
+        const lat = point[0], lon = point[1];
+        let inside = false;
+        
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const lon1 = polygon[i][0], lat1 = polygon[i][1];
+            const lon2 = polygon[j][0], lat2 = polygon[j][1];
+            
+            if (((lat1 > lat) !== (lat2 > lat)) && (lon < (lon2 - lon1) * (lat - lat1) / (lat2 - lat1) + lon1)) {
+                inside = !inside;
+            }
+        }
+        
+        return inside;
     }
     
     // Добавление маркера на карту
@@ -312,6 +467,9 @@ class AddressPopupManager {
                 this.selectedCoordinates = coords;
                 this.selectedAddress = address;
                 
+                // Определяем зону доставки
+                const deliveryZone = this.getDeliveryZone(coords);
+                
                 // Центрируем карту на найденном адресе
                 this.map.setCenter(coords, 15);
                 
@@ -319,11 +477,12 @@ class AddressPopupManager {
                 this.addMarker(coords, address);
                 
                 // Обновляем UI
-                this.updateSelectedAddress(address);
-                this.updateConfirmButton(true);
+                this.updateSelectedAddress(address, deliveryZone);
+                this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
                 this.hideSuggestions();
                 
                 console.log('🔍 Найден адрес:', address, coords);
+                console.log('🚚 Зона доставки:', deliveryZone);
             }
         });
     }
@@ -354,14 +513,18 @@ class AddressPopupManager {
                         this.selectedCoordinates = coords;
                         this.selectedAddress = address;
                         
+                        // Определяем зону доставки
+                        const deliveryZone = this.getDeliveryZone(coords);
+                        
                         // Добавляем маркер
                         this.addMarker(coords, address);
                         
                         // Обновляем UI
-                        this.updateSelectedAddress(address);
-                        this.updateConfirmButton(true);
+                        this.updateSelectedAddress(address, deliveryZone);
+                        this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
                         
                         console.log('📍 Текущее местоположение:', address, coords);
+                        console.log('🚚 Зона доставки:', deliveryZone);
                     }
                 });
                 
@@ -433,16 +596,23 @@ class AddressPopupManager {
         // Добавляем маркер
         this.addMarker(coords, address);
         
+        // Определяем зону доставки
+        const deliveryZone = this.getDeliveryZone(coords);
+        
         // Обновляем UI
-        this.updateSelectedAddress(address);
-        this.updateConfirmButton(true);
+        this.updateSelectedAddress(address, deliveryZone);
+        this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
         this.hideSuggestions();
     }
     
     // Обновление отображения выбранного адреса
-    updateSelectedAddress(address) {
+    updateSelectedAddress(address, deliveryZone = null) {
         if (this.selectedAddressEl) {
-            this.selectedAddressEl.textContent = address;
+            let displayText = address;
+            if (deliveryZone) {
+                displayText += ` (${deliveryZone})`;
+            }
+            this.selectedAddressEl.textContent = displayText;
         }
     }
     
@@ -457,6 +627,43 @@ class AddressPopupManager {
     updateCheckoutButton(enabled) {
         if (this.checkoutBtn) {
             this.checkoutBtn.disabled = !enabled;
+        }
+    }
+    
+    // Обновление отображения адреса в корзине
+    updateCartAddressDisplay() {
+        if (!this.chooseAddressBtn) return;
+        
+        if (this.selectedAddress) {
+            // Определяем зону доставки для отображения
+            const deliveryZone = this.getDeliveryZone(this.selectedCoordinates);
+            
+            // Создаем HTML для отображения адреса
+            this.chooseAddressBtn.innerHTML = `
+                <div class="selected-address-display">
+                    <div class="address-text">${this.selectedAddress}</div>
+                    <button type="button" class="change-address-btn" id="changeAddressBtn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M12 4L4 12M4 4L12 12" stroke="var(--hte-black)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            // Добавляем обработчик для кнопки "Изменить адрес"
+            const changeBtn = this.chooseAddressBtn.querySelector('#changeAddressBtn');
+            if (changeBtn) {
+                changeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.openPopup(e);
+                });
+            }
+            
+            console.log('✅ Адрес обновлен в корзине:', this.selectedAddress);
+        } else {
+            // Возвращаем исходный текст кнопки
+            this.chooseAddressBtn.innerHTML = 'Выбрать адрес доставки';
         }
     }
     
@@ -608,6 +815,9 @@ class AddressPopupManager {
             this.checkoutBtn.textContent = 'Перейти к оформлению';
         }
         
+        // Обновляем отображение адреса в корзине
+        this.updateCartAddressDisplay();
+        
         // Здесь можно добавить логику отправки данных на сервер
         // Например, обновление корзины или отправка заказа
         
@@ -686,6 +896,9 @@ class AddressPopupManager {
         
         // Показываем все поля формы
         this.toggleFormFields(true, ['apartment', 'floor', 'entrance', 'intercom']);
+        
+        // Восстанавливаем исходное отображение кнопки в корзине
+        this.updateCartAddressDisplay();
     }
     
     // Сброс только UI при закрытии попапа (сохраняем данные)

@@ -491,6 +491,50 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-10);
+    
+    .selected-address-display {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-12);
+        padding: var(--spacing-15);
+        background-color: #F8F8F8;
+        border-radius: var(--border-radius-sm);
+        width: 100%;
+        
+        .address-text {
+            font-family: var(--hte-small-text-16-font-family);
+            font-size: var(--hte-small-text-16-font-size);
+            font-weight: 600;
+            color: var(--hte-black);
+            line-height: 1.4;
+            text-align: left;
+        }
+        
+        .change-address-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            
+            &:hover {
+                background-color: #E5E5E5;
+            }
+            
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
 }
 
 .address-link {
@@ -1261,7 +1305,7 @@
     padding: var(--spacing-8) var(--spacing-12);
     background-color: var(--hte-white);
     border: 1px solid #E5E5E5;
-    border-radius: var(--border-radius-sm);
+    border-radius: 100px;
     font-family: var(--hte-small-text-16-font-family);
     font-size: 14px;
     font-weight: var(--hte-small-text-16-font-weight);
@@ -1320,7 +1364,7 @@
     padding: var(--spacing-15) var(--spacing-25);
     background-color: var(--how---black, #1A1A1A);
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: 100px;
     font-family: var(--hte-small-text-16-font-family);
     font-size: var(--hte-small-text-16-font-size);
     font-weight: 600;
@@ -1426,7 +1470,7 @@
     padding: var(--spacing-8) var(--spacing-12);
     background-color: transparent;
     border: 1px solid #E5E5E5;
-    border-radius: var(--border-radius-sm);
+    border-radius: 100px;
     font-family: var(--hte-small-text-16-font-family);
     font-size: 14px;
     font-weight: var(--hte-small-text-16-font-weight);
