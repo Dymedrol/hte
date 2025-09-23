@@ -399,8 +399,8 @@ class AddressPopupManager {
                 // Определяем зону доставки
                 const deliveryZone = this.getDeliveryZone(coords);
                 
-                // Ищем соответствующий товар доставки (асинхронно)
-                this.findDeliveryProductByZoneAsync(deliveryZone);
+                // Обрабатываем выбор доставки
+                this.handleDeliverySelection(deliveryZone);
                 
                 // Обновляем UI
                 this.updateSelectedAddress(address, deliveryZone);
@@ -527,6 +527,355 @@ class AddressPopupManager {
         }
         
         console.log('🚚 ===========================================');
+    }
+    
+    // Получение общей суммы корзины
+    getCartTotal() {
+        const totalElement = document.querySelector('[data-cart-total-price]');
+        if (totalElement) {
+            const totalText = totalElement.textContent || totalElement.innerText;
+            // Извлекаем число из текста (убираем валюту и пробелы)
+            const totalMatch = totalText.match(/[\d\s]+/);
+            if (totalMatch) {
+                const total = parseInt(totalMatch[0].replace(/\s/g, ''));
+                console.log('💰 Общая сумма корзины:', total);
+                return total;
+            }
+        }
+        console.warn('❌ Не удалось получить общую сумму корзины');
+        return 0;
+    }
+    
+    // Получение количества дней программы питания
+    getProgramDaysCount() {
+        let totalDays = 0;
+        
+        // Ищем все товары программ в корзине
+        const programItems = document.querySelectorAll('[data-canonical-collection*="program"]');
+        
+        programItems.forEach(item => {
+            const quantityInput = item.querySelector('input[name*="quantity"]');
+            if (quantityInput) {
+                const quantity = parseInt(quantityInput.value) || 0;
+                totalDays += quantity;
+                console.log('📅 Найдена программа с количеством дней:', quantity);
+            }
+        });
+        
+        console.log('📅 Общее количество дней программ:', totalDays);
+        return totalDays;
+    }
+    
+    // Получение времени доставки программы
+    getProgramDeliveryTime() {
+        // Ищем время доставки в комментариях товаров программ
+        const programItems = document.querySelectorAll('[data-canonical-collection*="program"]');
+        
+        for (const item of programItems) {
+            const commentInput = item.querySelector('input[data-comment]');
+            if (commentInput && commentInput.value) {
+                const comment = commentInput.value;
+                console.log('🕐 Проверяем комментарий программы:', comment);
+                
+                // Ищем время доставки в комментарии
+                const timeMatch = comment.match(/Время доставки:\s*([^|]+)/);
+                if (timeMatch) {
+                    const deliveryTime = timeMatch[1].trim();
+                    console.log('🕐 Найдено время доставки:', deliveryTime);
+                    
+                    // Проверяем, до 7 утра или после
+                    const timeMatch2 = deliveryTime.match(/(\d{1,2}):(\d{2})/);
+                    if (timeMatch2) {
+                        const hours = parseInt(timeMatch2[1]);
+                        const isBefore7AM = hours < 7;
+                        console.log('🕐 Время доставки:', hours + ':' + timeMatch2[2], isBefore7AM ? 'до 7 утра' : 'после 7 утра');
+                        return isBefore7AM ? 'before_7am' : 'after_7am';
+                    }
+                }
+            }
+        }
+        
+        console.log('🕐 Время доставки не найдено, используем по умолчанию');
+        return 'after_7am'; // По умолчанию после 7 утра
+    }
+    
+    // Определение товара доставки по зоне и условиям
+    determineDeliveryProduct(deliveryZone) {
+        console.log('🎯 Определение товара доставки для зоны:', deliveryZone);
+        
+        const cartTotal = this.getCartTotal();
+        const programDays = this.getProgramDaysCount();
+        const deliveryTime = this.getProgramDeliveryTime();
+        
+        console.log('📊 Условия доставки:', {
+            zone: deliveryZone,
+            cartTotal: cartTotal,
+            programDays: programDays,
+            deliveryTime: deliveryTime
+        });
+        
+        let deliveryProduct = null;
+        let isFreeDelivery = false;
+        
+        if (deliveryZone === 'Курьером в пределах МКАД' || deliveryZone === 'МКАД + 35 км') {
+            if (cartTotal >= 3000) {
+                console.log('✅ Доставка бесплатна (сумма >= 3000)');
+                isFreeDelivery = true;
+            } else {
+                console.log('💰 Доставка платная (сумма < 3000)');
+                const productTitle = deliveryZone === 'Курьером в пределах МКАД' ? 
+                    'Курьером в пределах МКАД' : 'Курьером за МКАД';
+                deliveryProduct = this.findDeliveryProductByTitle(productTitle);
+            }
+        } else if (deliveryZone === 'Сити 1') {
+            console.log('🏢 Зона Сити 1');
+            deliveryProduct = this.findDeliveryProductByTitle('Сити 1');
+        } else if (deliveryZone === 'Сити 2') {
+            console.log('🏢 Зона Сити 2, время:', deliveryTime);
+            const productTitle = deliveryTime === 'before_7am' ? 
+                'Сити 2 до 7 утра' : 'Сити 2 после 7 утра';
+            deliveryProduct = this.findDeliveryProductByTitle(productTitle);
+        }
+        
+        return {
+            product: deliveryProduct,
+            isFree: isFreeDelivery,
+            quantity: programDays,
+            zone: deliveryZone
+        };
+    }
+    
+    // Поиск товара доставки по названию
+    findDeliveryProductByTitle(title) {
+        if (!window.dostavkaProducts || !window.dostavkaProducts.products) {
+            console.warn('❌ window.dostavkaProducts не найден');
+            return null;
+        }
+        
+        const product = window.dostavkaProducts.products.find(p => p.title === title);
+        if (product) {
+            console.log('✅ Найден товар доставки:', product.title, product.price_formatted);
+        } else {
+            console.warn('❌ Товар доставки не найден:', title);
+        }
+        
+        return product;
+    }
+    
+    // Добавление товара доставки в корзину через API Insales
+    async addDeliveryProductToCart(product, quantity) {
+        console.log('🛒 Добавление товара доставки в корзину:', product.title, 'количество:', quantity);
+        
+        if (!product || !product.variants || product.variants.length === 0) {
+            console.error('❌ Товар доставки не найден или не имеет вариантов');
+            return false;
+        }
+        
+        const variant = product.variants[0]; // Берем первый вариант
+        
+        // Предпочтительно используем внутренний AJAX API InSales, если доступен
+        if (window.ajaxAPI && ajaxAPI.cart && typeof ajaxAPI.cart.add === 'function') {
+            try {
+                console.log('➡️ Используем ajaxAPI.cart.add');
+                const variantMap = {};
+                variantMap[variant.id] = quantity;
+                
+                return await new Promise((resolve) => {
+                    ajaxAPI.cart.add(variantMap, {})
+                        .done((onDone) => {
+                            console.log('✅ ajaxAPI.cart.add onDone:', onDone);
+                            resolve(true);
+                        })
+                        .fail((onFail) => {
+                            console.error('❌ ajaxAPI.cart.add onFail:', onFail);
+                            resolve(false);
+                        });
+                });
+            } catch (err) {
+                console.error('❌ Ошибка ajaxAPI.cart.add:', err);
+                // Падем на запасной вариант ниже
+            }
+        }
+        
+        // Fallback на прямой запрос, если ajaxAPI недоступен
+        try {
+            console.log('↘️ ajaxAPI недоступен, используем fetch /cart_items.json');
+            const response = await fetch('/cart_items.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    variant_id: variant.id,
+                    quantity: quantity
+                })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Товар доставки добавлен в корзину (fetch):', result);
+                
+                if (result && (result.cart_item || result.items || result.total_price)) {
+                    return true;
+                }
+                
+                console.error('❌ Неожиданный ответ при добавлении (fetch):', result);
+                return false;
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Ошибка fetch при добавлении:', response.status, response.statusText, errorText);
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Исключение fetch при добавлении:', error);
+            return false;
+        }
+    }
+    
+    // Обновление корзины без перезагрузки страницы
+    async refreshCart() {
+        console.log('🔄 Обновление корзины...');
+        
+        // Предпочтительно используем внутренний AJAX API InSales, если доступен
+        if (window.ajaxAPI && ajaxAPI.cart && typeof ajaxAPI.cart.get === 'function') {
+            try {
+                console.log('➡️ Используем ajaxAPI.cart.get');
+                
+                return await new Promise((resolve) => {
+                    ajaxAPI.cart.get()
+                        .done((onDone) => {
+                            console.log('✅ ajaxAPI.cart.get onDone:', onDone);
+                            
+                            // Обновляем отображение корзины
+                            this.updateCartDisplay(onDone);
+                            resolve(true);
+                        })
+                        .fail((onFail) => {
+                            console.error('❌ ajaxAPI.cart.get onFail:', onFail);
+                            resolve(false);
+                        });
+                });
+            } catch (err) {
+                console.error('❌ Ошибка ajaxAPI.cart.get:', err);
+                // Падем на запасной вариант ниже
+            }
+        }
+        
+        // Fallback на прямой запрос, если ajaxAPI недоступен
+        try {
+            console.log('↘️ ajaxAPI недоступен, используем fetch /cart.json');
+            const response = await fetch('/cart.json', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (response.ok) {
+                const cartData = await response.json();
+                console.log('✅ Данные корзины обновлены (fetch):', cartData);
+                
+                // Обновляем отображение корзины
+                this.updateCartDisplay(cartData);
+                return true;
+            } else {
+                console.error('❌ Ошибка fetch при обновлении корзины:', response.status, response.statusText);
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Исключение fetch при обновлении корзины:', error);
+            return false;
+        }
+    }
+    
+    // Обновление отображения корзины
+    updateCartDisplay(cartData) {
+        console.log('🔄 Обновление отображения корзины...');
+        
+        // Обновляем общую сумму
+        const totalElement = document.querySelector('[data-cart-total-price]');
+        if (totalElement && cartData.total_price) {
+            totalElement.textContent = cartData.total_price_formatted || `${cartData.total_price} ₽`;
+        }
+        
+        // Обновляем количество товаров
+        const countElement = document.querySelector('[data-cart-item-count]');
+        if (countElement && cartData.items_count) {
+            countElement.textContent = cartData.items_count;
+        }
+        
+        // Обновляем полную сумму
+        const fullTotalElement = document.querySelector('[data-cart-full-total-price]');
+        if (fullTotalElement && cartData.total_price) {
+            fullTotalElement.textContent = cartData.total_price_formatted || `${cartData.total_price} ₽`;
+        }
+        
+        console.log('✅ Отображение корзины обновлено');
+    }
+    
+    // Обновление отображения цены доставки
+    updateDeliveryPriceDisplay(deliveryInfo) {
+        const deliveryPriceElement = document.getElementById('delivery-price');
+        if (!deliveryPriceElement) {
+            console.warn('❌ Элемент #delivery-price не найден');
+            return;
+        }
+        
+        if (deliveryInfo.isFree) {
+            deliveryPriceElement.textContent = 'Бесплатно';
+            deliveryPriceElement.style.color = '#28a745'; // Зеленый цвет
+            console.log('✅ Доставка отмечена как бесплатная');
+        } else if (deliveryInfo.product) {
+            const totalPrice = deliveryInfo.product.price * deliveryInfo.quantity;
+            deliveryPriceElement.textContent = `${totalPrice} ₽`;
+            deliveryPriceElement.style.color = '#333'; // Обычный цвет
+            console.log('💰 Цена доставки обновлена:', totalPrice, '₽');
+        } else {
+            deliveryPriceElement.textContent = '-';
+            deliveryPriceElement.style.color = '#999';
+            console.log('❓ Цена доставки не определена');
+        }
+    }
+    
+    // Обработка выбора адреса доставки
+    async handleDeliverySelection(deliveryZone) {
+        console.log('🎯 Обработка выбора доставки для зоны:', deliveryZone);
+        
+        try {
+            // Ждем загрузки данных о продуктах доставки
+            await this.waitForDostavkaProducts();
+            
+            // Определяем товар доставки
+            const deliveryInfo = this.determineDeliveryProduct(deliveryZone);
+            
+            // Обновляем отображение цены
+            this.updateDeliveryPriceDisplay(deliveryInfo);
+            
+            // Если доставка не бесплатная и есть товар, добавляем в корзину
+            if (!deliveryInfo.isFree && deliveryInfo.product && deliveryInfo.quantity > 0) {
+                console.log('🛒 Добавляем товар доставки в корзину...');
+                const success = await this.addDeliveryProductToCart(deliveryInfo.product, deliveryInfo.quantity);
+                
+                if (success) {
+                    console.log('✅ Товар доставки успешно добавлен в корзину');
+                    
+                    // Обновляем корзину без перезагрузки страницы
+                    await this.refreshCart();
+                } else {
+                    console.error('❌ Не удалось добавить товар доставки в корзину');
+                }
+            } else if (deliveryInfo.isFree) {
+                console.log('✅ Доставка бесплатна, товар не добавляем');
+            } else {
+                console.log('ℹ️ Товар доставки не требуется или не найден');
+            }
+            
+            return deliveryInfo;
+        } catch (error) {
+            console.error('❌ Ошибка при обработке выбора доставки:', error);
+            return null;
+        }
     }
     
     // Ожидание загрузки window.dostavkaProducts
@@ -679,8 +1028,8 @@ class AddressPopupManager {
                 // Определяем зону доставки
                 const deliveryZone = this.getDeliveryZone(coords);
                 
-                // Ищем соответствующий товар доставки (асинхронно)
-                this.findDeliveryProductByZoneAsync(deliveryZone);
+                // Обрабатываем выбор доставки
+                this.handleDeliverySelection(deliveryZone);
                 
                 // Центрируем карту на найденном адресе
                 this.map.setCenter(coords, 15);
@@ -1526,6 +1875,68 @@ window.waitForDostavkaProducts = function() {
     } else {
         console.error('❌ addressPopupManager не найден!');
         return Promise.reject('addressPopupManager не найден');
+    }
+};
+
+// Функция для тестирования расчета доставки
+window.testDeliveryCalculation = function(zoneName) {
+    console.log('🧪 Тестирование расчета доставки для зоны:', zoneName);
+    
+    if (window.addressPopupManager) {
+        const deliveryInfo = window.addressPopupManager.determineDeliveryProduct(zoneName);
+        console.log('📊 Результат расчета доставки:', deliveryInfo);
+        return deliveryInfo;
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для получения информации о корзине
+window.getCartInfo = function() {
+    console.log('🛒 Информация о корзине:');
+    
+    if (window.addressPopupManager) {
+        const cartTotal = window.addressPopupManager.getCartTotal();
+        const programDays = window.addressPopupManager.getProgramDaysCount();
+        const deliveryTime = window.addressPopupManager.getProgramDeliveryTime();
+        
+        console.log('💰 Общая сумма корзины:', cartTotal);
+        console.log('📅 Количество дней программ:', programDays);
+        console.log('🕐 Время доставки:', deliveryTime);
+        
+        return {
+            cartTotal: cartTotal,
+            programDays: programDays,
+            deliveryTime: deliveryTime
+        };
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для тестирования добавления товара доставки
+window.testAddDeliveryProduct = function(zoneName) {
+    console.log('🧪 Тестирование добавления товара доставки для зоны:', zoneName);
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.handleDeliverySelection(zoneName);
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для обновления корзины
+window.refreshCart = function() {
+    console.log('🔄 Ручное обновление корзины...');
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.refreshCart();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
     }
 };
 
