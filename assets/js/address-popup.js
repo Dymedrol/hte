@@ -42,6 +42,7 @@ class AddressPopupManager {
         this.geocoder = null;
         this.currentStep = 1;
         this.deliveryZones = null;
+        this.savedDeliveryData = null;
         
         this.init();
     }
@@ -49,9 +50,73 @@ class AddressPopupManager {
     init() {
         // Ждем загрузки DOM
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setupElements());
+            document.addEventListener('DOMContentLoaded', () => {
+                this.setupElements();
+                this.cleanDeliveryAddressesOnLoad();
+            });
         } else {
             this.setupElements();
+            this.cleanDeliveryAddressesOnLoad();
+        }
+    }
+    
+    // Очистка адресов доставки при загрузке страницы
+    cleanDeliveryAddressesOnLoad() {
+        console.log('🧹 Очистка адресов доставки при загрузке страницы...');
+        
+        // Находим все поля комментариев в корзине
+        const commentInputs = document.querySelectorAll('input[data-comment]');
+        console.log('🔍 Найдено полей комментариев для очистки:', commentInputs.length);
+        
+        if (commentInputs.length === 0) {
+            // Попробуем альтернативный селектор
+            const altInputs = document.querySelectorAll('input[name*="order_line_comments"]');
+            console.log('🔍 Альтернативный поиск - найдено полей:', altInputs.length);
+            
+            if (altInputs.length > 0) {
+                altInputs.forEach((input, index) => {
+                    this.cleanSingleCommentField(input, index);
+                });
+            }
+            return;
+        }
+        
+        commentInputs.forEach((input, index) => {
+            this.cleanSingleCommentField(input, index);
+        });
+        
+        console.log('✅ Очистка адресов доставки завершена');
+    }
+    
+    // Очистка одного поля комментария от адреса доставки
+    cleanSingleCommentField(input, index) {
+        const currentValue = input.value || '';
+        console.log(`🧹 Очищаем поле ${index + 1}:`, input.name, 'текущее значение:', currentValue);
+        
+        if (!currentValue.trim()) {
+            console.log(`⏭️ Поле ${index + 1} пустое, пропускаем`);
+            return;
+        }
+        
+        // Удаляем адрес доставки из комментария
+        const cleanedValue = this.removeDeliveryAddressFromComment(currentValue);
+        console.log(`🧹 Очищенное значение поля ${index + 1}:`, cleanedValue);
+        
+        // Обновляем значение только если оно изменилось
+        if (cleanedValue !== currentValue) {
+            input.value = cleanedValue;
+            
+            // Принудительно вызываем событие change для уведомления других скриптов
+            const changeEvent = new Event('change', { bubbles: true });
+            input.dispatchEvent(changeEvent);
+            
+            // Также вызываем событие input
+            const inputEvent = new Event('input', { bubbles: true });
+            input.dispatchEvent(inputEvent);
+            
+            console.log(`✅ Поле ${index + 1} очищено и события отправлены`);
+        } else {
+            console.log(`⏭️ Поле ${index + 1} не содержало адрес доставки`);
         }
     }
     
@@ -334,12 +399,20 @@ class AddressPopupManager {
                 // Определяем зону доставки
                 const deliveryZone = this.getDeliveryZone(coords);
                 
+                // Ищем соответствующий товар доставки (асинхронно)
+                this.findDeliveryProductByZoneAsync(deliveryZone);
+                
                 // Обновляем UI
                 this.updateSelectedAddress(address, deliveryZone);
                 this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
                 
                 // Добавляем маркер на карту
                 this.addMarker(coords, address);
+                
+                // Обновляем адрес в комментарии если он уже был сохранен
+                if (this.savedDeliveryData) {
+                    this.updateDeliveryAddressInComment(address, coords);
+                }
                 
                 console.log('📍 Выбрана точка:', address, coords);
                 console.log('🚚 Зона доставки:', deliveryZone);
@@ -371,6 +444,137 @@ class AddressPopupManager {
         
         console.log('❌ Зона не найдена');
         return 'Зона доставки не определена';
+    }
+    
+    // Поиск товара доставки по зоне
+    findDeliveryProductByZone(deliveryZone) {
+        console.log('🔍 Поиск товара доставки для зоны:', deliveryZone);
+        
+        // Проверяем наличие данных о продуктах доставки
+        if (!window.dostavkaProducts) {
+            console.warn('❌ window.dostavkaProducts не найден');
+            console.log('🔍 Проверяем глобальные переменные:', Object.keys(window).filter(key => key.includes('dostavka')));
+            return null;
+        }
+        
+        if (!window.dostavkaProducts.products) {
+            console.warn('❌ window.dostavkaProducts не содержит products');
+            console.log('📦 Содержимое window.dostavkaProducts:', window.dostavkaProducts);
+            return null;
+        }
+        
+        if (!Array.isArray(window.dostavkaProducts.products)) {
+            console.warn('❌ window.dostavkaProducts.products не является массивом');
+            console.log('📦 Тип products:', typeof window.dostavkaProducts.products);
+            return null;
+        }
+        
+        console.log('📦 Доступные продукты доставки:', window.dostavkaProducts.products.length);
+        
+        // Маппинг зон доставки на названия товаров
+        const zoneToProductMapping = {
+            'Сити 1': 'Сити 1',
+            'Сити 2': 'Сити 2 до 7 утра', // По умолчанию до 7 утра
+            'Курьером в пределах МКАД': 'Курьером в пределах МКАД',
+            'МКАД + 35 км': 'Курьером за МКАД'
+        };
+        
+        // Определяем название товара для зоны
+        const productTitle = zoneToProductMapping[deliveryZone];
+        
+        if (!productTitle) {
+            console.warn('❌ Не найден маппинг для зоны:', deliveryZone);
+            return null;
+        }
+        
+        console.log('🎯 Ищем товар с названием:', productTitle);
+        
+        // Ищем товар по названию
+        const deliveryProduct = window.dostavkaProducts.products.find(product => 
+            product.title === productTitle
+        );
+        
+        if (deliveryProduct) {
+            console.log('✅ Найден товар доставки:', deliveryProduct);
+            this.logDeliveryProductInfo(deliveryProduct, deliveryZone);
+            return deliveryProduct;
+        } else {
+            console.warn('❌ Товар доставки не найден для зоны:', deliveryZone);
+            console.log('📋 Доступные товары:', window.dostavkaProducts.products.map(p => p.title));
+            return null;
+        }
+    }
+    
+    // Логирование информации о товаре доставки
+    logDeliveryProductInfo(product, zone) {
+        console.log('🚚 ===== ИНФОРМАЦИЯ О ТОВАРЕ ДОСТАВКИ =====');
+        console.log('📍 Зона доставки:', zone);
+        console.log('📦 ID товара:', product.id);
+        console.log('🏷️ Название:', product.title);
+        console.log('💰 Цена:', product.price_formatted);
+        console.log('🔗 URL:', product.url);
+        console.log('✅ Доступность:', product.available ? 'Доступен' : 'Недоступен');
+        
+        if (product.variants && product.variants.length > 0) {
+            console.log('📋 Варианты товара:');
+            product.variants.forEach((variant, index) => {
+                console.log(`  ${index + 1}. ID: ${variant.id}, Цена: ${variant.price_formatted}, Доступность: ${variant.available ? 'Да' : 'Нет'}`);
+            });
+        }
+        
+        if (product.tags && product.tags.length > 0) {
+            console.log('🏷️ Теги:', product.tags.join(', '));
+        }
+        
+        console.log('🚚 ===========================================');
+    }
+    
+    // Ожидание загрузки window.dostavkaProducts
+    waitForDostavkaProducts(maxAttempts = 10, delay = 500) {
+        return new Promise((resolve, reject) => {
+            let attempts = 0;
+            
+            const checkProducts = () => {
+                attempts++;
+                console.log(`🔍 Попытка ${attempts}/${maxAttempts} проверки window.dostavkaProducts`);
+                
+                if (window.dostavkaProducts && 
+                    window.dostavkaProducts.products && 
+                    Array.isArray(window.dostavkaProducts.products) && 
+                    window.dostavkaProducts.products.length > 0) {
+                    console.log('✅ window.dostavkaProducts загружен успешно');
+                    resolve(window.dostavkaProducts);
+                    return;
+                }
+                
+                if (attempts >= maxAttempts) {
+                    console.error('❌ Превышено максимальное количество попыток ожидания window.dostavkaProducts');
+                    reject(new Error('window.dostavkaProducts не загружен'));
+                    return;
+                }
+                
+                console.log(`⏳ Ожидание ${delay}ms перед следующей попыткой...`);
+                setTimeout(checkProducts, delay);
+            };
+            
+            checkProducts();
+        });
+    }
+    
+    // Поиск товара доставки с ожиданием загрузки данных
+    async findDeliveryProductByZoneAsync(deliveryZone) {
+        console.log('🔍 Асинхронный поиск товара доставки для зоны:', deliveryZone);
+        
+        try {
+            // Ждем загрузки данных о продуктах доставки
+            await this.waitForDostavkaProducts();
+            
+            // Теперь ищем товар
+            return this.findDeliveryProductByZone(deliveryZone);
+        } catch (error) {
+            console.error('❌ Ошибка при ожидании загрузки window.dostavkaProducts:', error);
+            return null;
+        }
     }
     
     // Проверка попадания точки в полигон (алгоритм ray casting)
@@ -421,6 +625,11 @@ class AddressPopupManager {
                     this.selectedAddress = newAddress;
                     this.updateSelectedAddress(newAddress);
                     marker.properties.set('balloonContent', newAddress);
+                    
+                    // Обновляем адрес в комментарии если он уже был сохранен
+                    if (this.savedDeliveryData) {
+                        this.updateDeliveryAddressInComment(newAddress, newCoords);
+                    }
                 }
             });
         });
@@ -470,6 +679,9 @@ class AddressPopupManager {
                 // Определяем зону доставки
                 const deliveryZone = this.getDeliveryZone(coords);
                 
+                // Ищем соответствующий товар доставки (асинхронно)
+                this.findDeliveryProductByZoneAsync(deliveryZone);
+                
                 // Центрируем карту на найденном адресе
                 this.map.setCenter(coords, 15);
                 
@@ -480,6 +692,11 @@ class AddressPopupManager {
                 this.updateSelectedAddress(address, deliveryZone);
                 this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
                 this.hideSuggestions();
+                
+                // Обновляем адрес в комментарии если он уже был сохранен
+                if (this.savedDeliveryData) {
+                    this.updateDeliveryAddressInComment(address, coords);
+                }
                 
                 console.log('🔍 Найден адрес:', address, coords);
                 console.log('🚚 Зона доставки:', deliveryZone);
@@ -516,12 +733,20 @@ class AddressPopupManager {
                         // Определяем зону доставки
                         const deliveryZone = this.getDeliveryZone(coords);
                         
+                        // Ищем соответствующий товар доставки
+                        this.findDeliveryProductByZone(deliveryZone);
+                        
                         // Добавляем маркер
                         this.addMarker(coords, address);
                         
                         // Обновляем UI
                         this.updateSelectedAddress(address, deliveryZone);
                         this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
+                        
+                        // Обновляем адрес в комментарии если он уже был сохранен
+                        if (this.savedDeliveryData) {
+                            this.updateDeliveryAddressInComment(address, coords);
+                        }
                         
                         console.log('📍 Текущее местоположение:', address, coords);
                         console.log('🚚 Зона доставки:', deliveryZone);
@@ -599,10 +824,18 @@ class AddressPopupManager {
         // Определяем зону доставки
         const deliveryZone = this.getDeliveryZone(coords);
         
+        // Ищем соответствующий товар доставки
+        this.findDeliveryProductByZone(deliveryZone);
+        
         // Обновляем UI
         this.updateSelectedAddress(address, deliveryZone);
         this.updateConfirmButton(deliveryZone !== 'Зона доставки не определена');
         this.hideSuggestions();
+        
+        // Обновляем адрес в комментарии если он уже был сохранен
+        if (this.savedDeliveryData) {
+            this.updateDeliveryAddressInComment(address, coords);
+        }
     }
     
     // Обновление отображения выбранного адреса
@@ -806,6 +1039,16 @@ class AddressPopupManager {
         };
         
         console.log('📦 Данные доставки:', deliveryData);
+        console.log('🔍 Проверяем наличие адреса:', this.selectedAddress);
+        
+        if (!this.selectedAddress) {
+            console.warn('❌ Адрес не выбран!');
+            return;
+        }
+        
+        // Обновляем комментарий заказа с адресом доставки
+        console.log('📝 Вызываем updateOrderComment...');
+        this.updateOrderComment(deliveryData);
         
         // Активируем кнопку оформления
         this.updateCheckoutButton(true);
@@ -828,12 +1071,189 @@ class AddressPopupManager {
         this.resetUI();
     }
     
+    // Обновление комментария заказа с адресом доставки
+    updateOrderComment(deliveryData) {
+        console.log('📝 Обновление комментария заказа с адресом доставки');
+        console.log('📦 Данные доставки:', deliveryData);
+        
+        // Формируем строку адреса доставки
+        let deliveryAddressString = `Адрес доставки: ${deliveryData.address}`;
+        
+        // Добавляем дополнительные детали если они есть
+        const details = [];
+        if (deliveryData.apartment) details.push(`кв. ${deliveryData.apartment}`);
+        if (deliveryData.floor) details.push(`эт. ${deliveryData.floor}`);
+        if (deliveryData.entrance) details.push(`под. ${deliveryData.entrance}`);
+        if (deliveryData.intercom) details.push(`домофон ${deliveryData.intercom}`);
+        
+        if (details.length > 0) {
+            deliveryAddressString += ` (${details.join(', ')})`;
+        }
+        
+        // Добавляем комментарий курьера если есть
+        if (deliveryData.comment) {
+            deliveryAddressString += ` | Комментарий: ${deliveryData.comment}`;
+        }
+        
+        console.log('🏠 Строка адреса доставки:', deliveryAddressString);
+        
+        // Находим все поля комментариев в корзине
+        const commentInputs = document.querySelectorAll('input[data-comment]');
+        console.log('🔍 Найдено полей комментариев:', commentInputs.length);
+        
+        if (commentInputs.length === 0) {
+            console.warn('❌ Поля комментариев не найдены!');
+            // Попробуем альтернативный селектор
+            const altInputs = document.querySelectorAll('input[name*="order_line_comments"]');
+            console.log('🔍 Альтернативный поиск - найдено полей:', altInputs.length);
+            if (altInputs.length > 0) {
+                altInputs.forEach(input => {
+                    console.log('📝 Обновляем альтернативное поле:', input.name, input.value);
+                    this.updateSingleCommentField(input, deliveryAddressString);
+                });
+            }
+            return;
+        }
+        
+        commentInputs.forEach((input, index) => {
+            console.log(`📝 Обрабатываем поле ${index + 1}:`, input.name, 'текущее значение:', input.value);
+            this.updateSingleCommentField(input, deliveryAddressString);
+        });
+        
+        // Сохраняем данные доставки для возможного обновления
+        this.savedDeliveryData = deliveryData;
+    }
+    
+    // Обновление одного поля комментария
+    updateSingleCommentField(input, deliveryAddressString) {
+        const currentValue = input.value || '';
+        console.log('📝 Текущее значение поля:', currentValue);
+        
+        // Удаляем предыдущий адрес доставки если он есть
+        let updatedValue = this.removeDeliveryAddressFromComment(currentValue);
+        console.log('🧹 Очищенное значение:', updatedValue);
+        
+        // Добавляем новый адрес доставки
+        if (updatedValue.trim()) {
+            updatedValue += ` | ${deliveryAddressString}`;
+        } else {
+            updatedValue = deliveryAddressString;
+        }
+        
+        console.log('✅ Новое значение поля:', updatedValue);
+        
+        // Обновляем значение поля
+        input.value = updatedValue;
+        
+        // Принудительно вызываем событие change для уведомления других скриптов
+        const changeEvent = new Event('change', { bubbles: true });
+        input.dispatchEvent(changeEvent);
+        
+        // Также вызываем событие input
+        const inputEvent = new Event('input', { bubbles: true });
+        input.dispatchEvent(inputEvent);
+        
+        console.log('✅ Поле обновлено и события отправлены');
+    }
+    
+    // Удаление адреса доставки из комментария
+    removeDeliveryAddressFromComment(comment) {
+        if (!comment) return '';
+        
+        console.log('🧹 Удаляем адрес доставки из комментария:', comment);
+        
+        // Разбиваем комментарий по разделителю "|"
+        const parts = comment.split('|');
+        const filteredParts = [];
+        
+        for (const part of parts) {
+            const trimmedPart = part.trim();
+            console.log('🔍 Проверяем часть:', trimmedPart);
+            
+            // Пропускаем части, которые содержат адрес доставки или комментарий курьера
+            if (!trimmedPart.startsWith('Адрес доставки:') && 
+                !trimmedPart.startsWith('Комментарий:') &&
+                !trimmedPart.includes('кв.') && // Дополнительная проверка на детали адреса
+                !trimmedPart.includes('эт.') &&
+                !trimmedPart.includes('под.') &&
+                !trimmedPart.includes('домофон')) {
+                filteredParts.push(trimmedPart);
+                console.log('✅ Часть сохранена:', trimmedPart);
+            } else {
+                console.log('❌ Часть удалена:', trimmedPart);
+            }
+        }
+        
+        const result = filteredParts.join(' | ').trim();
+        console.log('🧹 Результат очистки:', result);
+        return result;
+    }
+    
+    // Обновление адреса доставки в комментарии (при изменении адреса)
+    updateDeliveryAddressInComment(newAddress, newCoordinates) {
+        console.log('🔄 Обновление адреса доставки в комментарии');
+        console.log('🏠 Новый адрес:', newAddress);
+        
+        if (!this.savedDeliveryData) {
+            console.warn('❌ Нет сохраненных данных доставки для обновления');
+            return;
+        }
+        
+        // Обновляем сохраненные данные
+        this.savedDeliveryData.address = newAddress;
+        this.savedDeliveryData.coordinates = newCoordinates;
+        
+        // Формируем новый адрес доставки
+        let deliveryAddressString = `Адрес доставки: ${newAddress}`;
+        
+        // Добавляем дополнительные детали если они есть
+        const details = [];
+        if (this.savedDeliveryData.apartment) details.push(`кв. ${this.savedDeliveryData.apartment}`);
+        if (this.savedDeliveryData.floor) details.push(`эт. ${this.savedDeliveryData.floor}`);
+        if (this.savedDeliveryData.entrance) details.push(`под. ${this.savedDeliveryData.entrance}`);
+        if (this.savedDeliveryData.intercom) details.push(`домофон ${this.savedDeliveryData.intercom}`);
+        
+        if (details.length > 0) {
+            deliveryAddressString += ` (${details.join(', ')})`;
+        }
+        
+        // Добавляем комментарий курьера если есть
+        if (this.savedDeliveryData.comment) {
+            deliveryAddressString += ` | Комментарий: ${this.savedDeliveryData.comment}`;
+        }
+        
+        console.log('🏠 Обновленная строка адреса:', deliveryAddressString);
+        
+        // Находим все поля комментариев в корзине
+        const commentInputs = document.querySelectorAll('input[data-comment]');
+        console.log('🔍 Найдено полей для обновления:', commentInputs.length);
+        
+        if (commentInputs.length === 0) {
+            console.warn('❌ Поля комментариев не найдены для обновления!');
+            // Попробуем альтернативный селектор
+            const altInputs = document.querySelectorAll('input[name*="order_line_comments"]');
+            console.log('🔍 Альтернативный поиск - найдено полей:', altInputs.length);
+            if (altInputs.length > 0) {
+                altInputs.forEach(input => {
+                    this.updateSingleCommentField(input, deliveryAddressString);
+                });
+            }
+            return;
+        }
+        
+        commentInputs.forEach((input, index) => {
+            console.log(`🔄 Обновляем поле ${index + 1}:`, input.name);
+            this.updateSingleCommentField(input, deliveryAddressString);
+        });
+    }
+    
     // Сброс состояния (только при полном сбросе)
     resetState() {
         this.selectedCoordinates = null;
         this.selectedAddress = null;
         this.suggestions = [];
         this.currentStep = 1;
+        this.savedDeliveryData = null;
         
         // Сбрасываем первый шаг
         if (this.addressInput) {
@@ -975,6 +1395,139 @@ const addressPopupManager = new AddressPopupManager();
 
 // Делаем менеджер глобально доступным
 window.addressPopupManager = addressPopupManager;
+
+// Функция для тестирования обновления комментария
+window.testUpdateComment = function() {
+    console.log('🧪 Тестирование обновления комментария...');
+    
+    // Находим поля комментариев
+    const commentInputs = document.querySelectorAll('input[data-comment]');
+    console.log('🔍 Найдено полей с data-comment:', commentInputs.length);
+    
+    const altInputs = document.querySelectorAll('input[name*="order_line_comments"]');
+    console.log('🔍 Найдено полей с order_line_comments:', altInputs.length);
+    
+    // Тестовые данные
+    const testData = {
+        address: 'Тестовый адрес, д. 1',
+        coordinates: [55.7558, 37.6176],
+        houseType: 'apartment',
+        apartment: '10',
+        floor: '5',
+        entrance: '2',
+        intercom: '123',
+        comment: 'Тестовый комментарий'
+    };
+    
+    if (window.addressPopupManager) {
+        console.log('📝 Вызываем updateOrderComment с тестовыми данными...');
+        window.addressPopupManager.updateOrderComment(testData);
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+    }
+};
+
+// Функция для проверки полей комментариев
+window.checkCommentFields = function() {
+    console.log('🔍 Проверка полей комментариев...');
+    
+    const commentInputs = document.querySelectorAll('input[data-comment]');
+    console.log('📝 Поля с data-comment:', commentInputs.length);
+    commentInputs.forEach((input, index) => {
+        console.log(`  ${index + 1}. name: ${input.name}, value: "${input.value}"`);
+    });
+    
+    const altInputs = document.querySelectorAll('input[name*="order_line_comments"]');
+    console.log('📝 Поля с order_line_comments:', altInputs.length);
+    altInputs.forEach((input, index) => {
+        console.log(`  ${index + 1}. name: ${input.name}, value: "${input.value}"`);
+    });
+};
+
+// Функция для ручной очистки адресов доставки
+window.cleanDeliveryAddresses = function() {
+    console.log('🧹 Ручная очистка адресов доставки...');
+    
+    if (window.addressPopupManager) {
+        window.addressPopupManager.cleanDeliveryAddressesOnLoad();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+    }
+};
+
+// Функция для тестирования поиска товара доставки
+window.testDeliveryProductSearch = function(zoneName) {
+    console.log('🧪 Тестирование поиска товара доставки для зоны:', zoneName);
+    
+    if (window.addressPopupManager) {
+        const product = window.addressPopupManager.findDeliveryProductByZone(zoneName);
+        if (product) {
+            console.log('✅ Товар найден:', product);
+        } else {
+            console.log('❌ Товар не найден');
+        }
+        return product;
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для проверки доступных товаров доставки
+window.checkDeliveryProducts = function() {
+    console.log('🔍 Проверка доступных товаров доставки...');
+    
+    if (window.dostavkaProducts && window.dostavkaProducts.products) {
+        console.log('📦 Всего товаров доставки:', window.dostavkaProducts.products.length);
+        console.log('📋 Список товаров:');
+        window.dostavkaProducts.products.forEach((product, index) => {
+            console.log(`  ${index + 1}. "${product.title}" - ${product.price_formatted} (ID: ${product.id})`);
+        });
+    } else {
+        console.error('❌ window.dostavkaProducts не найден!');
+    }
+};
+
+// Функция для детальной проверки состояния window.dostavkaProducts
+window.debugDostavkaProducts = function() {
+    console.log('🔍 Детальная проверка window.dostavkaProducts...');
+    
+    console.log('🌐 window.dostavkaProducts существует:', !!window.dostavkaProducts);
+    
+    if (window.dostavkaProducts) {
+        console.log('📦 Тип window.dostavkaProducts:', typeof window.dostavkaProducts);
+        console.log('📦 Содержимое window.dostavkaProducts:', window.dostavkaProducts);
+        
+        if (window.dostavkaProducts.products) {
+            console.log('📋 products существует:', !!window.dostavkaProducts.products);
+            console.log('📋 Тип products:', typeof window.dostavkaProducts.products);
+            console.log('📋 products является массивом:', Array.isArray(window.dostavkaProducts.products));
+            console.log('📋 Количество products:', window.dostavkaProducts.products.length);
+        } else {
+            console.log('❌ products не существует');
+        }
+    }
+    
+    // Проверяем все глобальные переменные с dostavka
+    const dostavkaKeys = Object.keys(window).filter(key => key.toLowerCase().includes('dostavka'));
+    console.log('🔍 Глобальные переменные с dostavka:', dostavkaKeys);
+    
+    dostavkaKeys.forEach(key => {
+        console.log(`  ${key}:`, window[key]);
+    });
+};
+
+// Функция для ожидания загрузки window.dostavkaProducts
+window.waitForDostavkaProducts = function() {
+    console.log('⏳ Ожидание загрузки window.dostavkaProducts...');
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.waitForDostavkaProducts();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return Promise.reject('addressPopupManager не найден');
+    }
+};
 
 // Экспорт для модульных систем (если используется)
 if (typeof module !== 'undefined' && module.exports) {
