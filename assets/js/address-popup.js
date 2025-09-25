@@ -43,6 +43,8 @@ class AddressPopupManager {
         this.currentStep = 1;
         this.deliveryZones = null;
         this.savedDeliveryData = null;
+        this.virtualCart = null; // Виртуальная корзина для отслеживания всех товаров
+        this.cartItemCountObserver = null; // Наблюдатель за изменениями data-cart-item-count
         
         this.init();
     }
@@ -53,16 +55,21 @@ class AddressPopupManager {
             document.addEventListener('DOMContentLoaded', () => {
                 this.setupElements();
                 this.cleanDeliveryAddressesOnLoad();
+                this.initCartObserver();
             });
         } else {
             this.setupElements();
             this.cleanDeliveryAddressesOnLoad();
+            this.initCartObserver();
         }
     }
     
     // Очистка адресов доставки при загрузке страницы
     cleanDeliveryAddressesOnLoad() {
         console.log('🧹 Очистка адресов доставки при загрузке страницы...');
+        
+        // Сначала удаляем товары доставки из корзины
+        this.removeDeliveryProductsFromCart();
         
         // Находим все поля комментариев в корзине
         const commentInputs = document.querySelectorAll('input[data-comment]');
@@ -86,6 +93,375 @@ class AddressPopupManager {
         });
         
         console.log('✅ Очистка адресов доставки завершена');
+    }
+    
+    // Инициализация наблюдателя за изменениями data-cart-total-price
+    initCartObserver() {
+        console.log('👁️ Инициализация наблюдателя за изменениями корзины...');
+        
+        const cartTotalPriceElement = document.querySelector('[data-cart-total-price]');
+        if (!cartTotalPriceElement) {
+            console.warn('⚠️ Элемент [data-cart-total-price] не найден');
+            return;
+        }
+        
+        // Создаем наблюдатель за изменениями
+        this.cartItemCountObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    this.handleCartTotalPriceChange();
+                }
+            });
+        });
+        
+        // Начинаем наблюдение
+        this.cartItemCountObserver.observe(cartTotalPriceElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+        
+        console.log('✅ Наблюдатель за изменениями корзины инициализирован');
+    }
+    
+    // Обработка изменений в data-cart-total-price
+    handleCartTotalPriceChange() {
+        console.log('🔄 Обнаружено изменение в data-cart-total-price');
+        
+        const cartTotalPriceElement = document.querySelector('[data-cart-total-price]');
+        if (!cartTotalPriceElement) {
+            console.warn('⚠️ Элемент [data-cart-total-price] не найден');
+            return;
+        }
+        
+        const cartTotalText = cartTotalPriceElement.textContent;
+        console.log('📊 Текущее содержимое data-cart-total-price:', cartTotalText);
+        console.log('📊 Тип содержимого:', typeof cartTotalText);
+        console.log('📊 Длина содержимого:', cartTotalText.length);
+        
+        // Пробуем разные способы извлечения числового значения
+        let cartTotal = null;
+        
+        // Способ 1: Ищем число с валютным символом (например: "74400 ₽")
+        const match1 = cartTotalText.match(/(\d+(?:\s\d+)*)\s*[₽$€]/);
+        if (match1) {
+            const cleaned1 = match1[1].replace(/\s/g, '');
+            console.log('🔍 Способ 1 (с валютой) - найденное значение:', cleaned1);
+            cartTotal = parseInt(cleaned1);
+        }
+        
+        // Способ 2: Ищем только цифры
+        const match2 = cartTotalText.match(/\d+/);
+        if (match2 && !cartTotal) {
+            console.log('🔍 Способ 2 (только цифры) - найденное значение:', match2[0]);
+            cartTotal = parseInt(match2[0]);
+        }
+        
+        // Способ 3: Ищем числа с пробелами (например: "66 000")
+        const match3 = cartTotalText.match(/(\d+(?:\s\d+)*)/);
+        if (match3 && !cartTotal) {
+            const cleaned3 = match3[1].replace(/\s/g, '');
+            console.log('🔍 Способ 3 (с пробелами) - найденное значение:', cleaned3);
+            cartTotal = parseInt(cleaned3);
+        }
+        
+        // Способ 4: Ищем числа с разделителями (пробелы, запятые)
+        const match4 = cartTotalText.match(/[\d\s,]+/);
+        if (match4 && !cartTotal) {
+            const cleaned4 = match4[0].replace(/[\s,]/g, '');
+            console.log('🔍 Способ 4 (с разделителями) - найденное значение:', cleaned4);
+            cartTotal = parseInt(cleaned4);
+        }
+        
+        console.log('💰 Извлеченная сумма корзины:', cartTotal);
+        
+        if (isNaN(cartTotal) || cartTotal === null) {
+            console.warn('⚠️ Не удалось извлечь числовое значение из data-cart-total-price');
+            console.log('⚠️ Попробуйте проверить содержимое элемента вручную');
+            return;
+        }
+        
+        // Вычисляем стоимость доставки
+        const deliveryPrice = this.calculateCurrentDeliveryPrice();
+        console.log('🚚 Стоимость доставки:', deliveryPrice);
+        
+        // Вычисляем стоимость товаров (без доставки)
+        const productsPrice = cartTotal - deliveryPrice;
+        console.log('📦 Стоимость товаров (без доставки):', productsPrice);
+        
+        // Обновляем #cart-total-price
+        this.updateCartTotalPrice(productsPrice);
+    }
+    
+    // Вычисление текущей стоимости доставки
+    calculateCurrentDeliveryPrice() {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.log('⚠️ Виртуальная корзина недоступна, доставка = 0');
+            return 0;
+        }
+        
+        // Получаем список variant_id товаров доставки
+        const deliveryVariantIds = [];
+        if (window.dostavkaProducts && window.dostavkaProducts.products) {
+            window.dostavkaProducts.products.forEach(product => {
+                if (product.variants && product.variants.length > 0) {
+                    product.variants.forEach(variant => {
+                        deliveryVariantIds.push(variant.id);
+                    });
+                }
+            });
+        }
+        
+        // Суммируем стоимость товаров доставки
+        let deliveryPrice = 0;
+        this.virtualCart.items.forEach(item => {
+            const variantId = item.variant_id;
+            if (deliveryVariantIds.includes(variantId)) {
+                // Пробуем разные поля для получения цены
+                const price = item.price || item.total_price || item.line_price || item.amount || 0;
+                
+                if (price === 0 || price === undefined || price === null) {
+                    console.warn(`⚠️ Товар доставки "${item.title}" имеет неопределенную цену:`, item);
+                    console.log('🔍 Доступные поля товара:', Object.keys(item));
+                    return;
+                }
+                
+                // Для товаров доставки price уже содержит общую стоимость за все дни
+                // Не нужно умножать на quantity
+                const itemTotal = price;
+                deliveryPrice += itemTotal;
+                console.log(`🚚 Товар доставки "${item.title}": ${price} (общая стоимость за все дни)`);
+            }
+        });
+        
+        return deliveryPrice;
+    }
+    
+    // Обновление #cart-total-price
+    updateCartTotalPrice(productsPrice) {
+        const cartTotalPriceElement = document.getElementById('cart-total-price');
+        if (!cartTotalPriceElement) {
+            console.warn('⚠️ Элемент #cart-total-price не найден');
+            return;
+        }
+        
+        const formattedPrice = `${productsPrice} ₽`;
+        cartTotalPriceElement.textContent = formattedPrice;
+        console.log('✅ Обновлена цена товаров в #cart-total-price:', formattedPrice);
+    }
+    
+    // Удаление товаров доставки из корзины при загрузке страницы
+    async removeDeliveryProductsFromCart() {
+        console.log('🗑️ Удаление товаров доставки из корзины...');
+        
+        // Ждем загрузки данных о продуктах доставки
+        try {
+            await this.waitForDostavkaProducts();
+        } catch (error) {
+            console.warn('⚠️ Не удалось загрузить данные о продуктах доставки:', error);
+            return;
+        }
+        
+        if (!window.dostavkaProducts || !window.dostavkaProducts.products) {
+            console.warn('⚠️ Данные о продуктах доставки недоступны');
+            return;
+        }
+        
+        // Обновляем виртуальную корзину
+        await this.refreshCart();
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.error('❌ Не удалось получить данные корзины');
+            return;
+        }
+        
+        // Получаем список variant_id товаров доставки
+        const deliveryVariantIds = [];
+        window.dostavkaProducts.products.forEach(product => {
+            if (product.variants && product.variants.length > 0) {
+                product.variants.forEach(variant => {
+                    deliveryVariantIds.push(variant.id);
+                });
+            }
+        });
+        console.log('📦 Variant ID товаров доставки для удаления:', deliveryVariantIds);
+        
+        // Находим товары доставки в виртуальной корзине
+        const deliveryVariantsToRemove = [];
+        
+        console.log('🛒 Всего товаров в виртуальной корзине:', this.virtualCart.items.length);
+        
+        this.virtualCart.items.forEach((item, index) => {
+            const variantId = item.variant_id;
+            const productId = item.product_id;
+            const productTitle = item.title || item.product_title || 'Неизвестно';
+            
+            console.log(`🔍 Товар ${index + 1}: variantId="${variantId}", productId="${productId}", title="${productTitle}"`);
+            
+            if (variantId) {
+                const variantIdInt = parseInt(variantId);
+                if (deliveryVariantIds.includes(variantIdInt)) {
+                    console.log('✅ Товар доставки найден по variant_id!');
+                    deliveryVariantsToRemove.push(variantIdInt);
+                    console.log('🗑️ Найден товар доставки для удаления:', variantId, 'variant ID:', variantIdInt);
+                }
+            }
+        });
+        
+        if (deliveryVariantsToRemove.length === 0) {
+            console.log('✅ Товары доставки в корзине не найдены');
+            return;
+        }
+        
+        console.log('🗑️ Удаляем товары доставки по variant_id:', deliveryVariantsToRemove);
+        
+        // Удаляем каждый товар доставки по variant_id
+        for (const variantId of deliveryVariantsToRemove) {
+            const success = await this.removeCartItemByVariantId(variantId);
+            if (success) {
+                console.log('✅ Товар успешно удален по variant_id:', variantId);
+            } else {
+                console.error('❌ Не удалось удалить товар по variant_id:', variantId);
+            }
+        }
+        
+        console.log('✅ Удаление товаров доставки завершено');
+    }
+    
+    // Удаление существующих товаров доставки из корзины (при смене зоны)
+    async removeExistingDeliveryProducts() {
+        console.log('🗑️ Удаление существующих товаров доставки из корзины...');
+        
+        if (!window.dostavkaProducts || !window.dostavkaProducts.products) {
+            console.warn('⚠️ Данные о продуктах доставки недоступны');
+            return;
+        }
+        
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.warn('⚠️ Виртуальная корзина недоступна, обновляем...');
+            await this.refreshCart();
+            if (!this.virtualCart || !this.virtualCart.items) {
+                console.error('❌ Не удалось получить данные корзины');
+                return;
+            }
+        }
+        
+        // Получаем список variant_id товаров доставки
+        const deliveryVariantIds = [];
+        window.dostavkaProducts.products.forEach(product => {
+            if (product.variants && product.variants.length > 0) {
+                product.variants.forEach(variant => {
+                    deliveryVariantIds.push(variant.id);
+                });
+            }
+        });
+        console.log('📦 Variant ID товаров доставки для удаления:', deliveryVariantIds);
+        
+        // Находим товары доставки в виртуальной корзине
+        const deliveryVariantsToRemove = [];
+        
+        console.log('🛒 Всего товаров в виртуальной корзине:', this.virtualCart.items.length);
+        
+        this.virtualCart.items.forEach((item, index) => {
+            const variantId = item.variant_id;
+            const productId = item.product_id;
+            const productTitle = item.title || item.product_title || 'Неизвестно';
+            
+            console.log(`🔍 Товар ${index + 1}: variantId="${variantId}", productId="${productId}", title="${productTitle}"`);
+            
+            if (variantId) {
+                const variantIdInt = parseInt(variantId);
+                console.log(`🔍 Проверяем variantId ${variantIdInt} в списке доставки:`, deliveryVariantIds);
+                
+                if (deliveryVariantIds.includes(variantIdInt)) {
+                    console.log('✅ Товар доставки найден по variant_id!');
+                    deliveryVariantsToRemove.push(variantIdInt);
+                    console.log('🗑️ Найден товар доставки для удаления:', variantId, 'variant ID:', variantIdInt);
+                } else {
+                    console.log('❌ Товар НЕ является товаром доставки');
+                }
+            } else {
+                console.log('❌ У товара нет variant_id');
+            }
+        });
+        
+        if (deliveryVariantsToRemove.length === 0) {
+            console.log('✅ Товары доставки в корзине не найдены');
+            return;
+        }
+        
+        console.log('🗑️ Удаляем товары доставки по variant_id:', deliveryVariantsToRemove);
+        
+        // Удаляем каждый товар доставки по variant_id
+        for (const variantId of deliveryVariantsToRemove) {
+            const success = await this.removeCartItemByVariantId(variantId);
+            if (success) {
+                console.log('✅ Товар успешно удален по variant_id:', variantId);
+            } else {
+                console.error('❌ Не удалось удалить товар по variant_id:', variantId);
+            }
+        }
+        
+        console.log('✅ Удаление существующих товаров доставки завершено');
+    }
+    
+    // Удаление товара из корзины по variant_id
+    async removeCartItemByVariantId(variantId) {
+        console.log('🗑️ Удаление товара из корзины по variant_id:', variantId);
+        
+        // Предпочтительно используем внутренний AJAX API InSales, если доступен
+        if (window.ajaxAPI && ajaxAPI.cart && typeof ajaxAPI.cart.remove === 'function') {
+            try {
+                console.log('➡️ Используем ajaxAPI.cart.remove для variant_id:', variantId);
+                
+                return await new Promise((resolve) => {
+                    ajaxAPI.cart.remove(variantId)
+                        .done((onDone) => {
+                            console.log('✅ ajaxAPI.cart.remove onDone для variant_id', variantId, ':', onDone);
+                            resolve(true);
+                        })
+                        .fail((onFail) => {
+                            console.error('❌ ajaxAPI.cart.remove onFail для variant_id', variantId, ':', onFail);
+                            resolve(false);
+                        });
+                });
+            } catch (err) {
+                console.error('❌ Ошибка ajaxAPI.cart.remove для variant_id', variantId, ':', err);
+                return false;
+            }
+        } else {
+            console.warn('⚠️ ajaxAPI.cart.remove недоступен для variant_id:', variantId);
+            return false;
+        }
+    }
+    
+    // Удаление одного товара из корзины по item_id (старый метод, оставляем для совместимости)
+    async removeCartItem(itemId) {
+        console.log('🗑️ Удаление товара из корзины по item_id:', itemId);
+        
+        // Предпочтительно используем внутренний AJAX API InSales, если доступен
+        if (window.ajaxAPI && ajaxAPI.cart && typeof ajaxAPI.cart.remove === 'function') {
+            try {
+                console.log('➡️ Используем ajaxAPI.cart.remove для item_id:', itemId);
+                
+                return await new Promise((resolve) => {
+                    ajaxAPI.cart.remove(itemId)
+                        .done((onDone) => {
+                            console.log('✅ ajaxAPI.cart.remove onDone для item_id', itemId, ':', onDone);
+                            resolve(true);
+                        })
+                        .fail((onFail) => {
+                            console.error('❌ ajaxAPI.cart.remove onFail для item_id', itemId, ':', onFail);
+                            resolve(false);
+                        });
+                });
+            } catch (err) {
+                console.error('❌ Ошибка ajaxAPI.cart.remove для item_id', itemId, ':', err);
+                return false;
+            }
+        } else {
+            console.warn('⚠️ ajaxAPI.cart.remove недоступен для item_id:', itemId);
+            return false;
+        }
     }
     
     // Очистка одного поля комментария от адреса доставки
@@ -747,6 +1123,10 @@ class AddressPopupManager {
                         .done((onDone) => {
                             console.log('✅ ajaxAPI.cart.get onDone:', onDone);
                             
+                            // Сохраняем данные корзины в виртуальную корзину
+                            this.virtualCart = onDone;
+                            console.log('💾 Виртуальная корзина обновлена:', this.virtualCart);
+                            
                             // Обновляем отображение корзины
                             this.updateCartDisplay(onDone);
                             resolve(true);
@@ -775,6 +1155,10 @@ class AddressPopupManager {
             if (response.ok) {
                 const cartData = await response.json();
                 console.log('✅ Данные корзины обновлены (fetch):', cartData);
+                
+                // Сохраняем данные корзины в виртуальную корзину
+                this.virtualCart = cartData;
+                console.log('💾 Виртуальная корзина обновлена (fetch):', this.virtualCart);
                 
                 // Обновляем отображение корзины
                 this.updateCartDisplay(cartData);
@@ -811,6 +1195,18 @@ class AddressPopupManager {
             fullTotalElement.textContent = cartData.total_price_formatted || `${cartData.total_price} ₽`;
         }
         
+        // Обновляем итоговую сумму в .total-price
+        const totalPriceElement = document.querySelector('.total-price');
+        if (totalPriceElement && cartData.total_price) {
+            const formattedPrice = cartData.total_price_formatted || `${cartData.total_price} ₽`;
+            totalPriceElement.textContent = formattedPrice;
+            console.log('💰 Итоговая сумма обновлена в .total-price:', formattedPrice);
+        } else if (totalPriceElement) {
+            console.warn('⚠️ Элемент .total-price найден, но нет данных о цене');
+        } else {
+            console.warn('⚠️ Элемент .total-price не найден');
+        }
+        
         console.log('✅ Отображение корзины обновлено');
     }
     
@@ -841,10 +1237,18 @@ class AddressPopupManager {
     // Обработка выбора адреса доставки
     async handleDeliverySelection(deliveryZone) {
         console.log('🎯 Обработка выбора доставки для зоны:', deliveryZone);
+        console.log('🔍 handleDeliverySelection вызван, начинаем обработку...');
         
         try {
             // Ждем загрузки данных о продуктах доставки
+            console.log('⏳ Ждем загрузки данных о продуктах доставки...');
             await this.waitForDostavkaProducts();
+            console.log('✅ Данные о продуктах доставки загружены');
+            
+            // Удаляем предыдущие товары доставки из корзины
+            console.log('🗑️ Удаляем предыдущие товары доставки перед добавлением нового...');
+            await this.removeExistingDeliveryProducts();
+            console.log('✅ Удаление предыдущих товаров доставки завершено');
             
             // Определяем товар доставки
             const deliveryInfo = this.determineDeliveryProduct(deliveryZone);
@@ -1939,6 +2343,359 @@ window.refreshCart = function() {
         return null;
     }
 };
+
+// Функция для обновления итоговой суммы в .total-price
+window.updateTotalPrice = function() {
+    console.log('💰 Ручное обновление итоговой суммы...');
+    
+    if (window.addressPopupManager && window.addressPopupManager.virtualCart) {
+        const cartData = window.addressPopupManager.virtualCart;
+        const totalPriceElement = document.querySelector('.total-price');
+        
+        if (totalPriceElement && cartData.total_price) {
+            const formattedPrice = cartData.total_price_formatted || `${cartData.total_price} ₽`;
+            totalPriceElement.textContent = formattedPrice;
+            console.log('✅ Итоговая сумма обновлена в .total-price:', formattedPrice);
+            return formattedPrice;
+        } else {
+            console.warn('⚠️ Элемент .total-price не найден или нет данных о цене');
+            return null;
+        }
+    } else {
+        console.error('❌ addressPopupManager или виртуальная корзина не найдены!');
+        return null;
+    }
+};
+
+// Функция для проверки всех элементов с итоговой суммой
+window.checkTotalPriceElements = function() {
+    console.log('🔍 Проверка всех элементов с итоговой суммой...');
+    
+    const selectors = [
+        '.total-price',
+        '[data-cart-total-price]',
+        '[data-cart-full-total-price]',
+        '[data-cart-item-count]',
+        '#cart-total-price',
+        '.cart-total',
+        '.total-sum',
+        '.final-price'
+    ];
+    
+    selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        console.log(`🔍 Селектор "${selector}": найдено ${elements.length} элементов`);
+        
+        elements.forEach((element, index) => {
+            console.log(`   ${index + 1}. Текст: "${element.textContent}"`);
+            console.log(`      Элемент:`, element);
+        });
+    });
+    
+    if (window.addressPopupManager && window.addressPopupManager.virtualCart) {
+        const cartData = window.addressPopupManager.virtualCart;
+        console.log('💰 Текущая сумма в виртуальной корзине:', cartData.total_price);
+        console.log('💰 Форматированная сумма:', cartData.total_price_formatted);
+    }
+};
+
+// Функция для тестирования наблюдателя корзины
+window.testCartObserver = function() {
+    console.log('🧪 Тестирование наблюдателя корзины...');
+    
+    if (window.addressPopupManager) {
+        // Принудительно вызываем обработчик изменений
+        window.addressPopupManager.handleCartTotalPriceChange();
+        
+        // Проверяем стоимость доставки
+        const deliveryPrice = window.addressPopupManager.calculateCurrentDeliveryPrice();
+        console.log('🚚 Текущая стоимость доставки:', deliveryPrice);
+        
+        return deliveryPrice;
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для ручного обновления #cart-total-price
+window.updateCartTotalPrice = function() {
+    console.log('💰 Ручное обновление #cart-total-price...');
+    
+    if (window.addressPopupManager) {
+        window.addressPopupManager.handleCartTotalPriceChange();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+    }
+};
+
+// Функция для проверки содержимого data-cart-total-price
+window.checkCartTotalPriceContent = function() {
+    console.log('🔍 Проверка содержимого data-cart-total-price...');
+    
+    const cartTotalPriceElement = document.querySelector('[data-cart-total-price]');
+    if (!cartTotalPriceElement) {
+        console.error('❌ Элемент [data-cart-total-price] не найден!');
+        return null;
+    }
+    
+    const content = cartTotalPriceElement.textContent;
+    console.log('📊 Содержимое элемента:', content);
+    console.log('📊 Тип:', typeof content);
+    console.log('📊 Длина:', content.length);
+    console.log('📊 Коды символов:', Array.from(content).map(char => char.charCodeAt(0)));
+    
+    // Пробуем разные способы извлечения числа
+    const methods = [
+        { name: 'Число с валютой (₽$€)', regex: /(\d+(?:\s\d+)*)\s*[₽$€]/ },
+        { name: 'Только цифры', regex: /\d+/ },
+        { name: 'Числа с пробелами', regex: /(\d+(?:\s\d+)*)/ },
+        { name: 'Цифры и пробелы', regex: /[\d\s]+/ },
+        { name: 'Цифры, пробелы, запятые', regex: /[\d\s,]+/ },
+        { name: 'Цифры и точки', regex: /[\d.]+/ },
+        { name: 'Все символы кроме букв', regex: /[^\w]+/ }
+    ];
+    
+    methods.forEach(method => {
+        const match = content.match(method.regex);
+        if (match) {
+            console.log(`🔍 ${method.name}:`, match[0]);
+        } else {
+            console.log(`❌ ${method.name}: не найдено`);
+        }
+    });
+    
+    return content;
+};
+
+// Функция для тестирования извлечения числа из конкретного текста
+window.testNumberExtraction = function(text) {
+    console.log('🧪 Тестирование извлечения числа из текста:', text);
+    
+    const methods = [
+        { name: 'Число с валютой (₽$€)', regex: /(\d+(?:\s\d+)*)\s*[₽$€]/ },
+        { name: 'Только цифры', regex: /\d+/ },
+        { name: 'Числа с пробелами', regex: /(\d+(?:\s\d+)*)/ },
+        { name: 'Цифры и пробелы', regex: /[\d\s]+/ },
+        { name: 'Цифры, пробелы, запятые', regex: /[\d\s,]+/ }
+    ];
+    
+    methods.forEach(method => {
+        const match = text.match(method.regex);
+        if (match) {
+            let extractedNumber = null;
+            if (method.regex.source.includes('(')) {
+                // Если есть группы захвата, берем первую группу
+                extractedNumber = match[1] ? parseInt(match[1].replace(/\s/g, '')) : parseInt(match[0].replace(/\s/g, ''));
+            } else {
+                extractedNumber = parseInt(match[0].replace(/\s/g, ''));
+            }
+            console.log(`✅ ${method.name}: "${match[0]}" -> ${extractedNumber}`);
+        } else {
+            console.log(`❌ ${method.name}: не найдено`);
+        }
+    });
+};
+
+// Функция для проверки структуры товаров в виртуальной корзине
+window.checkVirtualCartItems = function() {
+    console.log('🔍 Проверка структуры товаров в виртуальной корзине...');
+    
+    if (!window.addressPopupManager || !window.addressPopupManager.virtualCart) {
+        console.error('❌ Виртуальная корзина недоступна!');
+        return;
+    }
+    
+    const cart = window.addressPopupManager.virtualCart;
+    console.log('📊 Всего товаров в виртуальной корзине:', cart.items.length);
+    
+    cart.items.forEach((item, index) => {
+        console.log(`📦 Товар ${index + 1}:`);
+        console.log(`   - variant_id: ${item.variant_id}`);
+        console.log(`   - product_id: ${item.product_id}`);
+        console.log(`   - title: ${item.title}`);
+        console.log(`   - quantity: ${item.quantity}`);
+        console.log(`   - price: ${item.price}`);
+        console.log(`   - total_price: ${item.total_price}`);
+        console.log(`   - line_price: ${item.line_price}`);
+        console.log(`   - amount: ${item.amount}`);
+        console.log(`   - Все поля:`, Object.keys(item));
+        console.log(`   - Полный объект:`, item);
+    });
+    
+    // Проверяем товары доставки отдельно
+    if (window.dostavkaProducts && window.dostavkaProducts.products) {
+        const deliveryVariantIds = [];
+        window.dostavkaProducts.products.forEach(product => {
+            if (product.variants && product.variants.length > 0) {
+                product.variants.forEach(variant => {
+                    deliveryVariantIds.push(variant.id);
+                });
+            }
+        });
+        
+        console.log('🚚 ID товаров доставки:', deliveryVariantIds);
+        
+        const deliveryItems = cart.items.filter(item => deliveryVariantIds.includes(item.variant_id));
+        console.log('🚚 Товары доставки в корзине:', deliveryItems.length);
+        
+        deliveryItems.forEach((item, index) => {
+            console.log(`🚚 Товар доставки ${index + 1}:`);
+            console.log(`   - variant_id: ${item.variant_id}`);
+            console.log(`   - title: ${item.title}`);
+            console.log(`   - quantity: ${item.quantity}`);
+            console.log(`   - price: ${item.price}`);
+            console.log(`   - total_price: ${item.total_price}`);
+            console.log(`   - line_price: ${item.line_price}`);
+            console.log(`   - amount: ${item.amount}`);
+        });
+    }
+};
+
+// Функция для ручного удаления товаров доставки из корзины
+window.removeDeliveryProducts = function() {
+    console.log('🗑️ Ручное удаление товаров доставки из корзины...');
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.removeDeliveryProductsFromCart();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для тестирования удаления существующих товаров доставки (при смене зоны)
+window.removeExistingDeliveryProducts = function() {
+    console.log('🗑️ Тестирование удаления существующих товаров доставки...');
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.removeExistingDeliveryProducts();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для тестирования полного процесса смены зоны доставки
+window.testDeliveryZoneChange = function(zoneName) {
+    console.log('🧪 Тестирование смены зоны доставки на:', zoneName);
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.handleDeliverySelection(zoneName);
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для проверки текущего состояния корзины
+window.checkCartState = function() {
+    console.log('🔍 Проверка текущего состояния корзины...');
+    
+    const cartItems = document.querySelectorAll('[data-item-id]');
+    console.log('🛒 Всего товаров в DOM корзине:', cartItems.length);
+    
+    cartItems.forEach((item, index) => {
+        const productId = item.getAttribute('data-product-id');
+        const variantId = item.getAttribute('data-variant-id');
+        const itemId = item.getAttribute('data-item-id');
+        const productTitle = item.querySelector('.product-title, .cart-item-title, [data-product-title]')?.textContent || 'Неизвестно';
+        
+        console.log(`📦 Товар ${index + 1} (DOM):`);
+        console.log(`   - productId: ${productId}`);
+        console.log(`   - variantId: ${variantId}`);
+        console.log(`   - itemId: ${itemId}`);
+        console.log(`   - Название: ${productTitle}`);
+        console.log(`   - Элемент:`, item);
+    });
+    
+    // Проверяем виртуальную корзину
+    if (window.addressPopupManager && window.addressPopupManager.virtualCart) {
+        console.log('🛒 Всего товаров в виртуальной корзине:', window.addressPopupManager.virtualCart.items.length);
+        
+        window.addressPopupManager.virtualCart.items.forEach((item, index) => {
+            console.log(`📦 Товар ${index + 1} (виртуальная корзина):`);
+            console.log(`   - variant_id: ${item.variant_id}`);
+            console.log(`   - product_id: ${item.product_id}`);
+            console.log(`   - title: ${item.title || item.product_title}`);
+            console.log(`   - quantity: ${item.quantity}`);
+            console.log(`   - price: ${item.price}`);
+        });
+    } else {
+        console.warn('⚠️ Виртуальная корзина недоступна');
+    }
+    
+    if (window.dostavkaProducts && window.dostavkaProducts.products) {
+        console.log('📦 Товары доставки в window.dostavkaProducts:');
+        window.dostavkaProducts.products.forEach((product, index) => {
+            console.log(`   ${index + 1}. ID: ${product.id}, Название: ${product.title}`);
+            if (product.variants && product.variants.length > 0) {
+                product.variants.forEach((variant, vIndex) => {
+                    console.log(`      Вариант ${vIndex + 1}: variant_id: ${variant.id}, Название: ${variant.title}`);
+                });
+            }
+        });
+    } else {
+        console.warn('⚠️ window.dostavkaProducts недоступен');
+    }
+};
+
+// Функция для принудительного удаления товаров доставки по названию
+window.forceRemoveDeliveryProducts = function() {
+    console.log('🗑️ Принудительное удаление товаров доставки по названию...');
+    
+    const cartItems = document.querySelectorAll('[data-item-id]');
+    const deliveryItemsToRemove = [];
+    
+    cartItems.forEach((item, index) => {
+        const productTitle = item.querySelector('.product-title, .cart-item-title, [data-product-title]')?.textContent || '';
+        const itemId = item.getAttribute('data-item-id');
+        
+        console.log(`🔍 Товар ${index + 1}: "${productTitle}"`);
+        
+        // Проверяем, содержит ли название товара ключевые слова доставки
+        const isDeliveryProduct = productTitle.toLowerCase().includes('доставка') || 
+                                 productTitle.toLowerCase().includes('сити') ||
+                                 productTitle.toLowerCase().includes('зона');
+        
+        if (isDeliveryProduct && itemId) {
+            deliveryItemsToRemove.push(itemId);
+            console.log('🗑️ Найден товар доставки по названию:', productTitle, 'item ID:', itemId);
+        }
+    });
+    
+    if (deliveryItemsToRemove.length === 0) {
+        console.log('✅ Товары доставки по названию не найдены');
+        return;
+    }
+    
+    console.log('🗑️ Удаляем товары доставки по названию:', deliveryItemsToRemove);
+    
+    // Удаляем каждый товар доставки
+    deliveryItemsToRemove.forEach(async (itemId) => {
+        if (window.addressPopupManager) {
+            const success = await window.addressPopupManager.removeCartItem(itemId);
+            if (success) {
+                console.log('✅ Товар успешно удален по названию, item ID:', itemId);
+            } else {
+                console.error('❌ Не удалось удалить товар по названию, item ID:', itemId);
+            }
+        }
+    });
+};
+
+// Функция для тестирования удаления товара по variant_id
+window.removeCartItemByVariantId = function(variantId) {
+    console.log('🗑️ Тестирование удаления товара по variant_id:', variantId);
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.removeCartItemByVariantId(variantId);
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
 
 // Экспорт для модульных систем (если используется)
 if (typeof module !== 'undefined' && module.exports) {
