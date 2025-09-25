@@ -808,3 +808,49 @@
     width: 60px;
   }
 }
+
+/* Стили для деактивированной кнопки и сообщения об отсутствии продуктов */
+.btn.disabled {
+  background-color: var(--hte-grey-text);
+  color: var(--hte-white);
+  border-color: var(--hte-grey-text);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn.disabled:hover {
+  background-color: var(--hte-grey-text);
+  color: var(--hte-white);
+  border-color: var(--hte-grey-text);
+  transform: none;
+  box-shadow: none;
+}
+
+.no-products-message {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: var(--hte-body-18-line-height);
+  color: var(--hte-grey-text);
+  text-align: center;
+  padding: var(--spacing-20);
+  background-color: var(--hte-light-accent);
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-md);
+  margin: 0;
+}
+
+/* Адаптивные стили для сообщения об отсутствии продуктов */
+@media (max-width: 720px) {
+  .no-products-message {
+    font-size: 16px;
+    padding: var(--spacing-15);
+  }
+}
+
+@media (max-width: 480px) {
+  .no-products-message {
+    font-size: 14px;
+    padding: var(--spacing-12);
+  }
+}

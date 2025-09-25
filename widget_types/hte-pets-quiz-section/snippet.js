@@ -12,6 +12,9 @@ class PetsQuiz {
     this.calculationDetails = null;
     this.excludedAllergens = [];
     this.orderComment = null;
+    
+    // Переменные для найденных продуктов
+    this.suitableProducts = [];
   }
 
   init() {
@@ -303,6 +306,9 @@ class PetsQuiz {
     
     console.log('=== РЕЗУЛЬТАТ РАСЧЕТА ===', this.dietResults);
 
+    // Поиск подходящих продуктов
+    this.suitableProducts = this.findSuitableProducts();
+
     // Обновляем отображение результатов
     this.updateDietDisplay();
   }
@@ -370,21 +376,185 @@ class PetsQuiz {
     }
   }
 
+  // Поиск продуктов по типу питомца
+  findProductsByPetType() {
+    if (!window.petsProducts || !window.petsProducts.products) {
+      console.error('Pets products not loaded');
+      return [];
+    }
+
+    const petTypeKeywords = {
+      'puppy': 'щенков',
+      'adult-dog': 'взрослых собак',
+      'cat': 'кошек'
+    };
+
+    const keyword = petTypeKeywords[this.selectedPetType];
+    if (!keyword) {
+      console.error('Unknown pet type:', this.selectedPetType);
+      return [];
+    }
+
+    const suitableProducts = window.petsProducts.products.filter(product => {
+      return product.title.toLowerCase().includes(keyword);
+    });
+
+    console.log(`Found ${suitableProducts.length} products for ${this.selectedPetType}:`, suitableProducts);
+    return suitableProducts;
+  }
+
+  // Фильтрация продуктов по размеру упаковки
+  filterProductsByPackageSize(products, packageSize) {
+    const packageSizeStr = `${packageSize}г`;
+    
+    const filteredProducts = products.filter(product => {
+      return product.title.includes(packageSizeStr);
+    });
+
+    console.log(`Found ${filteredProducts.length} products with package size ${packageSize}г:`, filteredProducts);
+    return filteredProducts;
+  }
+
+  // Исключение продуктов с аллергенами
+  excludeProductsWithAllergens(products) {
+    if (!this.excludedProducts || this.excludedProducts.length === 0) {
+      console.log('No allergens to exclude');
+      return products;
+    }
+
+    // Словарь для преобразования аллергенов в разные падежи
+    const allergenVariations = {
+      'Говядина': ['говядина', 'говядиной', 'говядину', 'говядины', 'говяжьим', 'говяжьего', 'говяжьей'],
+      'Курица': ['курица', 'курицей', 'курицу', 'курицы', 'куриным', 'куриного', 'куриной'],
+      'Рыба': ['рыба', 'рыбой', 'рыбу', 'рыбы', 'рыбным', 'рыбного', 'рыбной'],
+      'Индейка': ['индейка', 'индейкой', 'индейку', 'индейки', 'индюшиным', 'индюшиного', 'индюшиной'],
+      'Огурец': ['огурец', 'огурцом', 'огурца', 'огурцы', 'огурцов', 'огурцами'],
+      'Кабачок': ['кабачок', 'кабачком', 'кабачка', 'кабачки', 'кабачков', 'кабачками'],
+      'Тыква': ['тыква', 'тыквой', 'тыкву', 'тыквы', 'тыквенным', 'тыквенного', 'тыквенной'],
+      'Морковь': ['морковь', 'морковью', 'моркови', 'морковным', 'морковного', 'морковной'],
+      'Капуста цветная': ['капуста цветная', 'капустой цветной', 'капусту цветную', 'капусты цветной', 'цветной капустой', 'цветной капусты'],
+      'Капуста белокачанная': ['капуста белокачанная', 'капустой белокачанной', 'капусту белокачанную', 'капусты белокачанной', 'белокачанной капустой', 'белокачанной капусты'],
+      'Рис': ['рис', 'рисом', 'риса', 'рисовым', 'рисового', 'рисовой']
+    };
+
+    const filteredProducts = products.filter(product => {
+      const productTitle = product.title.toLowerCase();
+      
+      // Проверяем каждый исключенный аллерген
+      const hasExcludedAllergen = this.excludedProducts.some(allergen => {
+        // Получаем все варианты написания аллергена
+        const variations = allergenVariations[allergen] || [allergen.toLowerCase()];
+        
+        // Проверяем, содержит ли название продукта любой из вариантов
+        const foundVariation = variations.find(variation => {
+          return productTitle.includes(variation);
+        });
+        
+        // Логируем найденные совпадения для отладки
+        if (foundVariation) {
+          console.log(`❌ Исключен продукт "${product.title}" из-за аллергена "${allergen}" (найдено: "${foundVariation}")`);
+        }
+        
+        return !!foundVariation;
+      });
+
+      return !hasExcludedAllergen;
+    });
+
+    console.log(`After excluding allergens, ${filteredProducts.length} products remain:`, filteredProducts);
+    
+    // Логируем оставшиеся продукты
+    if (filteredProducts.length > 0) {
+      console.log('✅ Оставшиеся продукты после исключения аллергенов:');
+      filteredProducts.forEach((product, index) => {
+        console.log(`   ${index + 1}. ${product.title}`);
+      });
+    }
+    
+    return filteredProducts;
+  }
+
+  // Основной метод поиска подходящих продуктов
+  findSuitableProducts() {
+    console.log('=== ПОИСК ПОДХОДЯЩИХ ПРОДУКТОВ ===');
+    console.log('Тип питомца:', this.selectedPetType);
+    console.log('Размер упаковки:', this.dietResults?.packageSize);
+    console.log('Исключенные аллергены:', this.excludedProducts);
+
+    // Шаг 1: Поиск по типу питомца
+    let products = this.findProductsByPetType();
+    if (products.length === 0) {
+      console.warn('No products found for pet type');
+      return [];
+    }
+
+    // Шаг 2: Фильтрация по размеру упаковки
+    if (this.dietResults?.packageSize) {
+      products = this.filterProductsByPackageSize(products, this.dietResults.packageSize);
+      if (products.length === 0) {
+        console.warn('No products found with required package size');
+        return [];
+      }
+    }
+
+    // Шаг 3: Исключение продуктов с аллергенами
+    products = this.excludeProductsWithAllergens(products);
+    if (products.length === 0) {
+      console.warn('No products found after excluding allergens');
+      return [];
+    }
+
+    // Выводим все найденные продукты в консоль
+    console.log(`=== ВСЕ ПОДХОДЯЩИЕ ПРОДУКТЫ (${products.length} шт.) ===`);
+    products.forEach((product, index) => {
+      console.log(`${index + 1}. ${product.title}`);
+      console.log(`   ID: ${product.id}`);
+      console.log(`   Цена: ${product.variants[0].price} руб.`);
+      console.log(`   URL: ${product.url}`);
+      console.log(`   Общая стоимость за неделю: ${product.variants[0].price * this.dietResults.weeklyPackages} руб. (${this.dietResults.weeklyPackages} шт.)`);
+      console.log('---');
+    });
+
+    return products;
+  }
+
   updateDietDisplay() {
     const dailyAmountElement = document.getElementById('daily-amount');
     const weeklyPackagesElement = document.getElementById('weekly-packages');
     const packageSizeElement = document.getElementById('package-size');
+    const infoContentElement = document.querySelector('.info-content');
+    const addToCartButton = document.getElementById('btn-add-to-cart');
 
-    if (dailyAmountElement && this.dietResults) {
-      dailyAmountElement.textContent = this.dietResults.dailyAmount;
+    // Проверяем, есть ли подходящие продукты
+    if (!this.suitableProducts || this.suitableProducts.length === 0) {
+      // Если продуктов нет, показываем сообщение об отсутствии
+      if (infoContentElement) {
+        infoContentElement.innerHTML = '<p class="no-products-message">По данным запросам продуктов не найдено</p>';
+      }
+      
+      // Деактивируем кнопку "Добавить в корзину"
+      if (addToCartButton) {
+        addToCartButton.disabled = true;
+        addToCartButton.textContent = 'Продукты не найдены';
+        addToCartButton.classList.add('disabled');
+      }
+      
+      return;
     }
 
-    if (weeklyPackagesElement && this.dietResults) {
-      weeklyPackagesElement.textContent = this.dietResults.weeklyPackages;
+    // Если продукты найдены, восстанавливаем нормальный UI
+    if (infoContentElement) {
+      infoContentElement.innerHTML = `
+        <p class="diet-info" id="diet-info">Ваш рацион: <span id="daily-amount">${this.dietResults.dailyAmount}</span> г корма в сутки</p>
+        <p class="packages-info" id="packages-info">Это <span id="weekly-packages">${this.dietResults.weeklyPackages}</span> пакетиков по <span id="package-size">${this.dietResults.packageSize}</span> г на неделю</p>
+      `;
     }
 
-    if (packageSizeElement && this.dietResults) {
-      packageSizeElement.textContent = this.dietResults.packageSize;
+    // Активируем кнопку "Добавить в корзину"
+    if (addToCartButton) {
+      addToCartButton.disabled = false;
+      addToCartButton.textContent = 'Добавить в корзину';
+      addToCartButton.classList.remove('disabled');
     }
 
     // Обновляем картинку питомца на итоговом экране
@@ -409,6 +579,12 @@ class PetsQuiz {
   }
 
   addToCart() {
+    // Проверяем, есть ли подходящие продукты
+    if (!this.suitableProducts || this.suitableProducts.length === 0) {
+      alert('Нет доступных продуктов для добавления в корзину');
+      return;
+    }
+
     // Здесь можно реализовать функциональность добавления в корзину
     
     // Показываем сообщение об успехе
@@ -533,6 +709,7 @@ class PetsQuiz {
     this.petWeight = null;
     this.excludedProducts = [];
     this.dietResults = null;
+    this.suitableProducts = [];
     
     this.showStep(1);
     
@@ -565,6 +742,23 @@ class PetsQuiz {
     weightInputs[0].value = '5';   // Puppy default
     weightInputs[1].value = '25';  // Adult dog default
     weightInputs[2].value = '4';   // Cat default
+
+    // Восстанавливаем UI для результатов
+    const infoContentElement = document.querySelector('.info-content');
+    const addToCartButton = document.getElementById('btn-add-to-cart');
+    
+    if (infoContentElement) {
+      infoContentElement.innerHTML = `
+        <p class="diet-info" id="diet-info">Ваш рацион: <span id="daily-amount">120</span> г корма в сутки</p>
+        <p class="packages-info" id="packages-info">Это <span id="weekly-packages">9</span> пакетиков по <span id="package-size">100</span> г на неделю</p>
+      `;
+    }
+    
+    if (addToCartButton) {
+      addToCartButton.disabled = false;
+      addToCartButton.textContent = 'Добавить в корзину';
+      addToCartButton.classList.remove('disabled');
+    }
   }
 }
 

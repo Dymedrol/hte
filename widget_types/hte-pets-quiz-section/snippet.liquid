@@ -252,3 +252,49 @@
     </div>
   </div>
 </div>
+
+<script>
+  window.petsProducts = {
+    "collection": {
+      "handle": "{{ collections.dlya-pitomtsev.handle }}",
+      "title": "{{ collections.dlya-pitomtsev.title | escape }}",
+      "description": "{{ collections.dlya-pitomtsev.description | escape }}",
+      "products_count": {{ collections.dlya-pitomtsev.products_count }},
+      "url": "{{ collections.dlya-pitomtsev.url }}"
+    },
+    "products": [
+      {% for product in collections.dlya-pitomtsev.products %}
+        {
+          "id": {{ product.id }},
+          "handle": "{{ product.handle }}",
+          "title": "{{ product.title | escape }}",
+          "price": {{ product.price }},
+          "available": {{ product.available }},
+          "variants": [
+            {% for variant in product.variants %}
+              {
+                "id": {{ variant.id }},
+                "title": "{{ variant.title | escape }}",
+                "price": {{ variant.price }},
+                "available": {{ variant.available }},
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ],
+          "options": [
+            {% for option in product.options %}
+              {
+                "name": "{{ option.name | escape }}",
+                "position": {{ option.position }},
+                "values": [
+                  {% for value in option.values %}
+                    "{{ value | escape }}"{% unless forloop.last %},{% endunless %}
+                  {% endfor %}
+                ]
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  };
+</script>
