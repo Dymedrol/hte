@@ -66,19 +66,16 @@ class AddressPopupManager {
     
     // Очистка адресов доставки при загрузке страницы
     cleanDeliveryAddressesOnLoad() {
-        console.log('🧹 Очистка адресов доставки при загрузке страницы...');
-        
+      
         // Сначала удаляем товары доставки из корзины
         this.removeDeliveryProductsFromCart();
         
         // Находим все поля комментариев в корзине
         const commentInputs = document.querySelectorAll('input[data-comment]');
-        console.log('🔍 Найдено полей комментариев для очистки:', commentInputs.length);
         
         if (commentInputs.length === 0) {
             // Попробуем альтернативный селектор
             const altInputs = document.querySelectorAll('input[name*="order_line_comments"]');
-            console.log('🔍 Альтернативный поиск - найдено полей:', altInputs.length);
             
             if (altInputs.length > 0) {
                 altInputs.forEach((input, index) => {
@@ -92,16 +89,13 @@ class AddressPopupManager {
             this.cleanSingleCommentField(input, index);
         });
         
-        console.log('✅ Очистка адресов доставки завершена');
     }
     
     // Инициализация наблюдателя за изменениями data-cart-total-price
     initCartObserver() {
-        console.log('👁️ Инициализация наблюдателя за изменениями корзины...');
         
         const cartTotalPriceElement = document.querySelector('[data-cart-total-price]');
         if (!cartTotalPriceElement) {
-            console.warn('⚠️ Элемент [data-cart-total-price] не найден');
             return;
         }
         
@@ -121,23 +115,17 @@ class AddressPopupManager {
             subtree: true
         });
         
-        console.log('✅ Наблюдатель за изменениями корзины инициализирован');
     }
     
     // Обработка изменений в data-cart-total-price
     handleCartTotalPriceChange() {
-        console.log('🔄 Обнаружено изменение в data-cart-total-price');
         
         const cartTotalPriceElement = document.querySelector('[data-cart-total-price]');
         if (!cartTotalPriceElement) {
-            console.warn('⚠️ Элемент [data-cart-total-price] не найден');
             return;
         }
         
         const cartTotalText = cartTotalPriceElement.textContent;
-        console.log('📊 Текущее содержимое data-cart-total-price:', cartTotalText);
-        console.log('📊 Тип содержимого:', typeof cartTotalText);
-        console.log('📊 Длина содержимого:', cartTotalText.length);
         
         // Пробуем разные способы извлечения числового значения
         let cartTotal = null;
@@ -146,14 +134,12 @@ class AddressPopupManager {
         const match1 = cartTotalText.match(/(\d+(?:\s\d+)*)\s*[₽$€]/);
         if (match1) {
             const cleaned1 = match1[1].replace(/\s/g, '');
-            console.log('🔍 Способ 1 (с валютой) - найденное значение:', cleaned1);
             cartTotal = parseInt(cleaned1);
         }
         
         // Способ 2: Ищем только цифры
         const match2 = cartTotalText.match(/\d+/);
         if (match2 && !cartTotal) {
-            console.log('🔍 Способ 2 (только цифры) - найденное значение:', match2[0]);
             cartTotal = parseInt(match2[0]);
         }
         
@@ -161,7 +147,6 @@ class AddressPopupManager {
         const match3 = cartTotalText.match(/(\d+(?:\s\d+)*)/);
         if (match3 && !cartTotal) {
             const cleaned3 = match3[1].replace(/\s/g, '');
-            console.log('🔍 Способ 3 (с пробелами) - найденное значение:', cleaned3);
             cartTotal = parseInt(cleaned3);
         }
         
@@ -169,25 +154,18 @@ class AddressPopupManager {
         const match4 = cartTotalText.match(/[\d\s,]+/);
         if (match4 && !cartTotal) {
             const cleaned4 = match4[0].replace(/[\s,]/g, '');
-            console.log('🔍 Способ 4 (с разделителями) - найденное значение:', cleaned4);
             cartTotal = parseInt(cleaned4);
         }
-        
-        console.log('💰 Извлеченная сумма корзины:', cartTotal);
-        
+
         if (isNaN(cartTotal) || cartTotal === null) {
-            console.warn('⚠️ Не удалось извлечь числовое значение из data-cart-total-price');
-            console.log('⚠️ Попробуйте проверить содержимое элемента вручную');
             return;
         }
         
         // Вычисляем стоимость доставки
         const deliveryPrice = this.calculateCurrentDeliveryPrice();
-        console.log('🚚 Стоимость доставки:', deliveryPrice);
         
         // Вычисляем стоимость товаров (без доставки)
         const productsPrice = cartTotal - deliveryPrice;
-        console.log('📦 Стоимость товаров (без доставки):', productsPrice);
         
         // Обновляем #cart-total-price
         this.updateCartTotalPrice(productsPrice);
@@ -196,7 +174,6 @@ class AddressPopupManager {
     // Вычисление текущей стоимости доставки
     calculateCurrentDeliveryPrice() {
         if (!this.virtualCart || !this.virtualCart.items) {
-            console.log('⚠️ Виртуальная корзина недоступна, доставка = 0');
             return 0;
         }
         
@@ -222,7 +199,6 @@ class AddressPopupManager {
                 
                 if (price === 0 || price === undefined || price === null) {
                     console.warn(`⚠️ Товар доставки "${item.title}" имеет неопределенную цену:`, item);
-                    console.log('🔍 Доступные поля товара:', Object.keys(item));
                     return;
                 }
                 
@@ -230,7 +206,6 @@ class AddressPopupManager {
                 // Не нужно умножать на quantity
                 const itemTotal = price;
                 deliveryPrice += itemTotal;
-                console.log(`🚚 Товар доставки "${item.title}": ${price} (общая стоимость за все дни)`);
             }
         });
         
@@ -247,30 +222,25 @@ class AddressPopupManager {
         
         const formattedPrice = `${productsPrice} ₽`;
         cartTotalPriceElement.textContent = formattedPrice;
-        console.log('✅ Обновлена цена товаров в #cart-total-price:', formattedPrice);
     }
     
     // Удаление товаров доставки из корзины при загрузке страницы
     async removeDeliveryProductsFromCart() {
-        console.log('🗑️ Удаление товаров доставки из корзины...');
         
         // Ждем загрузки данных о продуктах доставки
         try {
             await this.waitForDostavkaProducts();
         } catch (error) {
-            console.warn('⚠️ Не удалось загрузить данные о продуктах доставки:', error);
             return;
         }
         
         if (!window.dostavkaProducts || !window.dostavkaProducts.products) {
-            console.warn('⚠️ Данные о продуктах доставки недоступны');
             return;
         }
         
         // Обновляем виртуальную корзину
         await this.refreshCart();
         if (!this.virtualCart || !this.virtualCart.items) {
-            console.error('❌ Не удалось получить данные корзины');
             return;
         }
         
@@ -283,68 +253,54 @@ class AddressPopupManager {
                 });
             }
         });
-        console.log('📦 Variant ID товаров доставки для удаления:', deliveryVariantIds);
         
         // Находим товары доставки в виртуальной корзине
         const deliveryVariantsToRemove = [];
         
-        console.log('🛒 Всего товаров в виртуальной корзине:', this.virtualCart.items.length);
         
         this.virtualCart.items.forEach((item, index) => {
             const variantId = item.variant_id;
             const productId = item.product_id;
             const productTitle = item.title || item.product_title || 'Неизвестно';
             
-            console.log(`🔍 Товар ${index + 1}: variantId="${variantId}", productId="${productId}", title="${productTitle}"`);
             
             if (variantId) {
                 const variantIdInt = parseInt(variantId);
                 if (deliveryVariantIds.includes(variantIdInt)) {
-                    console.log('✅ Товар доставки найден по variant_id!');
                     deliveryVariantsToRemove.push(variantIdInt);
-                    console.log('🗑️ Найден товар доставки для удаления:', variantId, 'variant ID:', variantIdInt);
                 }
             }
         });
         
         if (deliveryVariantsToRemove.length === 0) {
-            console.log('✅ Товары доставки в корзине не найдены');
             return;
         }
         
-        console.log('🗑️ Удаляем товары доставки по variant_id:', deliveryVariantsToRemove);
         
         // Удаляем каждый товар доставки по variant_id
         for (const variantId of deliveryVariantsToRemove) {
             const success = await this.removeCartItemByVariantId(variantId);
             if (success) {
-                console.log('✅ Товар успешно удален по variant_id:', variantId);
             } else {
                 console.error('❌ Не удалось удалить товар по variant_id:', variantId);
             }
         }
         
-        console.log('✅ Удаление товаров доставки завершено');
         
         // Обновляем корзину после удаления товаров доставки
-        console.log('🔄 Обновляем корзину после удаления товаров доставки при загрузке...');
         await this.refreshCart();
     }
     
     // Удаление существующих товаров доставки из корзины (при смене зоны)
     async removeExistingDeliveryProducts() {
-        console.log('🗑️ Удаление существующих товаров доставки из корзины...');
         
         if (!window.dostavkaProducts || !window.dostavkaProducts.products) {
-            console.warn('⚠️ Данные о продуктах доставки недоступны');
             return;
         }
         
         if (!this.virtualCart || !this.virtualCart.items) {
-            console.warn('⚠️ Виртуальная корзина недоступна, обновляем...');
             await this.refreshCart();
             if (!this.virtualCart || !this.virtualCart.items) {
-                console.error('❌ Не удалось получить данные корзины');
                 return;
             }
         }
@@ -358,69 +314,54 @@ class AddressPopupManager {
                 });
             }
         });
-        console.log('📦 Variant ID товаров доставки для удаления:', deliveryVariantIds);
         
         // Находим товары доставки в виртуальной корзине
         const deliveryVariantsToRemove = [];
         
-        console.log('🛒 Всего товаров в виртуальной корзине:', this.virtualCart.items.length);
         
         this.virtualCart.items.forEach((item, index) => {
             const variantId = item.variant_id;
             const productId = item.product_id;
             const productTitle = item.title || item.product_title || 'Неизвестно';
             
-            console.log(`🔍 Товар ${index + 1}: variantId="${variantId}", productId="${productId}", title="${productTitle}"`);
             
             if (variantId) {
-                const variantIdInt = parseInt(variantId);
-                console.log(`🔍 Проверяем variantId ${variantIdInt} в списке доставки:`, deliveryVariantIds);
+                const variantIdInt = parseInt(variantId);   
                 
                 if (deliveryVariantIds.includes(variantIdInt)) {
-                    console.log('✅ Товар доставки найден по variant_id!');
                     deliveryVariantsToRemove.push(variantIdInt);
-                    console.log('🗑️ Найден товар доставки для удаления:', variantId, 'variant ID:', variantIdInt);
                 } else {
-                    console.log('❌ Товар НЕ является товаром доставки');
                 }
             } else {
-                console.log('❌ У товара нет variant_id');
             }
         });
         
         if (deliveryVariantsToRemove.length === 0) {
-            console.log('✅ Товары доставки в корзине не найдены');
             return;
         }
         
-        console.log('🗑️ Удаляем товары доставки по variant_id:', deliveryVariantsToRemove);
         
         // Удаляем каждый товар доставки по variant_id
         for (const variantId of deliveryVariantsToRemove) {
             const success = await this.removeCartItemByVariantId(variantId);
             if (success) {
-                console.log('✅ Товар успешно удален по variant_id:', variantId);
             } else {
                 console.error('❌ Не удалось удалить товар по variant_id:', variantId);
             }
         }
         
-        console.log('✅ Удаление существующих товаров доставки завершено');
     }
     
     // Удаление товара из корзины по variant_id
     async removeCartItemByVariantId(variantId) {
-        console.log('🗑️ Удаление товара из корзины по variant_id:', variantId);
         
         // Предпочтительно используем внутренний AJAX API InSales, если доступен
         if (window.ajaxAPI && ajaxAPI.cart && typeof ajaxAPI.cart.remove === 'function') {
             try {
-                console.log('➡️ Используем ajaxAPI.cart.remove для variant_id:', variantId);
                 
                 return await new Promise((resolve) => {
                     ajaxAPI.cart.remove(variantId)
                         .done((onDone) => {
-                            console.log('✅ ajaxAPI.cart.remove onDone для variant_id', variantId, ':', onDone);
                             resolve(true);
                         })
                         .fail((onFail) => {
@@ -440,17 +381,14 @@ class AddressPopupManager {
     
     // Удаление одного товара из корзины по item_id (старый метод, оставляем для совместимости)
     async removeCartItem(itemId) {
-        console.log('🗑️ Удаление товара из корзины по item_id:', itemId);
         
         // Предпочтительно используем внутренний AJAX API InSales, если доступен
         if (window.ajaxAPI && ajaxAPI.cart && typeof ajaxAPI.cart.remove === 'function') {
             try {
-                console.log('➡️ Используем ajaxAPI.cart.remove для item_id:', itemId);
                 
                 return await new Promise((resolve) => {
                     ajaxAPI.cart.remove(itemId)
                         .done((onDone) => {
-                            console.log('✅ ajaxAPI.cart.remove onDone для item_id', itemId, ':', onDone);
                             resolve(true);
                         })
                         .fail((onFail) => {
@@ -471,7 +409,6 @@ class AddressPopupManager {
     // Очистка одного поля комментария от адреса доставки
     cleanSingleCommentField(input, index) {
         const currentValue = input.value || '';
-        console.log(`🧹 Очищаем поле ${index + 1}:`, input.name, 'текущее значение:', currentValue);
         
         if (!currentValue.trim()) {
             console.log(`⏭️ Поле ${index + 1} пустое, пропускаем`);
@@ -480,7 +417,6 @@ class AddressPopupManager {
         
         // Удаляем адрес доставки из комментария
         const cleanedValue = this.removeDeliveryAddressFromComment(currentValue);
-        console.log(`🧹 Очищенное значение поля ${index + 1}:`, cleanedValue);
         
         // Обновляем значение только если оно изменилось
         if (cleanedValue !== currentValue) {
@@ -494,9 +430,7 @@ class AddressPopupManager {
             const inputEvent = new Event('input', { bubbles: true });
             input.dispatchEvent(inputEvent);
             
-            console.log(`✅ Поле ${index + 1} очищено и события отправлены`);
         } else {
-            console.log(`⏭️ Поле ${index + 1} не содержало адрес доставки`);
         }
     }
     
@@ -538,7 +472,6 @@ class AddressPopupManager {
         
         this.setupEventListeners();
         this.initYandexMaps();
-        console.log('✅ AddressPopupManager инициализирован');
     }
     
     setupEventListeners() {
@@ -599,7 +532,6 @@ class AddressPopupManager {
     openPopup(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🏠 Открытие попапа выбора адреса доставки');
         
         this.popup.classList.add('active');
         document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
@@ -614,7 +546,6 @@ class AddressPopupManager {
     }
     
     closePopup() {
-        console.log('❌ Закрытие попапа выбора адреса доставки');
         
         this.popup.classList.remove('active');
         document.body.style.overflow = ''; // Восстанавливаем скролл страницы
@@ -622,7 +553,6 @@ class AddressPopupManager {
     
     handleKeydown(e) {
         if (e.key === 'Escape' && this.popup?.classList.contains('active')) {
-            console.log('❌ Закрытие попапа выбора адреса доставки по клавише Escape');
             this.closePopup();
         }
     }
@@ -664,7 +594,6 @@ class AddressPopupManager {
             // Загружаем зоны доставки
             this.loadDeliveryZones();
             
-            console.log('✅ Яндекс карта инициализирована');
         });
     }
     
@@ -761,7 +690,6 @@ class AddressPopupManager {
             ymaps.geoQuery(zoneData).addToMap(this.map);
         });
         
-        console.log('✅ Зоны доставки загружены на карту');
     }
     
     // Обработчик клика по карте
@@ -794,15 +722,12 @@ class AddressPopupManager {
                     this.updateDeliveryAddressInComment(address, coords);
                 }
                 
-                console.log('📍 Выбрана точка:', address, coords);
-                console.log('🚚 Зона доставки:', deliveryZone);
             }
         });
     }
     
     // Определение зоны доставки по координатам
     getDeliveryZone(coords) {
-        console.log('🔍 Проверяем зону для координат:', coords);
         
         // Проверяем, попадает ли точка в зоны доставки
         const zones = [
@@ -815,20 +740,16 @@ class AddressPopupManager {
         // Простая проверка попадания точки в полигон (алгоритм ray casting)
         for (const zone of zones) {
             const isInside = this.isPointInPolygon(coords, zone.coords);
-            console.log(`🔍 Проверка зоны "${zone.name}":`, isInside);
             if (isInside) {
-                console.log(`✅ Найдена зона: ${zone.name}`);
                 return zone.name;
             }
         }
         
-        console.log('❌ Зона не найдена');
         return 'Зона доставки не определена';
     }
     
     // Поиск товара доставки по зоне
-    findDeliveryProductByZone(deliveryZone) {
-        console.log('🔍 Поиск товара доставки для зоны:', deliveryZone);
+    findDeliveryProductByZone(deliveryZone) {   
         
         // Проверяем наличие данных о продуктах доставки
         if (!window.dostavkaProducts) {
