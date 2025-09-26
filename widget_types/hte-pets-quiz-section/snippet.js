@@ -15,6 +15,7 @@ class PetsQuiz {
     
     // Переменные для найденных продуктов
     this.suitableProducts = [];
+    this.distributedProducts = [];
   }
 
   init() {
@@ -309,6 +310,9 @@ class PetsQuiz {
     // Поиск подходящих продуктов
     this.suitableProducts = this.findSuitableProducts();
 
+    // Распределяем пакетики между продуктами
+    this.distributedProducts = this.distributeProductsEvenly();
+
     // Обновляем отображение результатов
     this.updateDietDisplay();
   }
@@ -518,6 +522,81 @@ class PetsQuiz {
     return products;
   }
 
+  // Распределение пакетиков между продуктами с приоритетом для продуктов без рыбы
+  distributeProductsEvenly() {
+    if (!this.suitableProducts || this.suitableProducts.length === 0) {
+      console.log('No products to distribute');
+      return [];
+    }
+
+    if (!this.dietResults || !this.dietResults.weeklyPackages) {
+      console.log('No weekly packages to distribute');
+      return [];
+    }
+
+    const totalPackages = this.dietResults.weeklyPackages;
+    const productCount = this.suitableProducts.length;
+    
+    // Сортируем продукты: сначала без рыбы, потом с рыбой
+    const sortedProducts = [...this.suitableProducts].sort((a, b) => {
+      const aHasFish = this.productContainsFish(a.title);
+      const bHasFish = this.productContainsFish(b.title);
+      
+      // Продукты без рыбы идут первыми (приоритет)
+      if (aHasFish && !bHasFish) return 1;
+      if (!aHasFish && bHasFish) return -1;
+      return 0;
+    });
+
+    // Вычисляем базовое количество пакетиков на продукт
+    const basePackagesPerProduct = Math.floor(totalPackages / productCount);
+    const remainder = totalPackages % productCount;
+
+    console.log(`=== РАСПРЕДЕЛЕНИЕ ПАКЕТИКОВ ===`);
+    console.log(`Общее количество пакетиков: ${totalPackages}`);
+    console.log(`Количество продуктов: ${productCount}`);
+    console.log(`Базовое количество на продукт: ${basePackagesPerProduct}`);
+    console.log(`Остаток для распределения: ${remainder}`);
+    console.log(`Приоритет: продукты без рыбы получают больше пакетиков`);
+
+    this.distributedProducts = sortedProducts.map((product, index) => {
+      // Продукты без рыбы (первые в списке) получают дополнительный пакетик из остатка
+      const packagesForThisProduct = basePackagesPerProduct + (index < remainder ? 1 : 0);
+      const totalPrice = product.variants[0].price * packagesForThisProduct;
+      const hasFish = this.productContainsFish(product.title);
+
+      const distributedProduct = {
+        ...product,
+        packagesCount: packagesForThisProduct,
+        totalPrice: totalPrice,
+        pricePerPackage: product.variants[0].price,
+        hasFish: hasFish
+      };
+
+      console.log(`${index + 1}. ${product.title}`);
+      console.log(`   Содержит рыбу: ${hasFish ? 'Да' : 'Нет'}`);
+      console.log(`   Пакетиков: ${packagesForThisProduct}`);
+      console.log(`   Цена за пакетик: ${product.variants[0].price} руб.`);
+      console.log(`   Общая стоимость: ${totalPrice} руб.`);
+      console.log('---');
+
+      return distributedProduct;
+    });
+
+    // Проверяем, что общее количество пакетиков совпадает
+    const totalDistributedPackages = this.distributedProducts.reduce((sum, product) => sum + product.packagesCount, 0);
+    console.log(`Проверка: общее количество распределенных пакетиков = ${totalDistributedPackages} (должно быть ${totalPackages})`);
+
+    return this.distributedProducts;
+  }
+
+  // Проверка, содержит ли продукт рыбу
+  productContainsFish(productTitle) {
+    const fishKeywords = ['рыба', 'рыбой', 'рыбу', 'рыбы', 'рыбным', 'рыбного', 'рыбной'];
+    const title = productTitle.toLowerCase();
+    return fishKeywords.some(keyword => title.includes(keyword));
+  }
+
   updateDietDisplay() {
     const dailyAmountElement = document.getElementById('daily-amount');
     const weeklyPackagesElement = document.getElementById('weekly-packages');
@@ -579,16 +658,98 @@ class PetsQuiz {
   }
 
   addToCart() {
-    // Проверяем, есть ли подходящие продукты
-    if (!this.suitableProducts || this.suitableProducts.length === 0) {
+    // Проверяем, есть ли распределенные продукты
+    if (!this.distributedProducts || this.distributedProducts.length === 0) {
       alert('Нет доступных продуктов для добавления в корзину');
       return;
     }
 
-    // Здесь можно реализовать функциональность добавления в корзину
+    console.log('=== ДОБАВЛЕНИЕ В КОРЗИНУ ===');
     
-    // Показываем сообщение об успехе
-    alert('Программа добавлена в корзину!');
+    // Подготавливаем данные для корзины
+    const cartItems = this.distributedProducts.map((product, index) => {
+      const cartItem = {
+        productId: product.id,
+        variantId: product.variants[0].id,
+        quantity: product.packagesCount,
+        productTitle: product.title,
+        pricePerPackage: product.pricePerPackage,
+        totalPrice: product.totalPrice
+      };
+
+      console.log(`Товар ${index + 1}: ${product.title}`);
+      console.log(`   ID: ${product.id}`);
+      console.log(`   Количество: ${product.packagesCount} шт.`);
+      console.log(`   Цена за штуку: ${product.pricePerPackage} руб.`);
+      console.log(`   Общая стоимость: ${product.totalPrice} руб.`);
+      console.log('---');
+
+      return cartItem;
+    });
+
+    // Вычисляем общую стоимость
+    const totalCartPrice = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const totalPackages = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+    console.log(`Общее количество пакетиков: ${totalPackages}`);
+    console.log(`Общая стоимость корзины: ${totalCartPrice} руб.`);
+
+    // Подготавливаем данные для ajaxAPI.cart.add
+    const cartData = {};
+    const comments = {};
+
+    cartItems.forEach((item, index) => {
+      // Используем variantId как ключ для корзины
+      cartData[item.variantId] = item.quantity;
+      
+      // Создаем комментарий для каждого товара
+      const productComment = `${item.productTitle} (${item.quantity} шт. × ${item.pricePerPackage} руб. = ${item.totalPrice} руб.)`;
+      comments[item.variantId] = productComment;
+    });
+
+    // Добавляем общий комментарий к заказу
+    const generalComment = `Рацион для питомца: ${this.calculationDetails.petType}, ${this.calculationDetails.weight}. ${this.calculationDetails.dailyAmount}, ${this.calculationDetails.weeklyAmount}. ${this.calculationDetails.packaging}, ${this.calculationDetails.totalWeight}. ${this.calculationDetails.excessAmount}. ${this.excludedAllergens}.`;
+
+    console.log('Данные для корзины:', cartData);
+    console.log('Комментарии:', comments);
+    console.log('Общий комментарий:', generalComment);
+
+    // Показываем индикатор загрузки
+    const addToCartButton = document.getElementById('btn-add-to-cart');
+    if (addToCartButton) {
+      addToCartButton.disabled = true;
+      addToCartButton.textContent = 'Добавление...';
+    }
+
+    // Добавляем товары в корзину через AJAX API
+    ajaxAPI.cart.add(cartData, {
+      comments: comments,
+      order_comment: generalComment
+    })
+    .done((response) => {
+      console.log('Товары успешно добавлены в корзину:', response);
+      
+      // Показываем сообщение об успехе
+      const message = `Программа добавлена в корзину!\n\n` +
+        `Количество продуктов: ${cartItems.length}\n` +
+        `Общее количество пакетиков: ${totalPackages}\n` +
+        `Общая стоимость: ${totalCartPrice} руб.`;
+      
+      // Переходим на страницу корзины
+      window.location.href = '/cart_items';
+    })
+    .fail((error) => {
+      console.error('Ошибка при добавлении в корзину:', error);
+      
+      // Показываем сообщение об ошибке
+      alert('Произошла ошибка при добавлении товаров в корзину. Попробуйте еще раз.');
+      
+      // Восстанавливаем кнопку
+      if (addToCartButton) {
+        addToCartButton.disabled = false;
+        addToCartButton.textContent = 'Добавить в корзину';
+      }
+    });
   }
 
   getExcludedProducts() {
@@ -710,6 +871,7 @@ class PetsQuiz {
     this.excludedProducts = [];
     this.dietResults = null;
     this.suitableProducts = [];
+    this.distributedProducts = [];
     
     this.showStep(1);
     
