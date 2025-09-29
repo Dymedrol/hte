@@ -61,7 +61,7 @@
     cursor: pointer !important;
     transition: all 0.3s ease !important;
     box-sizing: border-box !important;
-    display: inline-block !important;
+    display: inline-flex !important;
     vertical-align: middle !important;
     text-decoration: none !important;
     outline: none !important;
@@ -169,7 +169,75 @@
     font-weight: var(--hte-micro-text-14-font-weight) !important;
     color: var(--hte-black) !important;
     text-decoration: none !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important;
+}
+
+.co-client-logged {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
     white-space: nowrap !important;
     text-transform: uppercase !important;
     transition: color 0.3s ease !important;
+}
+
+.co-client-name {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+}
+
+.co-client-field {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--hte-black) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important;
+}
+
+.co-basket_item-description {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--hte-black) !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important; 
+}
+
+.co-basket_subtotal-title, .co-basket_subtotal-price {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--hte-black) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    transition: color 0.3s ease !important; 
+}
+
+.co-basket_subtotal {
+    margin-bottom: 20px !important;
+}
+
+.co-delivery_method-list .co-title:first-of-type {
+    display: none !important;
+}
+
+.co-delivery_method-list .co-input--full_locality_name {
+    display: none !important;
+}
+
+.co-basket_subtotal {
+    display: none !important;
+}
+
+.co-basket_subtotal-list {
+    border-bottom: 0 !important;
 }

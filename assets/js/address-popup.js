@@ -524,6 +524,46 @@ class AddressPopupManager {
             this.courierCommentInput.addEventListener('input', () => this.updateCharCounter());
         }
         
+        // Добавляем обработчики событий для полей формы для отслеживания изменений валидации
+        // Добавляем обработчики для поля типа дома для обновления обязательности
+        if (this.houseTypeToggle) {
+            const initialToggle = () => {
+                // При инициализации убираем обязательность полей
+                this.setRequiredFields(['apartment', 'floor', 'entrance'], false);
+            };
+            
+            // Проверяем текущее состояние переключателя и устанавливаем правильную обязательность
+            initialToggle();
+        }
+        
+        const requiredFields = ['apartmentInput', 'floorInput', 'entranceInput'];
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field) {
+                field.addEventListener('input', () => {
+                    // Очищаем ошибки валидации при изменении текста в поле
+                    this.clearValidationErrors();
+                });
+                
+                field.addEventListener('blur', () => {
+                    // Проверяем валидацию при уходе фокуса с поля
+                    const validationResult = this.validateForm();
+                    if (!validationResult.isValid) {
+                        const fieldError = validationResult.errors.find(error => 
+                            error.field === fieldName.replace('Input', '')
+                        );
+                        if (fieldError) {
+                            field.classList.add('error-field');
+                        } else {
+                            field.classList.remove('error-field');
+                        }
+                    } else {
+                        field.classList.remove('error-field');
+                    }
+                });
+            }
+        });
+        
         if (this.finalConfirmBtn) {
             this.finalConfirmBtn.addEventListener('click', () => this.finalConfirm());
         }
@@ -1618,6 +1658,19 @@ class AddressPopupManager {
             this.confirmedAddressEl.textContent = this.selectedAddress;
         }
         
+        // Очищаем предыдущие ошибки валидации
+        this.clearValidationErrors();
+        
+        // Проверяем тип дома и устанавливаем соответствующую обязательность полей
+        const isPrivateHouse = this.houseTypeToggle?.checked;
+        if (isPrivateHouse) {
+            // Для частного дома убираем обязательность
+            this.setRequiredFields(['apartment', 'floor', 'entrance'], false);
+        } else {
+            // Для многоквартирного дома устанавливаем обязательность
+            this.setRequiredFields(['apartment', 'floor', 'entrance'], true);
+        }
+        
         // Обновляем заголовок попапа
         this.updatePopupTitle('Детали доставки', 'Укажите дополнительную информацию для курьера');
         
@@ -1662,8 +1715,9 @@ class AddressPopupManager {
             // Для частного дома скрываем поля квартиры, этажа, подъезда, домофона
             this.toggleFormFields(false, ['apartment', 'floor', 'entrance', 'intercom']);
         } else {
-            // Для многоквартирного дома показываем все поля
+            // Для многоквартирного дома показываем все поля и делаем некоторые обязательными
             this.toggleFormFields(true, ['apartment', 'floor', 'entrance', 'intercom']);
+            this.setRequiredFields(['apartment', 'floor', 'entrance'], true);
         }
         
         console.log('🏠 Тип дома изменен:', isPrivateHouse ? 'Частный дом' : 'Многоквартирный дом');
@@ -1689,6 +1743,177 @@ class AddressPopupManager {
         });
     }
     
+    // Установка обязательности полей
+    setRequiredFields(fieldNames, required) {
+        fieldNames.forEach(fieldName => {
+            const field = document.getElementById(fieldName + 'Input');
+            
+            if (field) {
+                field.required = required;
+                
+                // Добавляем/удаляем визуальный индикатор обязательности
+                const formGroup = field.closest('.form-group');
+                if (formGroup) {
+                    const label = formGroup.querySelector('label') || field.previousElementSibling;
+                    
+                    if (required) {
+                        // Добавляем звездочку к обязательным полям
+                        field.classList.add('required-field');
+                        field.setAttribute('aria-required', 'true');
+                        
+                        // Добавляем визуальный индикатор обязательности
+                        if (label) {
+                            if (!label.querySelector('.required-indicator')) {
+                                const requiredSpan = document.createElement('span');
+                                requiredSpan.className = 'required-indicator';
+                                requiredSpan.style.color = '#ff6b6b';
+                                requiredSpan.style.marginLeft = '4px';
+                                requiredSpan.textContent = '*';
+                                label.appendChild(requiredSpan);
+                            }
+                        }
+                    } else {
+                        // Убираем звездочку с необязательных полей
+                        field.classList.remove('required-field');
+                        field.removeAttribute('aria-required');
+                        
+                        // Убираем визуальный индикатор обязательности
+                        if (label) {
+                            const requiredSpan = label.querySelector('.required-indicator');
+                            if (requiredSpan) {
+                                requiredSpan.remove();
+                            }
+                        }
+                    }
+                }
+                
+                console.log(`✅ Поле ${fieldName} ${required ? 'сделано' : 'убрано из'} обязательным`);
+            } else {
+                console.warn(`❌ Поле ${fieldName} не найдено для установки обязательности`);
+            }
+        });
+    }
+    
+    // Валидация формы
+    validateForm() {
+        const isPrivateHouse = this.houseTypeToggle?.checked;
+        
+        // Если частный дом выбран, валидация не нужна
+        if (isPrivateHouse) {
+            console.log('✅ Частный дом выбран, валидация не требуется');
+            return { isValid: true, errors: [] };
+        }
+        
+        const requiredFields = ['apartment', 'floor', 'entrance'];
+        const errors = [];
+        
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName + 'Input');
+            if (field) {
+                const value = (field.value || '').trim();
+                
+                if (!value) {
+                    errors.push({
+                        field: fieldName,
+                        message: this.getFieldDisplayName(fieldName) + ' обязателен для заполнения'
+                    });
+                    
+                    // Добавляем визуальный индикатор ошибки
+                    field.classList.add('error-field');
+                    field.setCustomValidity(this.getFieldDisplayName(fieldName) + ' обязателен для заполнения');
+                } else {
+                    // Убираем визуальный индикатор ошибки
+                    field.classList.remove('error-field');
+                    field.setCustomValidity('');
+                }
+            }
+        });
+        
+        const isValid = errors.length === 0;
+        console.log(`📋 Валидация формы: ${isValid ? 'пройдена' : 'не пройдена'}`, errors);
+        
+        return { isValid, errors };
+    }
+    
+    // Получение отображаемого имени поля
+    getFieldDisplayName(fieldName) {
+        const names = {
+            'apartment': 'Квартира',
+            'floor': 'Этаж',
+            'entrance': 'Подъезд',
+            'intercom': 'Домофон'
+        };
+        
+        return names[fieldName] || fieldName;
+    }
+    
+    // Показ ошибок валидации пользователю
+    showValidationErrors(errors) {
+        // Сначала очищаем предыдущие ошибки
+        this.clearValidationErrors();
+        
+        // Добавляем сообщение об ошибке в интерфейсе
+        const errorContainer = this.popup?.querySelector('.validation-errors');
+        if (errorContainer) {
+            errorContainer.innerHTML = '';
+        } else {
+            // Создаем контейнер для ошибок если его нет
+            const existingErrors = this.popup?.querySelector('.validation-errors');
+            if (!existingErrors && this.popup) {
+                const errorsDiv = document.createElement('div');
+                errorsDiv.className = 'validation-errors';
+                errorsDiv.style.cssText = 'color: #ff6b6b; margin-bottom: 16px; padding: 8px 12px; background: #fff5f5; border-radius: 4px; border: 1px solid #ffebee;';
+                
+                // Вставляем перед кнопкой финального подтверждения
+                const finalConfirmSection = this.popup?.querySelector('.final-confirmation-section');
+                if (finalConfirmSection) {
+                    finalConfirmSection.parentNode.insertBefore(errorsDiv, finalConfirmSection);
+                } else {
+                    this.popup.insertBefore(errorsDiv, this.popup.firstChild);
+                }
+            }
+        }
+        
+        // Добавляем ошибки в контейнер
+        if (errors.length > 0) {
+            const errorContainer = this.popup?.querySelector('.validation-errors');
+            if (errorContainer) {
+                const errorList = document.createElement('ul');
+                errorList.style.cssText = 'margin: 0; padding-left: 16px; list-style: none;';
+                
+                errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.style.cssText = 'margin-bottom: 4px;';
+                    li.textContent = error.message;
+                    errorList.appendChild(li);
+                });
+                
+                errorContainer.innerHTML = '<strong>Пожалуйста, заполните обязательные поля:</strong>';
+                errorContainer.appendChild(errorList);
+            }
+        }
+        
+        console.log('📄 Показаны ошибки валидации:', errors);
+    }
+    
+    // Очистка ошибок валидации
+    clearValidationErrors() {
+        const errorContainer = this.popup?.querySelector('.validation-errors');
+        if (errorContainer) {
+            errorContainer.innerHTML = '';
+            errorContainer.style.display = 'none';
+        }
+        
+        // Убираем визуальные индикаторы ошибок с полей
+        const errorFields = this.popup?.querySelectorAll('.error-field');
+        if (errorFields) {
+            errorFields.forEach(field => {
+                field.classList.remove('error-field');
+                field.setCustomValidity('');
+            });
+        }
+    }
+    
     // Обновление счетчика символов
     updateCharCounter() {
         if (!this.courierCommentInput || !this.charCounter) return;
@@ -1712,6 +1937,22 @@ class AddressPopupManager {
     finalConfirm() {
         console.log('✅ Финальное подтверждение доставки');
         
+        // Проверяем наличие адреса
+        if (!this.selectedAddress) {
+            console.warn('❌ Адрес не выбран!');
+            return;
+        }
+        
+        // Валидируем форму
+        const validationResult = this.validateForm();
+        if (!validationResult.isValid) {
+            console.warn('❌ Форма не прошла валидацию:', validationResult.errors);
+            
+            // Показываем сообщения об ошибках пользователю
+            this.showValidationErrors(validationResult.errors);
+            return;
+        }
+        
         // Собираем данные формы
         const deliveryData = {
             address: this.selectedAddress,
@@ -1725,12 +1966,6 @@ class AddressPopupManager {
         };
         
         console.log('📦 Данные доставки:', deliveryData);
-        console.log('🔍 Проверяем наличие адреса:', this.selectedAddress);
-        
-        if (!this.selectedAddress) {
-            console.warn('❌ Адрес не выбран!');
-            return;
-        }
         
         // Обновляем комментарий заказа с адресом доставки
         console.log('📝 Вызываем updateOrderComment...');
@@ -1954,6 +2189,9 @@ class AddressPopupManager {
         this.updateCheckoutButton(false);
         this.hideSuggestions();
         
+        // Очищаем ошибки валидации
+        this.clearValidationErrors();
+        
         if (this.map) {
             this.map.geoObjects.removeAll();
         }
@@ -1988,6 +2226,9 @@ class AddressPopupManager {
             this.charCounter.style.color = '#9D9D9D';
         }
         
+        // Убираем обязательность полей
+        this.setRequiredFields(['apartment', 'floor', 'entrance'], false);
+        
         // Показываем первый шаг, скрываем второй
         if (this.step1) {
             this.step1.style.display = 'flex';
@@ -2014,6 +2255,9 @@ class AddressPopupManager {
         
         this.hideSuggestions();
         
+        // Очищаем ошибки валидации
+        this.clearValidationErrors();
+        
         // Показываем первый шаг, скрываем второй
         if (this.step1) {
             this.step1.style.display = 'flex';
@@ -2025,6 +2269,9 @@ class AddressPopupManager {
         
         // Восстанавливаем заголовок
         this.updatePopupTitle('Укажите ваш адрес', 'Введите адрес или выберите точку на карте для расчета доступных слотов доставки.');
+        
+        // Убираем обязательность полей
+        this.setRequiredFields(['apartment', 'floor', 'entrance'], false);
         
         // Показываем все поля формы
         this.toggleFormFields(true, ['apartment', 'floor', 'entrance', 'intercom']);
