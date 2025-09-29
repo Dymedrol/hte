@@ -108,7 +108,7 @@
                     
                     <div class="cart-item-bottom">
                       <div class="delivery-info">
-                                                  <div class="delivery-row">
+                          <div class="delivery-row">
                             <div class="info-icon" data-tooltip="Все дни кроме 18 августа, 19 августа">i</div>
                             <span class="delivery-label" id="delivery-date-label">Доставка:</span>
                             <span class="delivery-value">
@@ -123,7 +123,7 @@
                               {% endfor %}
                             </span>
                           </div>
-                                                  <div class="delivery-row">
+                           <div class="delivery-row">
                             <div class="info-icon" data-tooltip="Доставка этого рациона осуществляется каждые 2 часа">i</div>
                             <span class="delivery-label" id="delivery-time-label">Время:</span>
                             <span class="delivery-value">
@@ -139,28 +139,34 @@
                             </span>
                           </div>
                       </div>
+
+                      {% assign total_accessories_price = 0 %}
+                      {% assign accessories_prices = item.accessory_lines | map: 'accessory_value_price' %}
+                      {% for price in accessories_prices %}
+                        {% assign total_accessories_price = total_accessories_price | plus: price %}
+                      {% endfor %}
                       
                       <div class="price-breakdown">
-                        <div class="price-row price-row_hide_mobile">
-                          <span class="price-label">Программа:</span>
-                          <span class="price-value">
-                            <span class="price-amount">{{ item.variant.price | money }}</span>
-                            <span class="price-multiplier"> * {{ item.quantity }} дней = </span>
-                            <span class="price-total">{{ item.variant.price | times: item.quantity | money }}</span>
-                          </span>
-                        </div>
-
-                        {% assign total_accessories_price = 0 %}
-                        {% assign accessories_prices = item.accessory_lines | map: 'accessory_value_price' %}
-                        {% for price in accessories_prices %}
-                          {% assign total_accessories_price = total_accessories_price | plus: price %}
-                        {% endfor %}
-                        <div class="price-row price-row_hide_mobile">
-                          <span class="price-label">Допы:</span>
-                          <span class="price-value">
-                            <span class="price-amount">{{ total_accessories_price | times: item.quantity | money }}</span>
-                          </span>
-                        </div>
+                          <div class="price-row price-row_hide_mobile">
+                            <span class="price-label">Программа:</span>
+                            <span class="price-value">
+                              <span class="price-amount">{{ item.variant.price | plus: total_accessories_price | money }}</span>
+                              <span class="price-multiplier"> * {{ item.quantity }} 
+                                {% assign quantity = item.quantity %}
+                                {% assign last_digit = quantity | modulo: 10 %}
+                                {% assign last_two_digits = quantity | modulo: 100 %}
+                                {% if last_two_digits >= 11 and last_two_digits <= 19 %}
+                                  дней
+                                {% elsif last_digit == 1 %}
+                                  день
+                                {% elsif last_digit >= 2 and last_digit <= 4 %}
+                                  дня
+                                {% else %}
+                                  дней
+                                {% endif %}
+                              </span>
+                            </span>
+                          </div>
                         <div class="price-row total">
                           <span class="price-label">Итого:</span>
                           <span class="price-value">
@@ -194,8 +200,6 @@
                           </div>
                           
                           <div class="cart-item-extra-info">
-
-
                             
                             <div class="cart-item-quantity">
                               <div class="quantity-controls" data-quantity>
