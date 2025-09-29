@@ -88,10 +88,10 @@ class Calendar {
     
     // Обработчики навигации календаря
     document.addEventListener('click', (e) => {
-      if (e.target.closest('.prev-btn')) {
+      if (e.target.closest('.calendar-nav-btn.prev-btn') || e.target.closest('.prev-btn')) {
         e.stopPropagation();
         this.previousMonth();
-      } else if (e.target.closest('.next-btn')) {
+      } else if (e.target.closest('.calendar-nav-btn.next-btn') || e.target.closest('.next-btn')) {
         e.stopPropagation();
         this.nextMonth();
       }
@@ -612,8 +612,8 @@ class Calendar {
   }
   
   updateNavigationButtons(calendar) {
-    const prevBtn = calendar.querySelector('.prev-btn');
-    const nextBtn = calendar.querySelector('.next-btn');
+    const prevBtn = calendar.querySelector('.calendar-nav-btn.prev-btn') || calendar.querySelector('.prev-btn');
+    const nextBtn = calendar.querySelector('.calendar-nav-btn.next-btn') || calendar.querySelector('.next-btn');
     
     if (prevBtn && nextBtn) {
       const currentMonth = new Date(this.currentDate);

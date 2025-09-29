@@ -1219,16 +1219,20 @@ function initQuantityPopup() {
   
   // Обработчики навигации календаря
   if (startDateCalendar) {
-    const prevBtn = startDateCalendar.querySelector('.prev-btn');
-    const nextBtn = startDateCalendar.querySelector('.next-btn');
+    const prevBtn = startDateCalendar.querySelector('.calendar-nav-btn.prev-btn') || startDateCalendar.querySelector('.prev-btn');
+    const nextBtn = startDateCalendar.querySelector('.calendar-nav-btn.next-btn') || startDateCalendar.querySelector('.next-btn');
     const calendarGrid = startDateCalendar.querySelector('.calendar-grid');
     
     if (prevBtn) {
       prevBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // Здесь будет логика перехода к предыдущему месяцу
-        console.log('Предыдущий месяц');
+        // Вызываем метод предыдущего месяца из основного календаря
+        if (window.calendarInstance && typeof window.calendarInstance.previousMonth === 'function') {
+          window.calendarInstance.previousMonth();
+        } else {
+          console.log('Предыдущий месяц - основной календарь недоступен');
+        }
       });
     }
     
@@ -1236,8 +1240,12 @@ function initQuantityPopup() {
       nextBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // Здесь будет логика перехода к следующему месяцу
-        console.log('Следующий месяц');
+        // Вызываем метод следующего месяца из основного календаря
+        if (window.calendarInstance && typeof window.calendarInstance.nextMonth === 'function') {
+          window.calendarInstance.nextMonth();
+        } else {
+          console.log('Следующий месяц - основной календарь недоступен');
+        }
       });
     }
     
