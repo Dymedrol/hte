@@ -1,3 +1,5 @@
+/* Куча стилей !important для аккаунта и страницы заказа */
+
 .co-checkout-title, .co-title,  .co-title--h1 {
     font-family: var(--hte-h1-font-family);
     font-size: var(--hte-h1-font-size) !important;
@@ -240,4 +242,127 @@
 
 .co-basket_subtotal-list {
     border-bottom: 0 !important;
+    border-top: 1px solid var(--hte-dark-accent) !important;
+}
+
+.delivery_variants {
+    display: none !important;
+}
+
+.co-payment_method-title, .co-input-title {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-payment_method-description, .co-input-description {
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    color: var(--hte-black);
+    letter-spacing: var(--hte-body-18-letter-spacing);
+    line-height: var(--hte-body-18-line-height);
+    opacity: var(--opacity-high);
+}
+
+.co-sidebar {
+    box-shadow: none !important;
+    border-left: 1px solid var(--hte-dark-accent) !important;
+}
+
+.co-basket_item-description {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-basket_item-total, .co-basket_total-price {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-basket_total-title {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-checkout-order_form {
+    padding-bottom: 40px !important;
+}
+
+.co-order-information {
+    border-top: 1px solid var(--hte-dark-accent) !important;
+    border-bottom: 1px solid var(--hte-dark-accent) !important;
+}
+
+.co-order-information_title {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-order-information_value {
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-order-state {
+    border-radius: 400px !important;
+    font-family: var(--hte-micro-text-14-font-family) !important;
+    font-size: var(--hte-micro-text-14-font-size) !important;
+    font-weight: var(--hte-micro-text-14-font-weight) !important;
+    color: var(--HTE---new-light-accent) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+.co-order-information_value a:not(.co-button) {
+    display: none !important;
+}
+
+#messengers_notifications {
+    display: none;
+}
+
+.co-menu-item:nth-of-type(2) {
+    display: none !important;
+}
+
+.co-checkout-block--padded {
+    padding-bottom: 40px !important;
 }

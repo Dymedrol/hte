@@ -1686,3 +1686,21 @@
         gap: var(--spacing-15);
     }
 }
+
+.validation-errors strong {
+    display: block;
+    font-family: var(--hte-small-text-16-font-family);
+    font-size: var(--hte-small-text-16-font-size);
+    font-weight: var(--hte-small-text-16-font-weight);
+    margin-bottom: 4px;
+}
+
+.validation-errors ul {
+    padding-left: 0 !important;
+}
+
+.validation-errors ul li {
+    font-family: var(--hte-small-text-16-font-family);
+    font-size: var(--hte-small-text-16-font-size);
+    font-weight: var(--hte-small-text-16-font-weight);
+}
