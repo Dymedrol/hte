@@ -524,6 +524,52 @@ $(document).ready(function() {
             }
         });
     });
+    
+    // Обрабатываем удаление всех товаров для питомцев через мобильную ссылку
+    $(document).on('click', '.js-pets-delete-mobile', function(e) {
+        e.preventDefault();
+        
+        // Находим все товары для питомцев в корзине
+        const petsItems = document.querySelectorAll('.cart-item_pets');
+        const itemIds = [];
+        
+        petsItems.forEach(item => {
+            const itemId = item.getAttribute('data-item-id');
+            if (itemId) {
+                itemIds.push(parseInt(itemId)); // Преобразуем в число
+            }
+        });
+        
+        if (itemIds.length === 0) {
+            console.log('Нет товаров для питомцев для удаления');
+            return;
+        }
+        
+        console.log('Удаляем товары для питомцев (мобильная версия):', itemIds);
+        
+        // Показываем индикатор загрузки
+        const deleteLink = this;
+        const originalContent = deleteLink.innerHTML;
+        deleteLink.innerHTML = 'Удаление...';
+        deleteLink.style.pointerEvents = 'none';
+        
+        // Удаляем товары через Insales Cart.delete API
+        Cart.delete({
+            items: itemIds
+        }, function(response) {
+            if (response.success) {
+                console.log('Все товары для питомцев успешно удалены (мобильная версия)');
+                // Перезагружаем страницу для обновления корзины
+                window.location.reload();
+            } else {
+                console.error('Ошибка при удалении товаров для питомцев (мобильная версия):', response.error);
+                // Восстанавливаем ссылку
+                deleteLink.innerHTML = originalContent;
+                deleteLink.style.pointerEvents = 'auto';
+                alert('Произошла ошибка при удалении товаров. Попробуйте еще раз.');
+            }
+        });
+    });
 });
 
 

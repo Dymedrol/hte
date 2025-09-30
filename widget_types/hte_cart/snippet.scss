@@ -1708,3 +1708,77 @@
     font-size: var(--hte-small-text-16-font-size);
     font-weight: var(--hte-small-text-16-font-weight);
 }
+
+/* Стили для карточки рациона питомцев */
+.cart-item_pets-summary {
+    .cart-item-bottom {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-16);
+        
+        // Десктопная версия - элементы в ряд, итого справа
+        @media (min-width: 768px) {
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: flex-end;
+            gap: var(--spacing-20);
+        }
+    }
+    
+    .mobile-remove-link {
+        flex-shrink: 0;
+        
+        // Мобильная версия - внизу
+        @media (max-width: 767px) {
+            order: 2;
+        }
+        
+        // Десктопная версия - слева
+        @media (min-width: 768px) {
+            order: 1;
+        }
+    }
+    
+    .pets-price-breakdown {
+        width: auto;
+        flex-shrink: 0;
+        
+        // Мобильная версия - сверху
+        @media (max-width: 767px) {
+            order: 1;
+            
+            .price-row.total {
+                justify-content: flex-start;
+                gap: var(--spacing-12);
+            }
+            
+            .price-label {
+                width: auto;
+                min-width: auto;
+            }
+            
+            .price-value {
+                text-align: left;
+            }
+        }
+        
+        // Десктопная версия - справа внизу
+        @media (min-width: 768px) {
+            order: 2;
+            
+            .price-row.total {
+                justify-content: flex-end;
+                gap: var(--spacing-12);
+            }
+            
+            .price-label {
+                width: auto;
+                min-width: auto;
+            }
+            
+            .price-value {
+                text-align: right;
+            }
+        }
+    }
+}
