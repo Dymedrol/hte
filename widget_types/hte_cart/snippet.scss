@@ -83,6 +83,10 @@
     gap: var(--spacing-12);
 }
 
+.cart-item_pets {
+    display: none;
+}
+
 .cart-item-content {
     flex: 1;
     display: flex;
