@@ -220,11 +220,14 @@
 .weight-input::-webkit-outer-spin-button,
 .weight-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 .weight-input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .weight-placeholder {
@@ -852,5 +855,514 @@
   .no-products-message {
     font-size: 14px;
     padding: var(--spacing-12);
+  }
+}
+
+/* Delivery Time Popup Styles */
+.quantity-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-popup.active {
+  display: flex;
+}
+
+.quantity-popup .popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.quantity-popup .popup-content {
+  position: relative;
+  background-color: var(--hte-white);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-8);
+  max-width: 1000px;
+  width: 90%;
+  min-height: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 52px;
+  justify-content: space-between;
+}
+
+/* Левая секция с формой */
+.quantity-popup .popup-left-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-30);
+  max-width: 500px;
+}
+
+.quantity-popup .popup-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+}
+
+.quantity-popup .popup-title {
+  font-family: var(--hte-h1-font-family);
+  font-size: var(--hte-h1-font-size);
+  font-weight: var(--hte-h1-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  line-height: var(--hte-h1-line-height);
+  letter-spacing: var(--hte-h1-letter-spacing);
+  text-transform: var(--hte-h1-text-transform);
+}
+
+.quantity-popup .popup-description {
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  color: var(--hte-black);
+  margin: 0;
+  line-height: var(--hte-body-18-line-height);
+  opacity: var(--opacity-medium);
+}
+
+.quantity-popup .popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+.quantity-popup .popup-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-15);
+}
+
+.quantity-popup .input-row {
+  display: flex;
+  gap: var(--spacing-12);
+}
+
+.quantity-popup .input-field {
+  flex: 1;
+  position: relative;
+}
+
+.quantity-popup .input-field input {
+  width: 100%;
+  height: 44px;
+  padding: var(--spacing-15) var(--spacing-15);
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-xxl);
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  outline: none;
+}
+
+.quantity-popup .input-field input::placeholder {
+  color: var(--hte-grey-text);
+}
+
+.quantity-popup .input-field.with-icon {
+  position: relative;
+}
+
+.quantity-popup .input-field.with-icon svg {
+  position: absolute;
+  right: var(--spacing-15);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Стили для календаря */
+.quantity-popup .calendar-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: none;
+  padding: var(--spacing-20);
+  margin-top: var(--spacing-8);
+}
+
+.quantity-popup .calendar-dropdown.active {
+  display: block;
+}
+
+.quantity-popup .calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-20);
+}
+
+.quantity-popup .calendar-nav-btn {
+  width: 27px;
+  height: 27px;
+  border: var(--border-width-normal) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-sm);
+  background: var(--hte-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.quantity-popup .calendar-nav-btn:hover:not(.disabled) {
+  background: var(--hte-dark-accent);
+}
+
+.quantity-popup .calendar-nav-btn.disabled {
+  opacity: var(--opacity-low);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.quantity-popup .calendar-title {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.quantity-popup .calendar-month {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-black);
+  line-height: 14px;
+}
+
+.quantity-popup .calendar-year {
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: var(--hte-micro-text-14-font-size);
+  font-weight: var(--hte-micro-text-14-font-weight);
+  color: var(--hte-super-dark-accent);
+  line-height: 14px;
+}
+
+.quantity-popup .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  width: 189px;
+}
+
+.quantity-popup .calendar-day-header {
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: 12px;
+  font-weight: 450;
+  color: var(--hte-grey-text);
+  line-height: 12px;
+}
+
+.quantity-popup .calendar-day {
+  width: 27px;
+  height: 27px;
+  background: var(--hte-white);
+  border: var(--border-width-normal) solid var(--hte-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: var(--hte-micro-text-14-font-family);
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 12px;
+  transition: all 0.3s ease;
+}
+
+.quantity-popup .calendar-day.inactive {
+  color: var(--hte-super-dark-accent);
+}
+
+.quantity-popup .calendar-day.unavailable {
+  color: var(--hte-grey-text);
+  opacity: var(--opacity-low);
+  cursor: not-allowed;
+  background: var(--hte-super-dark-accent);
+  border: var(--border-width-normal) solid var(--hte-white);
+  position: relative;
+}
+
+.quantity-popup .calendar-day.unavailable::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 12px;
+  background: var(--hte-grey-text);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.quantity-popup .calendar-day.unavailable::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 12px;
+  background: var(--hte-grey-text);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.quantity-popup .calendar-day.selectable:hover {
+  background: var(--hte-dark-accent);
+  transition: all 0.2s ease;
+}
+
+.quantity-popup .calendar-day.selected {
+  background: var(--hte-black);
+  color: var(--hte-white);
+  border: var(--border-width-normal) solid var(--hte-black);
+  border-radius: 40px;
+}
+
+/* Стили для выбора времени */
+.quantity-popup .delivery-time-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--hte-white);
+  border: var(--border-width-thin) solid var(--hte-dark-accent);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: none;
+  margin-top: var(--spacing-8);
+}
+
+.quantity-popup .delivery-time-dropdown.active {
+  display: block;
+}
+
+.quantity-popup .time-list {
+  padding: var(--spacing-10);
+}
+
+.quantity-popup .time-item {
+  padding: var(--spacing-12) var(--spacing-15);
+  cursor: pointer;
+  font-family: var(--hte-small-text-16-font-family);
+  font-size: var(--hte-small-text-16-font-size);
+  font-weight: var(--hte-small-text-16-font-weight);
+  color: var(--hte-black);
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s ease;
+}
+
+.quantity-popup .time-item:hover {
+  background-color: var(--hte-dark-accent);
+}
+
+.quantity-popup .time-item.selected {
+  background-color: var(--hte-black);
+  color: var(--hte-white);
+}
+
+
+/* Стили для футера с кнопкой */
+.quantity-popup .popup-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-20);
+}
+
+.quantity-popup .add-to-cart-popup-btn {
+  display: flex;
+  height: 44px;
+  padding: 0 30px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-radius: 100px;
+  background: var(--hte-black);
+  color: var(--hte-white);
+  font-family: var(--hte-body-18-font-family);
+  font-size: var(--hte-body-18-font-size);
+  font-weight: var(--hte-body-18-font-weight);
+  line-height: 120%;
+  letter-spacing: var(--hte-body-18-letter-spacing);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.quantity-popup .add-to-cart-popup-btn:hover {
+  background-color: #333333;
+}
+
+.quantity-popup .add-to-cart-popup-btn:disabled {
+  background-color: #9D9D9D;
+  cursor: not-allowed;
+}
+
+/* Правая секция с изображением */
+.quantity-popup .popup-right-section {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+}
+
+.quantity-popup .popup-image {
+  width: 100%;
+  height: 100%;
+  background-image: url('https://static.insales-cdn.com/files/1/4073/96333801/original/redult-dog.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--border-radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.quantity-popup .image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: var(--spacing-30);
+  display: flex;
+  align-items: flex-end;
+}
+
+.quantity-popup .image-title {
+  font-family: var(--hte-h2-font-family);
+  font-size: var(--hte-h2-font-size);
+  font-weight: var(--hte-h2-font-weight);
+  color: var(--hte-white);
+  margin: 0;
+  line-height: var(--hte-h2-line-height);
+  letter-spacing: var(--hte-h2-letter-spacing);
+  text-transform: var(--hte-h2-text-transform);
+}
+
+/* Кнопка закрытия */
+.quantity-popup .popup-close {
+  position: absolute;
+  top: var(--spacing-20);
+  right: var(--spacing-20);
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hte-grey-text);
+  transition: color 0.3s ease;
+  z-index: 10;
+}
+
+.quantity-popup .popup-close:hover {
+  color: var(--hte-black);
+}
+
+/* Адаптивные стили для попапа */
+@media (max-width: 720px) {
+  .quantity-popup .popup-content {
+    flex-direction: column;
+    gap: var(--spacing-20);
+    max-width: 95%;
+    padding: var(--spacing-20);
+  }
+  
+  .quantity-popup .popup-left-section {
+    max-width: 100%;
+  }
+  
+  .quantity-popup .popup-right-section {
+    max-width: 100%;
+  }
+  
+  .quantity-popup .popup-image {
+    height: 200px;
+  }
+  
+  .quantity-popup .popup-title {
+    font-size: 24px;
+  }
+  
+  .quantity-popup .popup-description {
+    font-size: 16px;
+  }
+  
+  .quantity-popup .input-row {
+    flex-direction: column;
+    gap: var(--spacing-10);
+  }
+  
+  .quantity-popup .calendar-dropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 350px;
+    margin: 0;
+  }
+  
+  .quantity-popup .delivery-time-dropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 300px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .quantity-popup .popup-content {
+    padding: var(--spacing-15);
+    max-width: 95%;
+  }
+  
+  .quantity-popup .popup-title {
+    font-size: 20px;
+  }
+  
+  .quantity-popup .popup-description {
+    font-size: 14px;
+  }
+  
+  .quantity-popup .popup-image {
+    height: 150px;
+  }
+  
+  .quantity-popup .image-overlay {
+    padding: var(--spacing-20);
+  }
+  
+  .quantity-popup .image-title {
+    font-size: 18px;
   }
 }

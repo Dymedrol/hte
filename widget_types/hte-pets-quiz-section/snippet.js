@@ -1,5 +1,417 @@
 // Pets Quiz Component JavaScript
 
+// Delivery Date Popup Class
+class DeliveryDatePopup {
+  constructor() {
+    this.popup = null;
+    this.selectedDate = null;
+    this.selectedTime = null;
+    this.displayMonth = new Date();
+    this.maxMonthsAhead = 6;
+    this.currentDate = new Date();
+    
+    // Устанавливаем текущее время по московскому времени (UTC+3)
+    const moscowOffset = 3;
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    this.currentDate = new Date(utc + (moscowOffset * 3600000));
+    
+    this.init();
+  }
+  
+  init() {
+    this.popup = document.getElementById('deliveryDatePopup');
+    if (!this.popup) return;
+    
+    this.bindEvents();
+    this.renderCalendar();
+  }
+  
+  bindEvents() {
+    // Кнопки навигации календаря
+    const prevBtn = document.getElementById('deliveryCalendarPrev');
+    const nextBtn = document.getElementById('deliveryCalendarNext');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => this.previousMonth());
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => this.nextMonth());
+    }
+    
+    // Кнопка закрытия
+    const closeBtn = document.getElementById('deliveryPopupClose');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.close());
+    }
+    
+    // Закрытие по клику на overlay
+    const overlay = this.popup?.querySelector('.popup-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', () => this.close());
+    }
+    
+    // Обработчики для полей ввода
+    const dateInput = document.getElementById('deliveryDateInput');
+    const timeInput = document.getElementById('deliveryTimeInput');
+    
+    if (dateInput) {
+      dateInput.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.toggleCalendar();
+      });
+    }
+    
+    if (timeInput) {
+      timeInput.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.toggleTimeDropdown();
+      });
+    }
+    
+    // Обработчики для выбора времени
+    const timeItems = document.querySelectorAll('.time-item');
+    timeItems.forEach(item => {
+      item.addEventListener('click', () => {
+        this.selectTime(item.dataset.time, item.textContent);
+      });
+    });
+    
+    // Кнопка подтверждения
+    const confirmBtn = document.getElementById('deliveryPopupConfirm');
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => this.confirm());
+    }
+    
+    // Закрытие дропдаунов при клике вне их
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.calendar-dropdown') && !e.target.closest('#deliveryDateInput')) {
+        this.closeCalendar();
+      }
+      if (!e.target.closest('.delivery-time-dropdown') && !e.target.closest('#deliveryTimeInput')) {
+        this.closeTimeDropdown();
+      }
+    });
+  }
+  
+  open() {
+    if (this.popup) {
+      this.popup.classList.add('active');
+      this.renderCalendar();
+    }
+  }
+  
+  close() {
+    if (this.popup) {
+      this.popup.classList.remove('active');
+      this.selectedDate = null;
+      this.selectedTime = null;
+      this.closeCalendar();
+      this.closeTimeDropdown();
+      this.updateConfirmButton();
+      this.updateInputs();
+    }
+  }
+  
+  confirm() {
+    if (this.selectedDate && this.selectedTime && this.onConfirm) {
+      this.onConfirm({
+        date: this.selectedDate,
+        time: this.selectedTime
+      });
+      this.close();
+    }
+  }
+  
+  setOnConfirm(callback) {
+    this.onConfirm = callback;
+  }
+  
+  previousMonth() {
+    const newMonth = new Date(this.displayMonth);
+    newMonth.setMonth(newMonth.getMonth() - 1);
+    
+    const currentMonth = new Date(this.currentDate);
+    currentMonth.setDate(1);
+    currentMonth.setHours(0, 0, 0, 0);
+    
+    if (newMonth >= currentMonth) {
+      this.displayMonth = newMonth;
+      this.renderCalendar();
+    }
+  }
+  
+  nextMonth() {
+    const newMonth = new Date(this.displayMonth);
+    newMonth.setMonth(newMonth.getMonth() + 1);
+    
+    const maxMonth = new Date(this.currentDate);
+    maxMonth.setMonth(maxMonth.getMonth() + this.maxMonthsAhead);
+    maxMonth.setDate(1);
+    maxMonth.setHours(0, 0, 0, 0);
+    
+    if (newMonth <= maxMonth) {
+      this.displayMonth = newMonth;
+      this.renderCalendar();
+    }
+  }
+  
+  toggleCalendar() {
+    const calendar = document.getElementById('deliveryDateCalendar');
+    if (calendar) {
+      calendar.classList.toggle('active');
+      this.closeTimeDropdown();
+    }
+  }
+  
+  closeCalendar() {
+    const calendar = document.getElementById('deliveryDateCalendar');
+    if (calendar) {
+      calendar.classList.remove('active');
+    }
+  }
+  
+  toggleTimeDropdown() {
+    const dropdown = document.getElementById('deliveryTimeDropdown');
+    if (dropdown) {
+      dropdown.classList.toggle('active');
+      this.closeCalendar();
+    }
+  }
+  
+  closeTimeDropdown() {
+    const dropdown = document.getElementById('deliveryTimeDropdown');
+    if (dropdown) {
+      dropdown.classList.remove('active');
+    }
+  }
+  
+  selectTime(timeValue, timeText) {
+    this.selectedTime = timeValue;
+    
+    // Обновляем поле ввода времени
+    const timeInput = document.getElementById('deliveryTimeInput');
+    if (timeInput) {
+      timeInput.value = timeText;
+    }
+    
+    // Обновляем визуальное состояние элементов времени
+    const timeItems = document.querySelectorAll('.time-item');
+    timeItems.forEach(item => {
+      item.classList.remove('selected');
+      if (item.dataset.time === timeValue) {
+        item.classList.add('selected');
+      }
+    });
+    
+    this.closeTimeDropdown();
+    this.updateConfirmButton();
+  }
+  
+  updateInputs() {
+    const dateInput = document.getElementById('deliveryDateInput');
+    const timeInput = document.getElementById('deliveryTimeInput');
+    
+    if (dateInput) {
+      dateInput.value = '';
+    }
+    if (timeInput) {
+      timeInput.value = '';
+    }
+  }
+
+  renderCalendar() {
+    const grid = document.getElementById('deliveryCalendarGrid');
+    if (!grid) return;
+    
+    // Очищаем сетку, оставляя заголовки дней недели
+    const headers = grid.querySelectorAll('.calendar-day-header');
+    grid.innerHTML = '';
+    headers.forEach(header => grid.appendChild(header));
+    
+    const year = this.displayMonth.getFullYear();
+    const month = this.displayMonth.getMonth();
+    
+    // Первый день месяца
+    const firstDay = new Date(year, month, 1);
+    // Последний день месяца
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // День недели первого дня (0 = воскресенье, 1 = понедельник, ...)
+    const firstDayOfWeek = firstDay.getDay();
+    // Корректируем для понедельника как первого дня недели
+    const startOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+    
+    // Добавляем пустые ячейки для выравнивания
+    for (let i = 0; i < startOffset; i++) {
+      const emptyDay = document.createElement('div');
+      emptyDay.className = 'calendar-day inactive';
+      emptyDay.textContent = '';
+      grid.appendChild(emptyDay);
+    }
+    
+    // Добавляем дни месяца
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dayElement = document.createElement('div');
+      dayElement.className = 'calendar-day';
+      dayElement.textContent = day;
+      
+      const currentDate = new Date(year, month, day);
+      
+      // Применяем стили
+      this.applyDayStyles(dayElement, currentDate);
+      
+      // Добавляем обработчики для всех активных дней
+      if (this.isDateSelectable(currentDate)) {
+        dayElement.classList.add('selectable');
+        dayElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.selectDate(currentDate);
+        });
+      }
+      
+      grid.appendChild(dayElement);
+    }
+    
+    // Обновляем заголовок календаря
+    this.updateCalendarHeader();
+    
+    // Обновляем кнопки навигации
+    this.updateNavigationButtons();
+  }
+  
+  applyDayStyles(dayElement, date) {
+    // Удаляем все классы состояний
+    dayElement.classList.remove('selected', 'selectable', 'unavailable');
+    
+    // Проверяем, можно ли выбрать эту дату
+    const isSelectable = this.isDateSelectable(date);
+    
+    if (!isSelectable) {
+      dayElement.classList.add('unavailable');
+      return;
+    }
+    
+    dayElement.classList.add('selectable');
+    
+    // Проверяем, выбрана ли эта дата
+    if (this.selectedDate && this.isSameDate(date, this.selectedDate)) {
+      dayElement.classList.add('selected');
+    }
+  }
+  
+  isDateSelectable(date) {
+    // Завтрашний день как минимум
+    const tomorrow = new Date(this.currentDate);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    // Максимальная дата (через 6 месяцев)
+    const maxDate = new Date(this.currentDate);
+    maxDate.setMonth(maxDate.getMonth() + this.maxMonthsAhead);
+    maxDate.setHours(23, 59, 59, 999);
+    
+    return date >= tomorrow && date <= maxDate;
+  }
+  
+  isSameDate(date1, date2) {
+    return date1.getDate() === date2.getDate() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getFullYear() === date2.getFullYear();
+  }
+  
+  selectDate(date) {
+    this.selectedDate = date;
+    
+    // Обновляем поле ввода даты
+    const dateInput = document.getElementById('deliveryDateInput');
+    if (dateInput) {
+      dateInput.value = this.formatDateForInput(date);
+    }
+    
+    this.renderCalendar();
+    this.closeCalendar();
+    this.updateConfirmButton();
+  }
+  
+  updateConfirmButton() {
+    const confirmBtn = document.getElementById('deliveryPopupConfirm');
+    if (confirmBtn) {
+      confirmBtn.disabled = !this.selectedDate || !this.selectedTime;
+    }
+  }
+  
+  formatDateForInput(date) {
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    
+    const months = [
+      'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+    
+    return `${day} ${months[month]} ${year}`;
+  }
+  
+  
+  updateCalendarHeader() {
+    const monthElement = document.querySelector('.calendar-month');
+    const yearElement = document.querySelector('.calendar-year');
+    
+    if (monthElement) {
+      monthElement.textContent = this.getMonthName(this.displayMonth.getMonth());
+    }
+    if (yearElement) {
+      yearElement.textContent = this.displayMonth.getFullYear();
+    }
+  }
+  
+  updateNavigationButtons() {
+    const prevBtn = document.getElementById('deliveryCalendarPrev');
+    const nextBtn = document.getElementById('deliveryCalendarNext');
+    
+    if (prevBtn && nextBtn) {
+      const currentMonth = new Date(this.currentDate);
+      currentMonth.setDate(1);
+      currentMonth.setHours(0, 0, 0, 0);
+      
+      const maxMonth = new Date(this.currentDate);
+      maxMonth.setMonth(maxMonth.getMonth() + this.maxMonthsAhead);
+      maxMonth.setDate(1);
+      maxMonth.setHours(0, 0, 0, 0);
+      
+      // Проверяем, можно ли перейти назад
+      const canGoPrev = this.displayMonth > currentMonth;
+      
+      // Проверяем, можно ли перейти вперед
+      const canGoNext = this.displayMonth < maxMonth;
+      
+      prevBtn.disabled = !canGoPrev;
+      nextBtn.disabled = !canGoNext;
+      
+      prevBtn.classList.toggle('disabled', !canGoPrev);
+      nextBtn.classList.toggle('disabled', !canGoNext);
+    }
+  }
+  
+  getMonthName(month) {
+    const months = [
+      'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+      'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+    ];
+    return months[month];
+  }
+  
+  formatDate(date) {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
+}
+
 class PetsQuiz {
   constructor() {
     this.currentStep = 1;
@@ -16,11 +428,30 @@ class PetsQuiz {
     // Переменные для найденных продуктов
     this.suitableProducts = [];
     this.distributedProducts = [];
+    
+    // Переменная для выбранной даты доставки
+    this.selectedDeliveryDate = null;
+    
+    // Инициализируем попап выбора даты доставки
+    this.deliveryDatePopup = null;
   }
 
   init() {
     this.bindEvents();
     this.updateProgress();
+    this.initDeliveryDatePopup();
+  }
+  
+  initDeliveryDatePopup() {
+    // Инициализируем попап выбора даты доставки
+    this.deliveryDatePopup = new DeliveryDatePopup();
+    
+    // Устанавливаем обработчик подтверждения выбора даты
+    this.deliveryDatePopup.setOnConfirm((deliveryData) => {
+      this.selectedDeliveryDate = deliveryData.date;
+      this.selectedDeliveryTime = deliveryData.time;
+      this.proceedToAddToCart();
+    });
   }
 
   bindEvents() {
@@ -218,7 +649,7 @@ class PetsQuiz {
     const btnAddToCart = document.getElementById('btn-add-to-cart');
     if (btnAddToCart) {
       btnAddToCart.addEventListener('click', () => {
-        this.addToCart();
+        this.showDeliveryDatePopup();
       });
     }
   }
@@ -657,14 +1088,31 @@ class PetsQuiz {
     }
   }
 
-  addToCart() {
+  showDeliveryDatePopup() {
     // Проверяем, есть ли распределенные продукты
     if (!this.distributedProducts || this.distributedProducts.length === 0) {
       alert('Нет доступных продуктов для добавления в корзину');
       return;
     }
-
+    
+    // Показываем попап выбора даты доставки
+    if (this.deliveryDatePopup) {
+      this.deliveryDatePopup.open();
+    } else {
+      // Если попап не инициализирован, добавляем в корзину без даты
+      console.warn('Delivery date popup not initialized, adding to cart without date');
+      this.proceedToAddToCart();
+    }
+  }
+  
+  proceedToAddToCart() {
     console.log('=== ДОБАВЛЕНИЕ В КОРЗИНУ ===');
+    if (this.selectedDeliveryDate) {
+      console.log('Выбранная дата доставки:', this.deliveryDatePopup.formatDate(this.selectedDeliveryDate));
+    }
+    if (this.selectedDeliveryTime) {
+      console.log('Выбранное время доставки:', this.selectedDeliveryTime);
+    }
     
     // Подготавливаем данные для корзины
     const cartItems = this.distributedProducts.map((product, index) => {
@@ -702,13 +1150,34 @@ class PetsQuiz {
       // Используем variantId как ключ для корзины
       cartData[item.variantId] = item.quantity;
       
-      // Создаем комментарий для каждого товара
-      const productComment = `${item.productTitle} (${item.quantity} шт. × ${item.pricePerPackage} руб. = ${item.totalPrice} руб.)`;
+      // Создаем комментарий для каждого товара с датой доставки
+      let productComment = `${item.productTitle} (${item.quantity} шт. × ${item.pricePerPackage} руб. = ${item.totalPrice} руб.)`;
+      
+      // Добавляем дату и время доставки в комментарий к товару, если они выбраны
+      if (this.selectedDeliveryDate) {
+        const deliveryDateStr = this.deliveryDatePopup.formatDate(this.selectedDeliveryDate);
+        let deliveryInfo = `Дата доставки: ${deliveryDateStr}`;
+        if (this.selectedDeliveryTime) {
+          deliveryInfo += `, время: ${this.selectedDeliveryTime}`;
+        }
+        productComment += ` | ${deliveryInfo}`;
+      }
+      
       comments[item.variantId] = productComment;
     });
 
     // Добавляем общий комментарий к заказу
-    const generalComment = `Рацион для питомца: ${this.calculationDetails.petType}, ${this.calculationDetails.weight}. ${this.calculationDetails.dailyAmount}, ${this.calculationDetails.weeklyAmount}. ${this.calculationDetails.packaging}, ${this.calculationDetails.totalWeight}. ${this.calculationDetails.excessAmount}. ${this.excludedAllergens}.`;
+    let generalComment = `Рацион для питомца: ${this.calculationDetails.petType}, ${this.calculationDetails.weight}. ${this.calculationDetails.dailyAmount}, ${this.calculationDetails.weeklyAmount}. ${this.calculationDetails.packaging}, ${this.calculationDetails.totalWeight}. ${this.calculationDetails.excessAmount}. ${this.excludedAllergens}.`;
+    
+    // Добавляем дату и время доставки в общий комментарий, если они выбраны
+    if (this.selectedDeliveryDate) {
+      const deliveryDateStr = this.deliveryDatePopup.formatDate(this.selectedDeliveryDate);
+      let deliveryInfo = `Дата доставки: ${deliveryDateStr}`;
+      if (this.selectedDeliveryTime) {
+        deliveryInfo += `, время: ${this.selectedDeliveryTime}`;
+      }
+      generalComment += ` ${deliveryInfo}.`;
+    }
 
     console.log('Данные для корзины:', cartData);
     console.log('Комментарии:', comments);
@@ -872,6 +1341,8 @@ class PetsQuiz {
     this.dietResults = null;
     this.suitableProducts = [];
     this.distributedProducts = [];
+    this.selectedDeliveryDate = null;
+    this.selectedDeliveryTime = null;
     
     this.showStep(1);
     
@@ -927,4 +1398,7 @@ class PetsQuiz {
 document.addEventListener('DOMContentLoaded', () => {
   const petsQuiz = new PetsQuiz();
   petsQuiz.init();
+  
+  // Делаем экземпляр доступным глобально для попапа
+  window.petsQuiz = petsQuiz;
 });
