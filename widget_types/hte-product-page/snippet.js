@@ -5,7 +5,6 @@ EventBus.subscribe('change_quantity:insales:product', function (data) {
   totalPrice.textContent = data.action.quantity.current * data.action.price + ' ₽';
 }); 
 
-
 // Product Card JavaScript - Component Version
 
 // Функция инициализации слайдера
@@ -200,25 +199,39 @@ function formatDateForDelivery(date) {
 
 // Функция для получения ближайшей доступной даты доставки
 function getNearestDeliveryDate() {
+  // Получаем график доставки из конфигурации
+  const deliverySchedule = window.PRODUCT_CONFIG?.deliverySchedule || window.PROGRAM_CONFIG?.deliverySchedule || 'every-day';
+  
+  // Получаем время из глобальной переменной (не реальное время пользователя)
   const currentTime = window.currentTime ? new Date(window.currentTime) : new Date();
   
+  // Определяем время заказа (часы и минуты) из глобального времени
   const globalHour = currentTime.getHours();
   const globalMinutes = currentTime.getMinutes();
   const globalTimeInMinutes = globalHour * 60 + globalMinutes;
   
+  // Время дедлайна для заказа (13:30 = 13 * 60 + 30 = 810 минут)
   const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
   
   let deliveryDate;
   
   if (globalTimeInMinutes < deadlineTimeInMinutes) {
+    // Если заказ до 13:30 - доставка на следующий день
     deliveryDate = new Date(currentTime);
     deliveryDate.setDate(currentTime.getDate() + 1);
   } else {
+    // Если заказ после 13:30 - доставка через день
     deliveryDate = new Date(currentTime);
     deliveryDate.setDate(currentTime.getDate() + 2);
   }
   
+  // Устанавливаем время в 00:00:00 для корректного сравнения дат
   deliveryDate.setHours(0, 0, 0, 0);
+  
+  // Если график "через день", корректируем дату
+  if (deliverySchedule === 'every-other-day') {
+    // График "через день" - дата уже корректна
+  }
   
   return deliveryDate;
 }
@@ -233,19 +246,7 @@ function renderTimeSlots() {
     { value: '06:00-07:00', label: '06:00 - 07:00' },
     { value: '07:00-08:00', label: '07:00 - 08:00' },
     { value: '08:00-09:00', label: '08:00 - 09:00' },
-    { value: '09:00-10:00', label: '09:00 - 10:00' },
-    { value: '10:00-11:00', label: '10:00 - 11:00' },
-    { value: '11:00-12:00', label: '11:00 - 12:00' },
-    { value: '12:00-13:00', label: '12:00 - 13:00' },
-    { value: '13:00-14:00', label: '13:00 - 14:00' },
-    { value: '14:00-15:00', label: '14:00 - 15:00' },
-    { value: '15:00-16:00', label: '15:00 - 16:00' },
-    { value: '16:00-17:00', label: '16:00 - 17:00' },
-    { value: '17:00-18:00', label: '17:00 - 18:00' },
-    { value: '18:00-19:00', label: '18:00 - 19:00' },
-    { value: '19:00-20:00', label: '19:00 - 20:00' },
-    { value: '20:00-21:00', label: '20:00 - 21:00' },
-    { value: '21:00-22:00', label: '21:00 - 22:00' }
+    { value: '09:00-10:00', label: '09:00 - 10:00' }
   ];
 
   // Очищаем существующие слоты
@@ -355,7 +356,7 @@ function updateAddToCartButtonState() {
 function generateOrderInfoString() {
   const parts = [];
   
-  // 1. Даты доставки
+  // 1. Даты доставки - передаем массив всех дат в диапазоне
   let deliveryDatesText = 'Не выбрано';
   let deliveryDatesArray = [];
   
@@ -369,11 +370,8 @@ function generateOrderInfoString() {
     
     deliveryDatesArray = formattedDates;
     
-    if (formattedDates.length === 1) {
-      deliveryDatesText = formattedDates[0];
-    } else {
-      deliveryDatesText = `${formattedDates[0]} - ${formattedDates[formattedDates.length - 1]}`;
-    }
+    // Передаем массив всех дат в диапазоне
+    deliveryDatesText = `[${formattedDates.join(', ')}]`;
   }
   parts.push(`Даты доставки: ${deliveryDatesText}`);
   
@@ -400,6 +398,16 @@ function generateOrderInfoString() {
     }
   }
   parts.push(`Время доставки: ${deliveryTimeText}`);
+  
+  // 4. Информация о количестве товара
+  const quantityPerDay = document.querySelector('[data-quantity-value]') ? 
+    parseInt(document.querySelector('[data-quantity-value]').textContent) || 1 : 1;
+  const deliveryDaysCount = calculateDeliveryDaysCount();
+  const totalQuantity = quantityPerDay * deliveryDaysCount;
+  
+  parts.push(`Количество в день: ${quantityPerDay} шт`);
+  parts.push(`Количество дней доставки: ${deliveryDaysCount}`);
+  parts.push(`Итоговое количество: ${totalQuantity} шт`);
   
   // Объединяем все части с разделителем "|"
   return parts.join('|');
@@ -637,6 +645,18 @@ function initQuantityPopup() {
         commentInput.value = orderInfoString;
       }
       
+      // Рассчитываем итоговое количество товара
+      const totalQuantity = calculateTotalQuantity();
+      
+      // Находим поле quantity в скрытой форме и устанавливаем итоговое количество
+      const quantityInput = form.querySelector('input[name="quantity"]');
+      if (quantityInput) {
+        quantityInput.value = totalQuantity;
+        console.log(`✅ Установлено итоговое количество: ${totalQuantity} шт`);
+      } else {
+        console.log('❌ Поле quantity не найдено в форме');
+      }
+      
       // Находим кнопку с id addToCartBtn в форме
       const addToCartBtn = form.querySelector('#addToCartBtn');
       if (!addToCartBtn) {
@@ -857,16 +877,70 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       initProductSlider();
       initQuantityPopup();
+      updateDeliveryInfo();
     } catch (error) {
       console.error('Ошибка инициализации:', error);
     }
   }, 100);
 });
 
+// Функция для расчета количества дней доставки
+function calculateDeliveryDaysCount() {
+  if (!window.selectedDeliveryDates || window.selectedDeliveryDates.length === 0) {
+    return 1; // По умолчанию 1 день
+  }
+  
+  return window.selectedDeliveryDates.length;
+}
+
+// Функция для расчета итогового количества товара
+function calculateTotalQuantity() {
+  // Получаем количество товара в день из правого блока
+  const quantityValueElement = document.querySelector('[data-quantity-value]');
+  const quantityPerDay = quantityValueElement ? parseInt(quantityValueElement.textContent) || 1 : 1;
+  
+  // Получаем количество дней доставки
+  const deliveryDaysCount = calculateDeliveryDaysCount();
+  
+  // Итоговое количество = количество в день × количество дней доставки
+  const totalQuantity = quantityPerDay * deliveryDaysCount;
+  
+  console.log(`📊 Расчет количества: ${quantityPerDay} шт/день × ${deliveryDaysCount} дней = ${totalQuantity} шт`);
+  
+  return totalQuantity;
+}
+
+// Функция для обновления информации о доставке
+function updateDeliveryInfo() {
+  const deliveryInfoElement = document.querySelector('.product-delivery-info');
+  if (!deliveryInfoElement) {
+    console.log('❌ Элемент .product-delivery-info не найден');
+    return;
+  }
+
+  let deliveryText = '';
+
+  // Получаем ближайшую доступную дату доставки
+  const nearestDate = getNearestDeliveryDate();
+  const formattedDate = formatDateForDelivery(nearestDate);
+  
+  // Формируем текст о ближайшей доставке
+  deliveryText += `Ближайшая доставка: ${formattedDate}`;
+
+  // Показываем время доставки с 6:00 до 10:00
+  deliveryText += ' с 6:00 до 10:00';
+
+  // Обновляем текст
+  deliveryInfoElement.textContent = deliveryText;
+}
+
 // Делаем функции глобально доступными
 window.initQuantityPopup = initQuantityPopup;
 window.generateOrderInfoString = generateOrderInfoString;
 window.validateDeliverySelection = validateDeliverySelection;
 window.updateAddToCartButtonState = updateAddToCartButtonState;
+window.updateDeliveryInfo = updateDeliveryInfo;
+window.calculateDeliveryDaysCount = calculateDeliveryDaysCount;
+window.calculateTotalQuantity = calculateTotalQuantity;
 
   

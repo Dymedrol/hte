@@ -118,7 +118,7 @@ class SubscriptionPopupAutoManager {
     this.setupCloseTracking();
     
     // Настраиваем валидацию формы (работает всегда)
-    // this.setupFormValidation();
+    this.setupFormValidation();
     
     // Настраиваем открытие по ссылке
     this.setupSubscriptionLink();
@@ -285,6 +285,141 @@ class SubscriptionPopupAutoManager {
     }
     
     return result;
+  }
+
+  // Настраивает валидацию формы и отправку на API
+  setupFormValidation() {
+    const submitBtn = document.getElementById('subscriptionPopupBtn');
+    const emailInput = document.getElementById('subscriptionEmailInput');
+    const agreementCheckbox = document.getElementById('subscriptionAgreement');
+    
+    if (!submitBtn || !emailInput || !agreementCheckbox) return;
+
+    // Обработчик отправки формы
+    submitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.handleFormSubmit();
+    });
+
+    // Обработчик нажатия Enter в поле email
+    emailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.handleFormSubmit();
+      }
+    });
+
+    console.log('✅ Валидация формы настроена');
+  }
+
+  // Обрабатывает отправку формы
+  handleFormSubmit() {
+    const emailInput = document.getElementById('subscriptionEmailInput');
+    const agreementCheckbox = document.getElementById('subscriptionAgreement');
+    const submitBtn = document.getElementById('subscriptionPopupBtn');
+    
+    if (!emailInput || !agreementCheckbox || !submitBtn) return;
+
+    const email = emailInput.value.trim();
+    const isAgreed = agreementCheckbox.checked;
+
+    // Валидация email
+    if (!this.isValidEmail(email)) {
+      this.showInputError(emailInput, 'Введите корректный email адрес');
+      return;
+    }
+
+    // Проверка согласия
+    if (!isAgreed) {
+      this.showCheckboxBubble();
+      return;
+    }
+
+    // Отправляем запрос на API
+    this.submitToMindboxAPI(email);
+  }
+
+  // Валидирует email
+  isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Показывает ошибку в поле ввода
+  showInputError(input, message) {
+    input.style.borderColor = '#ff4444';
+    input.style.boxShadow = '0 0 0 2px rgba(255, 68, 68, 0.2)';
+    
+    // Убираем ошибку через 3 секунды
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
+    }, 3000);
+    
+    console.log('❌ Ошибка валидации:', message);
+  }
+
+  // Отправляет данные на Mindbox API
+  async submitToMindboxAPI(email) {
+    const submitBtn = document.getElementById('subscriptionPopupBtn');
+    
+    if (!submitBtn) return;
+
+    // Показываем состояние загрузки
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Отправляем...';
+    submitBtn.disabled = true;
+
+    try {
+      const response = await fetch('https://api.s.mindbox.ru/v3/operations/async?endpointId=HowtogreenRu&operation=SubscribeForm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer: {
+            email: email,
+            subscriptions: [
+              {
+                pointOfContact: "Email"
+              }
+            ]
+          }
+        })
+      });
+
+      if (response.ok) {
+        console.log('✅ Подписка успешно отправлена на Mindbox API');
+        // Запоминаем, что пользователь подписался
+        this.rememberUserSubscribed();
+        // Показываем экран благодарности
+        this.showThanksScreen();
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('❌ Ошибка отправки на Mindbox API:', error);
+      this.showApiError();
+    } finally {
+      // Восстанавливаем кнопку
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  }
+
+  // Показывает ошибку API
+  showApiError() {
+    const submitBtn = document.getElementById('subscriptionPopupBtn');
+    if (submitBtn) {
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Ошибка, попробуйте еще раз';
+      submitBtn.style.backgroundColor = '#ff4444';
+      
+      setTimeout(() => {
+        submitBtn.textContent = originalText;
+        submitBtn.style.backgroundColor = '';
+      }, 3000);
+    }
   }
 
   // Настраивает открытие по ссылке
