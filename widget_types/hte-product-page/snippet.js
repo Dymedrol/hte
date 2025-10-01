@@ -177,4 +177,696 @@ window.ProductSlider = {
   setupSlider: setupSlider
 };
 
+// ===== DELIVERY TIME POPUP FUNCTIONALITY =====
+
+// Глобальные переменные для попапа
+let calendarPrice = null;
+let calendarDaysCount = 0;
+let deliveryDates = [];
+let selectedDeliveryTime = null;
+
+// Функция для форматирования даты в формате "18 апреля"
+function formatDateForDelivery(date) {
+  const day = date.getDate();
+  const month = date.getMonth();
+  
+  const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ];
+  
+  return `${day} ${months[month]}`;
+}
+
+// Функция для получения ближайшей доступной даты доставки
+function getNearestDeliveryDate() {
+  const currentTime = window.currentTime ? new Date(window.currentTime) : new Date();
+  
+  const globalHour = currentTime.getHours();
+  const globalMinutes = currentTime.getMinutes();
+  const globalTimeInMinutes = globalHour * 60 + globalMinutes;
+  
+  const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
+  
+  let deliveryDate;
+  
+  if (globalTimeInMinutes < deadlineTimeInMinutes) {
+    deliveryDate = new Date(currentTime);
+    deliveryDate.setDate(currentTime.getDate() + 1);
+  } else {
+    deliveryDate = new Date(currentTime);
+    deliveryDate.setDate(currentTime.getDate() + 2);
+  }
+  
+  deliveryDate.setHours(0, 0, 0, 0);
+  
+  return deliveryDate;
+}
+
+// Функция для рендеринга временных слотов
+function renderTimeSlots() {
+  const timeList = document.getElementById('timeList');
+  if (!timeList) return;
+
+  // Стандартные временные слоты для товаров
+  const defaultTimeSlots = [
+    { value: '06:00-07:00', label: '06:00 - 07:00' },
+    { value: '07:00-08:00', label: '07:00 - 08:00' },
+    { value: '08:00-09:00', label: '08:00 - 09:00' },
+    { value: '09:00-10:00', label: '09:00 - 10:00' },
+    { value: '10:00-11:00', label: '10:00 - 11:00' },
+    { value: '11:00-12:00', label: '11:00 - 12:00' },
+    { value: '12:00-13:00', label: '12:00 - 13:00' },
+    { value: '13:00-14:00', label: '13:00 - 14:00' },
+    { value: '14:00-15:00', label: '14:00 - 15:00' },
+    { value: '15:00-16:00', label: '15:00 - 16:00' },
+    { value: '16:00-17:00', label: '16:00 - 17:00' },
+    { value: '17:00-18:00', label: '17:00 - 18:00' },
+    { value: '18:00-19:00', label: '18:00 - 19:00' },
+    { value: '19:00-20:00', label: '19:00 - 20:00' },
+    { value: '20:00-21:00', label: '20:00 - 21:00' },
+    { value: '21:00-22:00', label: '21:00 - 22:00' }
+  ];
+
+  // Очищаем существующие слоты
+  timeList.innerHTML = '';
+
+  // Рендерим каждый временной слот
+  defaultTimeSlots.forEach(slot => {
+    const timeItem = document.createElement('div');
+    timeItem.className = 'time-item';
+    timeItem.setAttribute('data-time', slot.value);
+    
+    const timeSlot = document.createElement('span');
+    timeSlot.className = 'time-slot';
+    timeSlot.textContent = slot.label;
+    
+    timeItem.appendChild(timeSlot);
+    timeList.appendChild(timeItem);
+  });
+
+  // Переинициализируем обработчики событий для новых элементов
+  initTimeSlotEventListeners();
+}
+
+// Функция для инициализации обработчиков событий для временных слотов
+function initTimeSlotEventListeners() {
+  const timeItems = document.querySelectorAll('.time-item');
+  const deliveryTimeInput = document.getElementById('deliveryTimeInput');
+  const deliveryTimeDropdown = document.getElementById('deliveryTimeDropdown');
+  const inputFieldWithIcon = deliveryTimeInput?.closest('.input-field.with-icon');
+
+  if (timeItems) {
+    timeItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const timeValue = item.getAttribute('data-time');
+        
+        // Убираем класс selected со всех временных слотов
+        document.querySelectorAll('.time-slot').forEach(slot => {
+          slot.classList.remove('selected');
+        });
+        
+        // Добавляем класс selected к выбранному временному слоту
+        const timeSlot = item.querySelector('.time-slot');
+        if (timeSlot) {
+          timeSlot.classList.add('selected');
+        }
+        
+        if (deliveryTimeInput) {
+          deliveryTimeInput.value = timeValue;
+          selectedDeliveryTime = timeValue;
+          window.selectedDeliveryTime = selectedDeliveryTime;
+        }
+        
+        // Обновляем состояние кнопки добавления в корзину
+        updateAddToCartButtonState();
+        
+        // Закрываем дроп-даун
+        if (deliveryTimeDropdown) {
+          deliveryTimeDropdown.classList.remove('active');
+        }
+        if (inputFieldWithIcon) {
+          inputFieldWithIcon.classList.remove('active');
+        }
+      });
+    });
+  }
+}
+
+// Функция для проверки валидности выбора даты и времени доставки
+function validateDeliverySelection() {
+  const startDateInput = document.getElementById('startDateInput');
+  const hasDateSelected = startDateInput && startDateInput.value.trim() !== '';
+  
+  const deliveryTimeInput = document.getElementById('deliveryTimeInput');
+  const hasTimeSelected = deliveryTimeInput && deliveryTimeInput.value.trim() !== '';
+  
+  const hasGlobalTime = window.selectedDeliveryTime && window.selectedDeliveryTime.trim() !== '';
+  
+  const selectedTimeSlot = document.querySelector('.time-slot.selected');
+  const hasTimeSlotSelected = selectedTimeSlot !== null;
+  
+  const isValid = hasDateSelected && (hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
+  
+  return isValid;
+}
+
+// Функция для обновления состояния кнопки добавления в корзину
+function updateAddToCartButtonState() {
+  const addToCartPopupBtn = document.getElementById('addToCartPopupBtn');
+  if (!addToCartPopupBtn) return;
+  
+  const isValid = validateDeliverySelection();
+  
+  if (isValid) {
+    addToCartPopupBtn.disabled = false;
+    addToCartPopupBtn.classList.remove('disabled');
+    addToCartPopupBtn.style.opacity = '1';
+    addToCartPopupBtn.style.cursor = 'pointer';
+  } else {
+    addToCartPopupBtn.disabled = true;
+    addToCartPopupBtn.classList.add('disabled');
+    addToCartPopupBtn.style.opacity = '0.5';
+    addToCartPopupBtn.style.cursor = 'not-allowed';
+  }
+}
+
+// Функция для формирования строки с информацией о заказе
+function generateOrderInfoString() {
+  const parts = [];
+  
+  // 1. Даты доставки
+  let deliveryDatesText = 'Не выбрано';
+  let deliveryDatesArray = [];
+  
+  if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
+    const formattedDates = window.selectedDeliveryDates.map(date => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    });
+    
+    deliveryDatesArray = formattedDates;
+    
+    if (formattedDates.length === 1) {
+      deliveryDatesText = formattedDates[0];
+    } else {
+      deliveryDatesText = `${formattedDates[0]} - ${formattedDates[formattedDates.length - 1]}`;
+    }
+  }
+  parts.push(`Даты доставки: ${deliveryDatesText}`);
+  
+  // 2. Массив выбранных дат (для обработки на сервере)
+  if (deliveryDatesArray.length > 0) {
+    parts.push(`Количество дней: ${deliveryDatesArray.length}`);
+    parts.push(`Выбранные даты: [${deliveryDatesArray.join(', ')}]`);
+    
+    // Добавляем ISO формат дат для удобства обработки
+    const isoDates = window.selectedDeliveryDates.map(date => {
+      return date.toISOString().split('T')[0]; // YYYY-MM-DD формат
+    });
+    parts.push(`ISO даты: [${isoDates.join(', ')}]`);
+  }
+  
+  // 3. Время доставки
+  let deliveryTimeText = 'Не выбрано';
+  if (window.selectedDeliveryTime) {
+    deliveryTimeText = window.selectedDeliveryTime;
+  } else {
+    const selectedTimeSlot = document.querySelector('.time-slot.selected');
+    if (selectedTimeSlot) {
+      deliveryTimeText = selectedTimeSlot.textContent.trim();
+    }
+  }
+  parts.push(`Время доставки: ${deliveryTimeText}`);
+  
+  // Объединяем все части с разделителем "|"
+  return parts.join('|');
+}
+
+// Функция для сброса всех выбранных дат в поп-апа
+function resetPopupDates() {
+  calendarDaysCount = 0;
+  deliveryDates = [];
+  selectedDeliveryTime = null;
+  
+  if (window.calendarDaysCount !== undefined) {
+    window.calendarDaysCount = 0;
+  }
+  if (window.selectedDeliveryDates !== undefined) {
+    window.selectedDeliveryDates = [];
+  }
+  if (window.selectedDeliveryTime !== undefined) {
+    window.selectedDeliveryTime = null;
+  }
+  
+  const startDateInput = document.getElementById('startDateInput');
+  const endDateInput = document.getElementById('endDateInput');
+  const deliveryTimeInput = document.getElementById('deliveryTimeInput');
+  
+  if (startDateInput) startDateInput.value = '';
+  if (endDateInput) endDateInput.value = '';
+  if (deliveryTimeInput) deliveryTimeInput.value = '';
+  
+  updateAddToCartButtonState();
+  
+  const calendarDays = document.querySelectorAll('.calendar-day');
+  calendarDays.forEach(day => {
+    day.classList.remove('selected', 'range-start', 'range-end', 'range-middle', 'range-preview', 'excluded');
+  });
+  
+  const timeSlots = document.querySelectorAll('.time-slot');
+  timeSlots.forEach(slot => {
+    slot.classList.remove('selected');
+  });
+}
+
+// Функция инициализации попапа
+function initQuantityPopup() {
+  if (window.quantityPopupInitialized) {
+    return;
+  }
+  
+  const popup = document.getElementById('quantityPopup');
+  if (!popup) {
+    setTimeout(initQuantityPopup, 100);
+    return;
+  }
+  
+  const addToCartBtn = document.querySelector('.product-add-to-cart-btn');
+  const closeBtn = document.getElementById('popupClose');
+  const overlay = popup.querySelector('.popup-overlay');
+
+  if (!addToCartBtn) {
+    setTimeout(initQuantityPopup, 100);
+    return;
+  }
+
+  // Открытие поп-апа по кнопке "Добавить в корзину"
+  addToCartBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Получаем актуальную цену товара
+    const totalPriceElement = document.querySelector('[data-product-price]');
+    if (totalPriceElement) {
+      const currentPrice = totalPriceElement.textContent.trim();
+      calendarPrice = currentPrice.replace('₽', '').trim();
+    }
+    
+    // Сбрасываем даты при открытии поп-апа
+    resetPopupDates();
+    
+    popup.classList.add('active');
+  });
+  
+  // Рендерим временные слоты при инициализации
+  renderTimeSlots();
+  
+  // Функциональность календарей в попапе
+  const startDateInput = document.getElementById('startDateInput');
+  const startDateCalendar = document.getElementById('startDateCalendar');
+  const endDateInput = document.getElementById('endDateInput');
+  
+  if (startDateInput && startDateCalendar) {
+    startDateInput.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const isActive = startDateCalendar.classList.contains('active');
+      
+      if (isActive) {
+        startDateCalendar.classList.remove('active');
+      } else {
+        startDateCalendar.classList.add('active');
+        startDateCalendar.setAttribute('data-field-type', 'start');
+        renderSimpleCalendar(startDateCalendar, 'start');
+      }
+    });
+  }
+  
+  if (endDateInput && startDateCalendar) {
+    endDateInput.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const isActive = startDateCalendar.classList.contains('active');
+      
+      if (isActive) {
+        startDateCalendar.classList.remove('active');
+      } else {
+        startDateCalendar.classList.add('active');
+        startDateCalendar.setAttribute('data-field-type', 'end');
+        renderSimpleCalendar(startDateCalendar, 'end');
+      }
+    });
+  }
+  
+  // Обработчики навигации календаря
+  if (startDateCalendar) {
+    const prevBtn = startDateCalendar.querySelector('.calendar-nav-btn.prev-btn');
+    const nextBtn = startDateCalendar.querySelector('.calendar-nav-btn.next-btn');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateCalendarMonth(startDateCalendar, -1);
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateCalendarMonth(startDateCalendar, 1);
+      });
+    }
+    
+    // Обновляем состояние кнопок навигации
+    updateCalendarNavigationButtons(startDateCalendar);
+  }
+  
+  // Функциональность дроп-дауна времени доставки
+  const deliveryTimeInput = document.getElementById('deliveryTimeInput');
+  const deliveryTimeDropdown = document.getElementById('deliveryTimeDropdown');
+  const inputFieldWithIcon = deliveryTimeInput?.closest('.input-field.with-icon');
+  
+  if (deliveryTimeInput && deliveryTimeDropdown) {
+    deliveryTimeInput.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const isActive = deliveryTimeDropdown.classList.contains('active');
+      
+      if (isActive) {
+        deliveryTimeDropdown.classList.remove('active');
+        inputFieldWithIcon?.classList.remove('active');
+      } else {
+        deliveryTimeDropdown.classList.add('active');
+        inputFieldWithIcon?.classList.add('active');
+      }
+    });
+  }
+
+  // Закрытие дроп-дауна времени доставки при клике вне его
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.delivery-time-dropdown') && !e.target.closest('.input-field.with-icon')) {
+      document.querySelectorAll('.delivery-time-dropdown.active').forEach(dropdown => {
+        dropdown.classList.remove('active');
+        dropdown.closest('.input-field.with-icon')?.classList.remove('active');
+      });
+    }
+  });
+
+  // Закрытие поп-апа по клику на overlay или кнопку закрытия
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      popup.classList.remove('active');
+      resetPopupDates();
+    });
+  }
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      popup.classList.remove('active');
+      resetPopupDates();
+    });
+  }
+  
+  // Закрытие по Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && popup.classList.contains('active')) {
+      popup.classList.remove('active');
+      resetPopupDates();
+    }
+  });
+
+  // Закрытие календаря при клике вне его
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.calendar-dropdown') && !e.target.closest('.input-field')) {
+      document.querySelectorAll('.calendar-dropdown.active').forEach(calendar => {
+        calendar.classList.remove('active');
+      });
+    }
+  });
+
+  // Добавляем обработчик клика для кнопки "Добавить в корзину" в попапе
+  const addToCartPopupBtn = document.getElementById('addToCartPopupBtn');
+  if (addToCartPopupBtn) {
+    addToCartPopupBtn.addEventListener('click', () => {
+      // Проверяем валидность выбора даты и времени
+      if (!validateDeliverySelection()) {
+        alert('Пожалуйста, выберите дату и время доставки перед добавлением товара в корзину.');
+        return;
+      }
+      
+      // Формируем строку с информацией о заказе
+      const orderInfoString = generateOrderInfoString();
+      
+      // Находим форму hte-product-form
+      const form = document.getElementById('hte-product-form');
+      if (!form) {
+        console.log('❌ Форма hte-product-form не найдена');
+        return;
+      }
+      
+      // Находим поле comment и устанавливаем значение
+      const commentInput = form.querySelector('input[name="comment"]');
+      if (commentInput) {
+        commentInput.value = orderInfoString;
+      }
+      
+      // Находим кнопку с id addToCartBtn в форме
+      const addToCartBtn = form.querySelector('#addToCartBtn');
+      if (!addToCartBtn) {
+        console.log('❌ Кнопка с id addToCartBtn не найдена в форме');
+        return;
+      }
+      
+      // Программно кликаем по кнопке добавления в корзину
+      addToCartBtn.click();
+      
+      // Закрываем попап
+      popup.classList.remove('active');
+      resetPopupDates();
+    });
+  }
+  
+  // Инициализируем состояние кнопки добавления в корзину
+  updateAddToCartButtonState();
+  
+  window.quantityPopupInitialized = true;
+}
+
+// Переменная для хранения текущего отображаемого месяца
+let currentDisplayMonth = null;
+let currentDisplayYear = null;
+
+// Функция навигации по месяцам
+function navigateCalendarMonth(calendarElement, direction) {
+  if (currentDisplayMonth === null || currentDisplayYear === null) {
+    const currentDate = window.currentTime ? new Date(window.currentTime) : new Date();
+    currentDisplayMonth = currentDate.getMonth();
+    currentDisplayYear = currentDate.getFullYear();
+  }
+  
+  currentDisplayMonth += direction;
+  
+  // Обработка перехода через границы года
+  if (currentDisplayMonth < 0) {
+    currentDisplayMonth = 11;
+    currentDisplayYear--;
+  } else if (currentDisplayMonth > 11) {
+    currentDisplayMonth = 0;
+    currentDisplayYear++;
+  }
+  
+  // Получаем тип поля из атрибута
+  const fieldType = calendarElement.getAttribute('data-field-type') || 'start';
+  
+  renderSimpleCalendar(calendarElement, fieldType);
+}
+
+// Функция для обновления состояния кнопок навигации
+function updateCalendarNavigationButtons(calendarElement) {
+  const prevBtn = calendarElement.querySelector('.calendar-nav-btn.prev-btn');
+  const nextBtn = calendarElement.querySelector('.calendar-nav-btn.next-btn');
+  
+  if (!prevBtn || !nextBtn) return;
+  
+  const currentDate = window.currentTime ? new Date(window.currentTime) : new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  
+  // Инициализируем, если не установлены
+  if (currentDisplayMonth === null || currentDisplayYear === null) {
+    currentDisplayMonth = currentMonth;
+    currentDisplayYear = currentYear;
+  }
+  
+  // Проверяем, можно ли перейти назад (не раньше текущего месяца)
+  const canGoPrev = currentDisplayYear > currentYear || 
+                   (currentDisplayYear === currentYear && currentDisplayMonth > currentMonth);
+  
+  // Проверяем, можно ли перейти вперед (не более чем на 6 месяцев вперед)
+  const maxMonth = new Date(currentDate);
+  maxMonth.setMonth(maxMonth.getMonth() + 6);
+  const canGoNext = currentDisplayYear < maxMonth.getFullYear() || 
+                   (currentDisplayYear === maxMonth.getFullYear() && currentDisplayMonth < maxMonth.getMonth());
+  
+  // Обновляем состояние кнопок
+  prevBtn.disabled = !canGoPrev;
+  nextBtn.disabled = !canGoNext;
+  
+  prevBtn.classList.toggle('disabled', !canGoPrev);
+  nextBtn.classList.toggle('disabled', !canGoNext);
+}
+
+// Простая функция рендеринга календаря
+function renderSimpleCalendar(calendarElement, fieldType = 'start') {
+  if (!calendarElement) return;
+  
+  const grid = calendarElement.querySelector('.calendar-grid');
+  if (!grid) return;
+  
+  // Очищаем календарь, оставляя заголовки
+  const headers = grid.querySelectorAll('.calendar-day-header');
+  grid.innerHTML = '';
+  headers.forEach(header => grid.appendChild(header));
+  
+  // Инициализируем текущий месяц, если не установлен
+  if (currentDisplayMonth === null || currentDisplayYear === null) {
+    const currentDate = window.currentTime ? new Date(window.currentTime) : new Date();
+    currentDisplayMonth = currentDate.getMonth();
+    currentDisplayYear = currentDate.getFullYear();
+  }
+  
+  const year = currentDisplayYear;
+  const month = currentDisplayMonth;
+  
+  // Обновляем заголовок
+  const monthElement = calendarElement.querySelector('.calendar-month');
+  const yearElement = calendarElement.querySelector('.calendar-year');
+  if (monthElement) monthElement.textContent = getMonthName(month);
+  if (yearElement) yearElement.textContent = year;
+  
+  // Первый день месяца
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  
+  // Корректировка для понедельника как первого дня
+  const firstDayOfWeek = firstDay.getDay();
+  const startOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+  
+  // Пустые ячейки
+  for (let i = 0; i < startOffset; i++) {
+    const emptyDay = document.createElement('div');
+    emptyDay.className = 'calendar-day inactive';
+    grid.appendChild(emptyDay);
+  }
+  
+  // Дни месяца
+  for (let day = 1; day <= lastDay.getDate(); day++) {
+    const dayElement = document.createElement('div');
+    const currentDayDate = new Date(year, month, day);
+    
+    // Определяем, доступен ли день для доставки
+    const isDeliveryDay = isDateAvailableForDelivery(currentDayDate);
+    
+    if (isDeliveryDay) {
+      dayElement.className = 'calendar-day active';
+      dayElement.textContent = day;
+      
+      // Добавляем обработчик клика для активных дней
+      dayElement.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedDate = new Date(year, month, day);
+        const formattedDate = `${day} ${getMonthName(month)} ${year}`;
+        
+        if (fieldType === 'start') {
+          const startDateInput = document.getElementById('startDateInput');
+          if (startDateInput) {
+            startDateInput.value = formattedDate;
+          }
+          // Устанавливаем выбранную дату в глобальную переменную
+          window.selectedDeliveryDates = [selectedDate];
+        } else if (fieldType === 'end') {
+          const endDateInput = document.getElementById('endDateInput');
+          if (endDateInput) {
+            endDateInput.value = formattedDate;
+          }
+          // Если есть начальная дата, создаем диапазон
+          if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
+            const startDate = window.selectedDeliveryDates[0];
+            const dates = [];
+            const current = new Date(startDate);
+            while (current <= selectedDate) {
+              dates.push(new Date(current));
+              current.setDate(current.getDate() + 1);
+            }
+            window.selectedDeliveryDates = dates;
+          }
+        }
+        
+        updateAddToCartButtonState();
+        calendarElement.classList.remove('active');
+      });
+    } else {
+      dayElement.className = 'calendar-day inactive';
+      dayElement.textContent = day;
+    }
+    
+    grid.appendChild(dayElement);
+  }
+  
+  // Обновляем состояние кнопок навигации
+  updateCalendarNavigationButtons(calendarElement);
+}
+
+// Функция для проверки доступности даты для доставки
+function isDateAvailableForDelivery(date) {
+  const currentTime = window.currentTime ? new Date(window.currentTime) : new Date();
+  const currentDate = new Date(currentTime);
+  currentDate.setHours(0, 0, 0, 0);
+  
+  // Проверяем, что дата не в прошлом
+  return date >= currentDate;
+}
+
+// Вспомогательные функции
+function getMonthName(month) {
+  const months = [
+    'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+  ];
+  return months[month];
+}
+
+// Инициализация глобальных переменных
+if (!window.selectedDeliveryDates) {
+  window.selectedDeliveryDates = [];
+}
+if (!window.selectedDeliveryTime) {
+  window.selectedDeliveryTime = null;
+}
+
+// Инициализация попапа при загрузке DOM
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    try {
+      initProductSlider();
+      initQuantityPopup();
+    } catch (error) {
+      console.error('Ошибка инициализации:', error);
+    }
+  }, 100);
+});
+
+// Делаем функции глобально доступными
+window.initQuantityPopup = initQuantityPopup;
+window.generateOrderInfoString = generateOrderInfoString;
+window.validateDeliverySelection = validateDeliverySelection;
+window.updateAddToCartButtonState = updateAddToCartButtonState;
+
   

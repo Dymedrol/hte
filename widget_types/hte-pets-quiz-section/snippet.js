@@ -1146,12 +1146,18 @@ class PetsQuiz {
     const cartData = {};
     const comments = {};
 
+    // Генерируем случайный pets-id (от 1 до 10000)
+    const petsId = Math.floor(Math.random() * 10000) + 1;
+    
     cartItems.forEach((item, index) => {
       // Используем variantId как ключ для корзины
       cartData[item.variantId] = item.quantity;
       
       // Создаем комментарий для каждого товара с датой доставки
       let productComment = `${item.productTitle} (${item.quantity} шт. × ${item.pricePerPackage} руб. = ${item.totalPrice} руб.)`;
+      
+      // Добавляем количество товаров и pets-id
+      productComment += ` | количество товаров: ${item.quantity} | pets-id: ${petsId}`;
       
       // Добавляем дату и время доставки в комментарий к товару, если они выбраны
       if (this.selectedDeliveryDate) {
