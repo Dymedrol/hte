@@ -190,7 +190,7 @@
                   </div>
                 </div>
               {% else %}
-                <div class="cart-item {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}cart-item_pets{% endif %}" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}" data-canonical-collection="{{ item.product.canonical_collection.url }}">
+                <div class="cart-item {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}cart-item_pets{% endif %}" data-comment="{{ item.comment }}" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}" data-canonical-collection="{{ item.product.canonical_collection.url }}" data-comment="{{ item.comment }}">
                   <div class="cart-item-content">
                     <div class="cart-item-main">
                       <div class="cart-item-image" style="background-image: url({{ item.variant.first_image.medium_url }});"></div>
@@ -200,6 +200,7 @@
                           <div class="cart-item-header">
                             <div class="cart-item-info">
                               <h2 class="cart-item-title">{{ item.product.title }}</h2>
+                              <div style="display: none;">Комментарий: {{ item.comment }}</div>
                             </div>
                             <button class="remove-item-btn js-item-delete" aria-label="Удалить товар" data-item-delete="{{ item.id }}" type="submit">
                               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
