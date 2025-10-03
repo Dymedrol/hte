@@ -84,7 +84,7 @@
 }
 
 .cart-item_pets {
-    display: none;
+    // display: none;
 }
 
 .cart-item-content {
@@ -1057,6 +1057,20 @@
     .price-row_hide_mobile {
         display: none;
     }
+    
+    /* Стили для обычных товаров на мобильных */
+    .cart-item:not(.cart-item_program):not(.cart-item_pets):not(.cart-item_pets-summary) {
+        .cart-item-bottom {
+            flex-direction: column;
+            gap: var(--spacing-30);
+            margin-top: var(--spacing-20);
+        }
+        
+        .delivery-info,
+        .price-breakdown {
+            width: 100%;
+        }
+    }
 }
 
 /* Address Popup Styles */
@@ -1780,5 +1794,19 @@
                 text-align: right;
             }
         }
+    }
+}
+
+/* Стили для обычных товаров с панелью .cart-item-bottom */
+.cart-item:not(.cart-item_program):not(.cart-item_pets):not(.cart-item_pets-summary) {
+    .cart-item-quantity_base {
+        display: none;
+    }
+    
+    .cart-item-bottom {
+        display: flex;
+        gap: var(--spacing-60);
+        align-items: flex-start;
+        margin-top: var(--spacing-30);
     }
 }

@@ -122,14 +122,34 @@
                             <span class="delivery-label" id="delivery-date-label">Доставка:</span>
                             <span class="delivery-value">
                               {% assign comment_parts = item.comment | split: '|' %}
+                              {% assign delivery_dates_found = false %}
                               {% for part in comment_parts %}
                                 {% if part contains 'Даты доставки:' %}
                                   {% assign date_part = part | split: 'Даты доставки:' %}
                                   {% if date_part.size > 1 %}
-                                    {{ date_part[1] | strip }}
+                                    {% assign date_string = date_part[1] | strip | remove: '[' | remove: ']' %}
+                                    {% assign delivery_dates_found = true %}
+                                    
+                                    {% comment %} Пытаемся найти диапазон дат {% endcomment %}
+                                    {% if date_string contains ' - ' %}
+                                      {% comment %} Уже есть диапазон дат {% endcomment %}
+                                      {{ date_string }}
+                                    {% elsif date_string contains ',' %}
+                                      {% comment %} Несколько дат через запятую - берем первую и последнюю {% endcomment %}
+                                      {% assign dates_array = date_string | split: ',' %}
+                                      {% assign first_date = dates_array.first | strip | remove: '[' | remove: ']' %}
+                                      {% assign last_date = dates_array.last | strip | remove: '[' | remove: ']' %}
+                                      {{ first_date }} - {{ last_date }}
+                                    {% else %}
+                                      {% comment %} Одна дата - показываем как есть {% endcomment %}
+                                      {{ date_string }}
+                                    {% endif %}
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
+                              {% unless delivery_dates_found %}
+                                Даты доставки не указаны
+                              {% endunless %}
                             </span>
                           </div>
                            <div class="delivery-row">
@@ -200,7 +220,7 @@
                           <div class="cart-item-header">
                             <div class="cart-item-info">
                               <h2 class="cart-item-title">{{ item.product.title }}</h2>
-                              <div style="display: none;">Комментарий: {{ item.comment }}</div>
+                              
                             </div>
                             <button class="remove-item-btn js-item-delete" aria-label="Удалить товар" data-item-delete="{{ item.id }}" type="submit">
                               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -208,10 +228,10 @@
                               </svg>
                             </button>
                           </div>
-                          
+                          <div>Комментарий: {{ item.comment }}</div>
                           <div class="cart-item-extra-info">
                             
-                            <div class="cart-item-quantity">
+                            <div class="cart-item-quantity cart-item-quantity_base">
                               <div class="quantity-controls" data-quantity>
                                 <button class="quantity-btn minus" data-quantity-change="-1">-</button>
                                 <div class="quantity-value">
@@ -254,6 +274,125 @@
                               </div>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="cart-item-bottom">
+                      <div class="delivery-info">
+                          <div class="delivery-row">
+                            <div class="info-icon" data-tooltip="Доставка товаров из полезного магазина осуществляется в первый день доставки программы">i</div>
+                            <span class="delivery-label" id="delivery-date-label">Доставка:</span>
+                            <span class="delivery-value">
+                              {% assign comment_parts = item.comment | split: '|' %}
+                              {% assign delivery_dates_found = false %}
+                              {% for part in comment_parts %}
+                                {% if part contains 'Даты доставки:' %}
+                                  {% assign date_part = part | split: 'Даты доставки:' %}
+                                  {% if date_part.size > 1 %}
+                                    {% assign date_string = date_part[1] | strip | remove: '[' | remove: ']' %}
+                                    {% assign delivery_dates_found = true %}
+                                    
+                                    {% comment %} Пытаемся найти диапазон дат {% endcomment %}
+                                    {% if date_string contains ' - ' %}
+                                      {% comment %} Уже есть диапазон дат {% endcomment %}
+                                      {{ date_string }}
+                                    {% elsif date_string contains ',' %}
+                                      {% comment %} Несколько дат через запятую - берем первую и последнюю {% endcomment %}
+                                      {% assign dates_array = date_string | split: ',' %}
+                                      {% assign first_date = dates_array.first | strip | remove: '[' | remove: ']' %}
+                                      {% assign last_date = dates_array.last | strip | remove: '[' | remove: ']' %}
+                                      {{ first_date }} - {{ last_date }}
+                                    {% else %}
+                                      {% comment %} Одна дата - показываем как есть {% endcomment %}
+                                      {{ date_string }}
+                                    {% endif %}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              {% unless delivery_dates_found %}
+                                В первый день доставки программы
+                              {% endunless %}
+                            </span>
+                          </div>
+                           <div class="delivery-row">
+                            <div class="info-icon" data-tooltip="Доставка товаров из полезного магазина осуществляется в первый день доставки программы">i</div>
+                            <span class="delivery-label" id="delivery-time-label">Время:</span>
+                            <span class="delivery-value">
+                              {% assign comment_parts = item.comment | split: '|' %}
+                              {% for part in comment_parts %}
+                                {% if part contains 'Время доставки:' %}
+                                  {% assign time_part = part | split: 'Время доставки:' %}
+                                  {% if time_part.size > 1 %}
+                                    {{ time_part[1] | strip }}
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              {% unless item.comment contains 'Время доставки:' %}
+                                С 6:00 до 10:00
+                              {% endunless %}
+                            </span>
+                          </div>
+                      </div>
+
+                      <div class="price-breakdown">
+                          <div class="price-row price-row_hide_mobile">
+                            <span class="price-label">Товар:</span>
+                            <span class="price-value">
+                              <span class="price-multiplier">
+                                {% comment %} Пытаемся извлечь информацию о количестве в день и днях из комментария {% endcomment %}
+                                {% assign comment_parts = item.comment | split: '|' %}
+                                {% assign items_per_day = 1 %}
+                                {% assign days_count = item.quantity %}
+                                {% assign custom_format_found = false %}
+                                
+                                {% for part in comment_parts %}
+                                  {% if part contains 'Количество в день:' %}
+                                    {% assign items_part = part | split: 'Количество в день:' %}
+                                    {% if items_part.size > 1 %}
+                                      {% assign items_per_day = items_part[1] | strip | plus: 0 %}
+                                      {% assign custom_format_found = true %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% if part contains 'Количество дней:' %}
+                                    {% assign days_part = part | split: 'Количество дней:' %}
+                                    {% if days_part.size > 1 %}
+                                      {% assign days_count = days_part[1] | strip | plus: 0 %}
+                                      {% assign custom_format_found = true %}
+                                    {% endif %}
+                                  {% endif %}
+                                {% endfor %}
+                                
+                                {% if custom_format_found %}
+                                  {% comment %} Используем данные из комментария {% endcomment %}
+                                  {{ items_per_day }}шт * {{ days_count }}
+                                  {% assign quantity = days_count %}
+                                  {% assign last_digit = quantity | modulo: 10 %}
+                                  {% assign last_two_digits = quantity | modulo: 100 %}
+                                  {% if last_two_digits >= 11 and last_two_digits <= 19 %}
+                                    дней
+                                  {% elsif last_digit == 1 %}
+                                    день
+                                  {% elsif last_digit >= 2 and last_digit <= 4 %}
+                                    дня
+                                  {% else %}
+                                    дней
+                                  {% endif %}
+                                {% else %}
+                                  {% comment %} Используем логику по умолчанию {% endcomment %}
+                                  {{ item.quantity }}шт
+                                {% endif %}
+                              </span>
+                            </span>
+                          </div>
+                        <div class="price-row total">
+                          <span class="price-label">Итого:</span>
+                          <span class="price-value">
+                            <span class="price-amount">{{ item.total_price | money }}</span>
+                          </span>
+                        </div>
+                        <div class="mobile-remove-link">
+                          <a href="#" class="remove-item-link">Удалить из корзины</a>
                         </div>
                       </div>
                     </div>
