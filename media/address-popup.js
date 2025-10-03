@@ -224,6 +224,31 @@ class AddressPopupManager {
         cartTotalPriceElement.textContent = formattedPrice;
     }
     
+    // Автоматическое обновление итоговой суммы корзины
+    updateCartTotalPriceAuto() {
+        if (!this.virtualCart || !this.virtualCart.total_price) {
+            console.warn('⚠️ Нет данных о стоимости корзины');
+            return;
+        }
+        
+        const deliveryPrice = this.calculateCurrentDeliveryPrice();
+        const productsPrice = this.virtualCart.total_price - deliveryPrice;
+        const totalPrice = this.virtualCart.total_price;
+        
+        // Обновляем стоимость товаров (без доставки)
+        this.updateCartTotalPrice(productsPrice);
+        
+        // Обновляем итоговую сумму (с доставкой)
+        const totalPriceElement = document.querySelector('[data-cart-full-total-price]');
+        if (totalPriceElement) {
+            const formattedTotalPrice = this.virtualCart.total_price_formatted || `${totalPrice} ₽`;
+            totalPriceElement.textContent = formattedTotalPrice;
+            console.log('💰 Обновлена итоговая сумма:', formattedTotalPrice);
+        }
+        
+        console.log('💰 Автоматически обновлена итоговая сумма:', productsPrice, '₽ (товары),', totalPrice, '₽ (общая)');
+    }
+    
     // Удаление товаров доставки из корзины при загрузке страницы
     async removeDeliveryProductsFromCart() {
         
@@ -940,50 +965,18 @@ class AddressPopupManager {
         return 'after_7am'; // По умолчанию после 7 утра
     }
     
-    // Определение товара доставки по зоне и условиям
+    // Определение товара доставки по зоне и условиям (ОБНОВЛЕННАЯ ВЕРСИЯ)
     determineDeliveryProduct(deliveryZone) {
         console.log('🎯 Определение товара доставки для зоны:', deliveryZone);
         
-        const cartTotal = this.getCartTotal();
-        const programDays = this.getProgramDaysCount();
         const deliveryTime = this.getProgramDeliveryTime();
         
-        console.log('📊 Условия доставки:', {
-            zone: deliveryZone,
-            cartTotal: cartTotal,
-            programDays: programDays,
-            deliveryTime: deliveryTime
-        });
+        // Используем новую функцию расчета доставки
+        const deliveryInfo = this.calculateDeliveryByZone(deliveryZone, deliveryTime);
         
-        let deliveryProduct = null;
-        let isFreeDelivery = false;
+        console.log('📊 Результат расчета доставки:', deliveryInfo);
         
-        if (deliveryZone === 'Курьером в пределах МКАД' || deliveryZone === 'МКАД + 35 км') {
-            if (cartTotal >= 3000) {
-                console.log('✅ Доставка бесплатна (сумма >= 3000)');
-                isFreeDelivery = true;
-            } else {
-                console.log('💰 Доставка платная (сумма < 3000)');
-                const productTitle = deliveryZone === 'Курьером в пределах МКАД' ? 
-                    'Курьером в пределах МКАД' : 'Курьером за МКАД';
-                deliveryProduct = this.findDeliveryProductByTitle(productTitle);
-            }
-        } else if (deliveryZone === 'Сити 1') {
-            console.log('🏢 Зона Сити 1');
-            deliveryProduct = this.findDeliveryProductByTitle('Сити 1');
-        } else if (deliveryZone === 'Сити 2') {
-            console.log('🏢 Зона Сити 2, время:', deliveryTime);
-            const productTitle = deliveryTime === 'before_7am' ? 
-                'Сити 2 до 7 утра' : 'Сити 2 после 7 утра';
-            deliveryProduct = this.findDeliveryProductByTitle(productTitle);
-        }
-        
-        return {
-            product: deliveryProduct,
-            isFree: isFreeDelivery,
-            quantity: programDays,
-            zone: deliveryZone
-        };
+        return deliveryInfo;
     }
     
     // Поиск товара доставки по названию
@@ -1175,7 +1168,7 @@ class AddressPopupManager {
         console.log('✅ Отображение корзины обновлено');
     }
     
-    // Обновление отображения цены доставки
+    // Обновление отображения цены доставки (ОБНОВЛЕННАЯ ВЕРСИЯ)
     updateDeliveryPriceDisplay(deliveryInfo) {
         const deliveryPriceElement = document.getElementById('delivery-price');
         if (!deliveryPriceElement) {
@@ -1187,11 +1180,22 @@ class AddressPopupManager {
             deliveryPriceElement.textContent = 'Бесплатно';
             deliveryPriceElement.style.color = '#28a745'; // Зеленый цвет
             console.log('✅ Доставка отмечена как бесплатная');
-        } else if (deliveryInfo.product) {
+        } else if (deliveryInfo.product && deliveryInfo.quantity > 0) {
             const totalPrice = deliveryInfo.product.price * deliveryInfo.quantity;
-            deliveryPriceElement.textContent = `${totalPrice} ₽`;
+            
+            // Добавляем информацию о платных и бесплатных днях для зон МКАД
+            if (deliveryInfo.paidDays !== undefined && deliveryInfo.freeDays !== undefined) {
+                if (deliveryInfo.freeDays > 0) {
+                    deliveryPriceElement.innerHTML = `${totalPrice} ₽<br><small style="color: #28a745;">(${deliveryInfo.paidDays} платных, ${deliveryInfo.freeDays} бесплатных дней)</small>`;
+                } else {
+                    deliveryPriceElement.innerHTML = `${totalPrice} ₽<br><small style="color: #666;">(${deliveryInfo.paidDays} дней)</small>`;
+                }
+            } else {
+                deliveryPriceElement.textContent = `${totalPrice} ₽`;
+            }
+            
             deliveryPriceElement.style.color = '#333'; // Обычный цвет
-            console.log('💰 Цена доставки обновлена:', totalPrice, '₽');
+            console.log('💰 Цена доставки обновлена:', totalPrice, '₽', deliveryInfo);
         } else {
             deliveryPriceElement.textContent = '-';
             deliveryPriceElement.style.color = '#999';
@@ -1217,6 +1221,7 @@ class AddressPopupManager {
             
             // Определяем товар доставки
             const deliveryInfo = this.determineDeliveryProduct(deliveryZone);
+            console.log('📊 Информация о доставке:', deliveryInfo);
             
             // Обновляем отображение цены
             this.updateDeliveryPriceDisplay(deliveryInfo);
@@ -1231,21 +1236,39 @@ class AddressPopupManager {
                     
                     // Обновляем корзину без перезагрузки страницы
                     await this.refreshCart();
+                    
+                    // Обновляем итоговую сумму в интерфейсе
+                    this.updateCartTotalPriceAuto();
                 } else {
                     console.error('❌ Не удалось добавить товар доставки в корзину');
                 }
-            } else if (deliveryInfo.isFree) {
+            } else {
+                console.log('❌ Товар доставки не будет добавлен:', {
+                    isFree: deliveryInfo.isFree,
+                    hasProduct: !!deliveryInfo.product,
+                    quantity: deliveryInfo.quantity,
+                    deliveryInfo: deliveryInfo
+                });
+            }
+            
+            if (deliveryInfo.isFree) {
                 console.log('✅ Доставка бесплатна, товар не добавляем');
                 
                 // Обновляем корзину после удаления товара доставки
                 console.log('🔄 Обновляем корзину после удаления товара доставки...');
                 await this.refreshCart();
+                
+                // Обновляем итоговую сумму в интерфейсе
+                this.updateCartTotalPriceAuto();
             } else {
                 console.log('ℹ️ Товар доставки не требуется или не найден');
                 
                 // Обновляем корзину в любом случае
                 console.log('🔄 Обновляем корзину...');
                 await this.refreshCart();
+                
+                // Обновляем итоговую сумму в интерфейсе
+                this.updateCartTotalPriceAuto();
             }
             
             return deliveryInfo;
@@ -2321,6 +2344,589 @@ class AddressPopupManager {
             coordinates: this.selectedCoordinates
         };
     }
+    
+    // ==================== НОВЫЕ ФУНКЦИИ ДЛЯ РАСЧЕТА ДОСТАВКИ ====================
+    
+    /**
+     * Парсит даты из комментария товара
+     * Ищет строки "Выбранные даты:" или "Массив дат:" и извлекает даты
+     */
+    parseDatesFromComment(comment) {
+        console.log('🔍 Парсинг дат из комментария:', comment);
+        
+        if (!comment || typeof comment !== 'string') {
+            console.log('❌ Комментарий пустой или не строка');
+            return [];
+        }
+        
+        const dates = [];
+        
+        // Паттерны для поиска дат
+        const datePatterns = [
+            /(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)/gi,
+            /(\d{1,2})\.(\d{1,2})\.(\d{4})/g,
+            /(\d{1,2})\/(\d{1,2})\/(\d{4})/g,
+            /(\d{4})-(\d{1,2})-(\d{1,2})/g
+        ];
+        
+        const monthNames = {
+            'января': 0, 'февраля': 1, 'марта': 2, 'апреля': 3, 'мая': 4, 'июня': 5,
+            'июля': 6, 'августа': 7, 'сентября': 8, 'октября': 9, 'ноября': 10, 'декабря': 11
+        };
+        
+        // Разбиваем комментарий на части по разделителю |
+        const commentParts = comment.split('|');
+        
+        for (const part of commentParts) {
+            const trimmedPart = part.trim();
+            
+            // Ищем блоки с датами
+            if (trimmedPart.includes('Выбранные даты:') || trimmedPart.includes('Массив дат:')) {
+                const datePart = trimmedPart.split(/Выбранные даты:|Массив дат:/)[1];
+                if (datePart) {
+                    const dateString = datePart.trim();
+                    
+                    // Парсим даты из строки
+                    for (let i = 0; i < datePatterns.length; i++) {
+                        const pattern = datePatterns[i];
+                        let match;
+                        
+                        while ((match = pattern.exec(dateString)) !== null) {
+                            let parsedDate = null;
+                            
+                            if (i === 0) {
+                                // Формат "19 марта"
+                                const day = parseInt(match[1]);
+                                const monthName = match[2].toLowerCase();
+                                const month = monthNames[monthName];
+                                if (month !== undefined) {
+                                    const currentYear = new Date().getFullYear();
+                                    parsedDate = new Date(currentYear, month, day);
+                                }
+                            } else if (i === 1) {
+                                // Формат "19.03.2024"
+                                const day = parseInt(match[1]);
+                                const month = parseInt(match[2]) - 1;
+                                const year = parseInt(match[3]);
+                                parsedDate = new Date(year, month, day);
+                            } else if (i === 2) {
+                                // Формат "19/03/2024"
+                                const day = parseInt(match[1]);
+                                const month = parseInt(match[2]) - 1;
+                                const year = parseInt(match[3]);
+                                parsedDate = new Date(year, month, day);
+                            } else if (i === 3) {
+                                // Формат "2024-03-19"
+                                const year = parseInt(match[1]);
+                                const month = parseInt(match[2]) - 1;
+                                const day = parseInt(match[3]);
+                                parsedDate = new Date(year, month, day);
+                            }
+                            
+                            if (parsedDate && !isNaN(parsedDate.getTime())) {
+                                // Приводим к формату YYYY-MM-DD для уникальности
+                                const dateKey = parsedDate.toISOString().split('T')[0];
+                                if (!dates.includes(dateKey)) {
+                                    dates.push(dateKey);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        console.log('📅 Найдены даты в комментарии:', dates);
+        return dates;
+    }
+    
+    /**
+     * Получает все уникальные даты доставки из всех товаров в корзине
+     */
+    getAllUniqueDeliveryDates() {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.log('❌ Виртуальная корзина или товары не найдены');
+            return [];
+        }
+        
+        console.log('🔍 Анализируем товары в корзине:', this.virtualCart.items.length, 'товаров');
+        
+        const allDates = new Set();
+        
+        this.virtualCart.items.forEach((item, index) => {
+            // Получаем комментарий из DOM, если его нет в виртуальной корзине
+            let comment = item.comment;
+            if (!comment) {
+                console.log(`🔍 Ищем комментарий в DOM для товара "${item.title}" (ID: ${item.id})`);
+                comment = this.getCommentFromDOM(item);
+                console.log(`📝 Получен комментарий из DOM для товара ${index + 1}:`, comment);
+            }
+            
+            console.log(`📦 Товар ${index + 1}:`, {
+                title: item.title,
+                comment: comment,
+                hasComment: !!comment,
+                itemId: item.id,
+                hasId: !!item.id
+            });
+            
+            if (comment) {
+                const dates = this.parseDatesFromComment(comment);
+                console.log(`📅 Найдены даты в товаре ${index + 1}:`, dates);
+                dates.forEach(date => allDates.add(date));
+            } else {
+                console.log(`❌ У товара ${index + 1} нет комментария`);
+            }
+        });
+        
+        const uniqueDates = Array.from(allDates).sort();
+        console.log('📅 Все уникальные даты доставки:', uniqueDates);
+        return uniqueDates;
+    }
+    
+    /**
+     * Получает комментарий товара из DOM элементов корзины
+     */
+    getCommentFromDOM(item) {
+        if (!item) {
+            return null;
+        }
+        
+        let cartItem = null;
+        
+        // Сначала пытаемся найти по ID, если он есть
+        if (item.id) {
+            cartItem = document.querySelector(`[data-item-id="${item.id}"]`);
+        }
+        
+        // Если не найден по ID, ищем по названию товара
+        if (!cartItem && item.title) {
+            cartItem = this.findCartItemInDOM(item);
+        }
+        
+        if (!cartItem) {
+            console.log(`❌ Не найден элемент корзины для товара "${item.title}" (ID: ${item.id})`);
+            return null;
+        }
+        
+        // Сначала ищем по атрибуту data-comment у .cart-item
+        const commentAttr = cartItem.getAttribute('data-comment');
+        if (commentAttr) {
+            console.log(`✅ Найден комментарий в атрибуте data-comment для товара "${item.title}":`, commentAttr);
+            return commentAttr;
+        }
+        
+        // Затем ищем в поле input с data-comment
+        const commentInput = cartItem.querySelector('input[data-comment]');
+        if (commentInput && commentInput.value) {
+            console.log(`✅ Найден комментарий в input[data-comment] для товара "${item.title}":`, commentInput.value);
+            return commentInput.value;
+        }
+        
+        console.log(`❌ Комментарий не найден в DOM для товара "${item.title}"`);
+        console.log(`🔍 Проверяемые элементы:`, {
+            cartItem: cartItem,
+            hasDataComment: cartItem.hasAttribute('data-comment'),
+            dataCommentValue: cartItem.getAttribute('data-comment'),
+            commentInput: commentInput,
+            inputValue: commentInput?.value
+        });
+        return null;
+    }
+    
+    /**
+     * Вычисляет стоимость товаров для конкретной даты
+     */
+    calculateItemsCostForDate(date) {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            return 0;
+        }
+        
+        let totalCost = 0;
+        
+        this.virtualCart.items.forEach(item => {
+            // Получаем комментарий из DOM, если его нет в виртуальной корзине
+            let comment = item.comment;
+            if (!comment) {
+                comment = this.getCommentFromDOM(item);
+            }
+            
+            if (!comment) return;
+            
+            const itemDates = this.parseDatesFromComment(comment);
+            
+            // Если товар доставляется в эту дату
+            if (itemDates.includes(date)) {
+                console.log(`📦 Товар "${item.title}" доставляется в ${date}`);
+                
+                // Проверяем, является ли товар программой питания
+                const isProgram = this.isProgramItem(item);
+                
+                if (isProgram) {
+                    // Для программ: цена программы в день
+                    const dailyPrice = this.getProgramDailyPrice(item);
+                    console.log(`💰 Программа "${item.title}": ${dailyPrice} ₽/день`);
+                    totalCost += dailyPrice;
+                } else {
+                    // Для обычных товаров: цена за штуку × количество в день
+                    const dailyQuantity = this.getDailyQuantity(item);
+                    const totalPrice = this.getRealItemPrice(item);
+                    const totalQuantity = item.quantity || 1;
+                    const pricePerUnit = totalPrice / totalQuantity;
+                    const itemCost = pricePerUnit * dailyQuantity;
+                    console.log(`💰 Товар "${item.title}": ${totalPrice} ₽ (за ${totalQuantity} шт) ÷ ${totalQuantity} = ${pricePerUnit} ₽/шт × ${dailyQuantity} шт = ${itemCost} ₽`);
+                    totalCost += itemCost;
+                }
+            }
+        });
+        
+        console.log(`💰 Стоимость товаров на ${date}: ${totalCost} ₽`);
+        return totalCost;
+    }
+    
+    /**
+     * Проверяет, является ли товар программой питания
+     */
+    isProgramItem(item) {
+        // Проверяем по canonical_collection или другим признакам
+        if (item.canonical_collection && item.canonical_collection.includes('program')) {
+            return true;
+        }
+        
+        // Дополнительная проверка по названию (на случай, если canonical_collection не работает)
+        const programNames = ['старт', 'база', 'премиум', 'спорт', 'детокс', 'перезагрузка'];
+        const itemTitle = item.title ? item.title.toLowerCase() : '';
+        
+        for (const programName of programNames) {
+            if (itemTitle.includes(programName)) {
+                console.log(`✅ Товар "${item.title}" определен как программа по названию`);
+                return true;
+            }
+        }
+        
+        console.log(`❌ Товар "${item.title}" не является программой`);
+        return false;
+    }
+    
+    /**
+     * Находит элемент товара в DOM по названию
+     */
+    findCartItemInDOM(item) {
+        if (!item || !item.title) {
+            return null;
+        }
+        
+        // Сначала пытаемся найти по ID, если он есть
+        if (item.id) {
+            const cartItem = document.querySelector(`[data-item-id="${item.id}"]`);
+            if (cartItem) {
+                return cartItem;
+            }
+        }
+        
+        // Если не найден по ID, ищем по названию товара
+        console.log(`🔍 Ищем товар "${item.title}" по названию в DOM...`);
+        const allCartItems = document.querySelectorAll('.cart-item');
+        console.log(`🔍 Найдено элементов .cart-item в DOM: ${allCartItems.length}`);
+        
+        for (let i = 0; i < allCartItems.length; i++) {
+            const element = allCartItems[i];
+            const titleElement = element.querySelector('.cart-item-title');
+            const titleText = titleElement ? titleElement.textContent.trim() : 'Нет заголовка';
+            console.log(`🔍 Элемент ${i + 1}: "${titleText}"`);
+            
+            if (titleElement) {
+                const domTitle = titleElement.textContent.trim();
+                const virtualTitle = item.title.trim();
+                
+                // Точное совпадение
+                if (domTitle === virtualTitle) {
+                    console.log(`✅ Найден товар "${item.title}" в DOM (точное совпадение)`);
+                    return element;
+                }
+                
+                // Частичное совпадение - если одно название содержит другое
+                if (domTitle.includes(virtualTitle) || virtualTitle.includes(domTitle)) {
+                    console.log(`✅ Найден товар "${item.title}" в DOM (частичное совпадение: "${domTitle}")`);
+                    return element;
+                }
+                
+                // Поиск по ключевым словам для программ
+                const programKeywords = ['старт', 'база', 'премиум', 'спорт', 'детокс', 'перезагрузка'];
+                const virtualLower = virtualTitle.toLowerCase();
+                const domLower = domTitle.toLowerCase();
+                
+                for (const keyword of programKeywords) {
+                    if (virtualLower.includes(keyword) && domLower.includes(keyword)) {
+                        console.log(`✅ Найден товар "${item.title}" в DOM (совпадение по ключевому слову "${keyword}": "${domTitle}")`);
+                        return element;
+                    }
+                }
+            }
+        }
+        
+        console.log(`❌ Не найден элемент корзины для товара "${item.title}"`);
+        console.log(`🔍 Ищем похожие названия...`);
+        
+        // Попробуем найти частичное совпадение
+        for (let i = 0; i < allCartItems.length; i++) {
+            const element = allCartItems[i];
+            const titleElement = element.querySelector('.cart-item-title');
+            if (titleElement) {
+                const titleText = titleElement.textContent.trim();
+                if (titleText.includes('База') || item.title.includes('База')) {
+                    console.log(`🔍 Найдено частичное совпадение: "${titleText}" vs "${item.title}"`);
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Получает реальную цену товара из DOM или виртуальной корзины
+     */
+    getRealItemPrice(item) {
+        // Сначала пытаемся получить цену из виртуальной корзины
+        if (item.price && item.price > 0) {
+            return item.price;
+        }
+        
+        // Если цена в виртуальной корзине неверная, ищем в DOM
+        const cartItem = this.findCartItemInDOM(item);
+        if (cartItem) {
+            // Ищем элемент с ценой в DOM
+            const priceElement = cartItem.querySelector('.price-amount');
+            if (priceElement) {
+                const priceText = priceElement.textContent || '';
+                const price = this.parsePriceFromText(priceText);
+                if (price > 0) {
+                    console.log(`💰 Найдена цена в DOM для товара "${item.title}": ${price} ₽`);
+                    return price;
+                }
+            }
+        }
+        
+        console.log(`❌ Не удалось найти цену для товара "${item.title}"`);
+        return 0;
+    }
+    
+    /**
+     * Парсит цену из текста (убирает валюту и пробелы)
+     */
+    parsePriceFromText(priceText) {
+        if (!priceText) return 0;
+        
+        // Убираем все кроме цифр и запятых/точек
+        const cleanPrice = priceText.replace(/[^\d,.]/g, '');
+        
+        // Заменяем запятую на точку для корректного парсинга
+        const normalizedPrice = cleanPrice.replace(',', '.');
+        
+        const price = parseFloat(normalizedPrice);
+        return isNaN(price) ? 0 : price;
+    }
+    
+    /**
+     * Получает дневную стоимость программы
+     */
+    getProgramDailyPrice(item) {
+        // Логика получения дневной стоимости программы
+        // Может быть в комментарии или вычисляться из общей стоимости
+        let comment = item.comment || '';
+        
+        // Если комментария нет в item, получаем из DOM
+        if (!comment) {
+            comment = this.getCommentFromDOM(item) || '';
+        }
+        
+        // Пытаемся найти информацию о дневной стоимости в комментарии
+        const commentParts = comment.split('|');
+        for (const part of commentParts) {
+            if (part.includes('Цена в день:')) {
+                const pricePart = part.split('Цена в день:')[1];
+                if (pricePart) {
+                    const price = parseInt(pricePart.trim());
+                    if (!isNaN(price)) {
+                        return price;
+                    }
+                }
+            }
+        }
+        
+        // Если не найдено в комментарии, вычисляем из общей стоимости
+        const totalPrice = this.getRealItemPrice(item);
+        const quantity = item.quantity || 1;
+        const calculatedPrice = totalPrice / quantity;
+        console.log(`💰 Расчет цены программы "${item.title}": ${totalPrice} ₽ / ${quantity} дней = ${calculatedPrice} ₽/день`);
+        return calculatedPrice;
+    }
+    
+    /**
+     * Получает количество товара в день
+     */
+    getDailyQuantity(item) {
+        let comment = item.comment || '';
+        
+        // Если комментария нет в item, получаем из DOM
+        if (!comment) {
+            comment = this.getCommentFromDOM(item) || '';
+        }
+        
+        // Ищем информацию о количестве в день
+        const commentParts = comment.split('|');
+        for (const part of commentParts) {
+            if (part.includes('Количество в день:')) {
+                const quantityPart = part.split('Количество в день:')[1];
+                if (quantityPart) {
+                    const quantity = parseInt(quantityPart.trim());
+                    if (!isNaN(quantity)) {
+                        return quantity;
+                    }
+                }
+            }
+        }
+        
+        // По умолчанию возвращаем 1
+        console.log(`📦 Количество в день для товара "${item.title}": 1 шт (по умолчанию)`);
+        return 1;
+    }
+    
+    /**
+     * Новая функция расчета доставки по зонам
+     */
+    calculateDeliveryByZone(deliveryZone, deliveryTime) {
+        console.log('🚚 Расчет доставки для зоны:', deliveryZone, 'время:', deliveryTime);
+        
+        // Получаем все уникальные даты доставки
+        const uniqueDates = this.getAllUniqueDeliveryDates();
+        
+        if (uniqueDates.length === 0) {
+            console.log('❌ Нет дат доставки в корзине');
+            return {
+                product: null,
+                isFree: false,
+                quantity: 0,
+                zone: deliveryZone,
+                paidDays: 0,
+                freeDays: 0
+            };
+        }
+        
+        console.log('📅 Уникальные даты доставки:', uniqueDates);
+        
+        // Логика для зон "Сити 1" и "Сити 2"
+        if (deliveryZone === 'Сити 1' || deliveryZone === 'Сити 2') {
+            return this.calculateCityZoneDelivery(deliveryZone, deliveryTime, uniqueDates);
+        }
+        
+        // Логика для зон МКАД
+        if (deliveryZone === 'Курьером в пределах МКАД' || deliveryZone === 'МКАД + 35 км' || deliveryZone === 'Курьером за МКАД') {
+            return this.calculateMKADZoneDelivery(deliveryZone, uniqueDates);
+        }
+        
+        console.log('❌ Неизвестная зона доставки:', deliveryZone);
+        return {
+            product: null,
+            isFree: false,
+            quantity: 0,
+            zone: deliveryZone,
+            paidDays: 0,
+            freeDays: 0
+        };
+    }
+    
+    /**
+     * Расчет доставки для зон "Сити 1" и "Сити 2"
+     * Стоимость = количество уникальных дат × стоимость доставки в день
+     */
+    calculateCityZoneDelivery(deliveryZone, deliveryTime, uniqueDates) {
+        console.log('🏢 Расчет для зон Сити:', deliveryZone);
+        
+        let deliveryProduct = null;
+        
+        if (deliveryZone === 'Сити 1') {
+            deliveryProduct = this.findDeliveryProductByTitle('Сити 1');
+        } else if (deliveryZone === 'Сити 2') {
+            const productTitle = deliveryTime === 'before_7am' ? 
+                'Сити 2 до 7 утра' : 'Сити 2 после 7 утра';
+            deliveryProduct = this.findDeliveryProductByTitle(productTitle);
+        }
+        
+        const quantity = uniqueDates.length; // Количество уникальных дат
+        
+        console.log('🏢 Результат для Сити:', {
+            product: deliveryProduct?.title,
+            quantity: quantity,
+            totalPrice: deliveryProduct ? deliveryProduct.price * quantity : 0
+        });
+        
+        return {
+            product: deliveryProduct,
+            isFree: false,
+            quantity: quantity,
+            zone: deliveryZone,
+            paidDays: quantity,
+            freeDays: 0
+        };
+    }
+    
+    /**
+     * Расчет доставки для зон МКАД
+     * Анализирует каждый день отдельно: если сумма >= 3000, то день бесплатный
+     */
+    calculateMKADZoneDelivery(deliveryZone, uniqueDates) {
+        console.log('🚛 Расчет для зон МКАД:', deliveryZone);
+        
+        const paidDays = [];
+        const freeDays = [];
+        
+        // Анализируем каждый уникальный день
+        uniqueDates.forEach(date => {
+            const dayCost = this.calculateItemsCostForDate(date);
+            
+            if (dayCost >= 3000) {
+                freeDays.push(date);
+                console.log(`✅ ${date}: бесплатная доставка (${dayCost} ₽ >= 3000)`);
+            } else {
+                paidDays.push(date);
+                console.log(`💰 ${date}: платная доставка (${dayCost} ₽ < 3000)`);
+            }
+        });
+        
+        console.log('🚛 Результат анализа дней:', {
+            paidDays: paidDays,
+            freeDays: freeDays,
+            totalPaidDays: paidDays.length,
+            totalFreeDays: freeDays.length
+        });
+        
+        // Если все дни бесплатные
+        if (paidDays.length === 0) {
+            return {
+                product: null,
+                isFree: true,
+                quantity: 0,
+                zone: deliveryZone,
+                paidDays: 0,
+                freeDays: freeDays.length
+            };
+        }
+        
+        // Находим товар доставки для платных дней
+        const productTitle = deliveryZone === 'Курьером в пределах МКАД' ? 
+            'Курьером в пределах МКАД' : 'Курьером за МКАД';
+        const deliveryProduct = this.findDeliveryProductByTitle(productTitle);
+        
+        return {
+            product: deliveryProduct,
+            isFree: false,
+            quantity: paidDays.length, // Количество платных дней
+            zone: deliveryZone,
+            paidDays: paidDays.length,
+            freeDays: freeDays.length
+        };
+    }
 }
 
 // Инициализируем менеджер попапа
@@ -2766,6 +3372,226 @@ window.testDeliveryZoneChange = function(zoneName) {
         console.error('❌ addressPopupManager не найден!');
         return null;
     }
+};
+
+// Функция для тестирования отображения доставки
+window.testDeliveryDisplay = function() {
+    console.log('🧪 Тестирование отображения доставки...');
+    
+    if (window.addressPopupManager) {
+        // Проверяем элементы
+        const deliveryPriceElement = document.getElementById('delivery-price');
+        const cartTotalPriceElement = document.getElementById('cart-total-price');
+        const totalPriceElement = document.querySelector('[data-cart-full-total-price]');
+        
+        console.log('📊 Элементы доставки:');
+        console.log('- #delivery-price:', deliveryPriceElement?.textContent || 'не найден');
+        console.log('- #cart-total-price:', cartTotalPriceElement?.textContent || 'не найден');
+        console.log('- [data-cart-full-total-price]:', totalPriceElement?.textContent || 'не найден');
+        
+        // Проверяем виртуальную корзину
+        if (window.addressPopupManager.virtualCart) {
+            console.log('🛒 Виртуальная корзина:', window.addressPopupManager.virtualCart);
+        } else {
+            console.log('❌ Виртуальная корзина не найдена');
+        }
+        
+        return {
+            deliveryPrice: deliveryPriceElement?.textContent,
+            cartTotalPrice: cartTotalPriceElement?.textContent,
+            totalPrice: totalPriceElement?.textContent,
+            virtualCart: window.addressPopupManager.virtualCart
+        };
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для сравнения виртуальной корзины и DOM
+window.testCartComparison = function() {
+    console.log('🧪 Сравнение виртуальной корзины и DOM...');
+    
+    if (!window.addressPopupManager || !window.addressPopupManager.virtualCart) {
+        console.log('❌ Виртуальная корзина не найдена');
+        return;
+    }
+    
+    const virtualCart = window.addressPopupManager.virtualCart;
+    console.log('📦 Виртуальная корзина:', virtualCart);
+    
+    if (virtualCart.items) {
+        console.log('🔍 Товары в виртуальной корзине:');
+        virtualCart.items.forEach((item, index) => {
+            console.log(`📦 Товар ${index + 1}:`, {
+                title: item.title,
+                id: item.id,
+                price: item.price,
+                quantity: item.quantity,
+                canonical_collection: item.canonical_collection
+            });
+        });
+    }
+    
+    const domItems = document.querySelectorAll('.cart-item');
+    console.log('🔍 Товары в DOM:');
+    domItems.forEach((element, index) => {
+        const titleElement = element.querySelector('.cart-item-title');
+        const title = titleElement ? titleElement.textContent.trim() : 'Нет заголовка';
+        const itemId = element.getAttribute('data-item-id');
+        const dataComment = element.getAttribute('data-comment');
+        const commentInput = element.querySelector('input[data-comment]');
+        const commentValue = commentInput ? commentInput.value : null;
+        
+        console.log(`📦 DOM элемент ${index + 1}:`, {
+            title: title,
+            itemId: itemId,
+            dataComment: dataComment,
+            commentInput: commentValue
+        });
+    });
+    
+    return {
+        virtualCart: virtualCart,
+        domItems: Array.from(domItems).map(element => ({
+            title: element.querySelector('.cart-item-title')?.textContent.trim(),
+            itemId: element.getAttribute('data-item-id'),
+            dataComment: element.getAttribute('data-comment'),
+            commentInput: element.querySelector('input[data-comment]')?.value
+        }))
+    };
+};
+
+// Функция для тестирования парсинга дат
+window.testParseDates = function(testComment) {
+    console.log('🧪 Тестирование парсинга дат...');
+    
+    if (window.addressPopupManager) {
+        if (testComment) {
+            // Тестируем с переданным комментарием
+            const dates = window.addressPopupManager.parseDatesFromComment(testComment);
+            console.log('📅 Результат парсинга:', dates);
+            return dates;
+        } else {
+            // Тестируем с комментариями из корзины
+            const uniqueDates = window.addressPopupManager.getAllUniqueDeliveryDates();
+            console.log('📅 Уникальные даты из корзины:', uniqueDates);
+            return uniqueDates;
+        }
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для тестирования получения комментариев из DOM
+window.testDOMComments = function() {
+    console.log('🧪 Тестирование получения комментариев из DOM...');
+    
+    if (window.addressPopupManager && window.addressPopupManager.virtualCart) {
+        const items = window.addressPopupManager.virtualCart.items;
+        console.log('🔍 Тестируем', items.length, 'товаров из корзины');
+        
+        items.forEach((item, index) => {
+            console.log(`📦 Товар ${index + 1}:`, item.title);
+            
+            // Тестируем получение комментария из DOM
+            const domComment = window.addressPopupManager.getCommentFromDOM(item);
+            console.log(`📝 Комментарий из DOM:`, domComment);
+            
+            // Тестируем парсинг дат
+            if (domComment) {
+                const dates = window.addressPopupManager.parseDatesFromComment(domComment);
+                console.log(`📅 Найденные даты:`, dates);
+            }
+        });
+        
+        return items.map(item => ({
+            title: item.title,
+            domComment: window.addressPopupManager.getCommentFromDOM(item),
+            parsedDates: window.addressPopupManager.getCommentFromDOM(item) ? 
+                window.addressPopupManager.parseDatesFromComment(window.addressPopupManager.getCommentFromDOM(item)) : []
+        }));
+    } else {
+        console.error('❌ addressPopupManager или виртуальная корзина не найдены!');
+        return null;
+    }
+};
+
+// Функция для проверки всех элементов корзины в DOM
+window.checkDOMCartItems = function() {
+    console.log('🧪 Проверка всех элементов корзины в DOM...');
+    
+    const cartItems = document.querySelectorAll('.cart-item');
+    console.log('🔍 Найдено элементов .cart-item:', cartItems.length);
+    
+    cartItems.forEach((cartItem, index) => {
+        const itemId = cartItem.getAttribute('data-item-id');
+        const title = cartItem.querySelector('.cart-item-title')?.textContent || 'Без названия';
+        const dataComment = cartItem.getAttribute('data-comment');
+        const commentInput = cartItem.querySelector('input[data-comment]');
+        const inputValue = commentInput?.value;
+        
+        console.log(`📦 Элемент ${index + 1}:`, {
+            itemId: itemId,
+            title: title,
+            hasDataComment: !!dataComment,
+            dataComment: dataComment,
+            hasCommentInput: !!commentInput,
+            inputValue: inputValue
+        });
+    });
+    
+    return Array.from(cartItems).map(cartItem => ({
+        itemId: cartItem.getAttribute('data-item-id'),
+        title: cartItem.querySelector('.cart-item-title')?.textContent || 'Без названия',
+        dataComment: cartItem.getAttribute('data-comment'),
+        inputValue: cartItem.querySelector('input[data-comment]')?.value
+    }));
+};
+
+// Функция для тестирования поиска товара по названию
+window.testFindItemByName = function(itemTitle) {
+    console.log(`🧪 Тестирование поиска товара "${itemTitle}" по названию...`);
+    
+    const allCartItems = document.querySelectorAll('.cart-item');
+    console.log('🔍 Найдено элементов .cart-item:', allCartItems.length);
+    
+    for (const element of allCartItems) {
+        const titleElement = element.querySelector('.cart-item-title');
+        const title = titleElement?.textContent?.trim();
+        
+        console.log(`📦 Проверяем элемент с названием: "${title}"`);
+        
+        if (title === itemTitle) {
+            console.log(`✅ Найден товар "${itemTitle}"!`);
+            
+            const itemId = element.getAttribute('data-item-id');
+            const dataComment = element.getAttribute('data-comment');
+            const commentInput = element.querySelector('input[data-comment]');
+            const inputValue = commentInput?.value;
+            
+            console.log('📝 Данные найденного элемента:', {
+                itemId: itemId,
+                title: title,
+                hasDataComment: !!dataComment,
+                dataComment: dataComment,
+                hasCommentInput: !!commentInput,
+                inputValue: inputValue
+            });
+            
+            return {
+                found: true,
+                element: element,
+                itemId: itemId,
+                dataComment: dataComment,
+                inputValue: inputValue
+            };
+        }
+    }
+    
+    console.log(`❌ Товар "${itemTitle}" не найден`);
+    return { found: false };
 };
 
 // Функция для проверки текущего состояния корзины
