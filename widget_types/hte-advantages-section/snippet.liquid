@@ -20,7 +20,7 @@
                 <div class="advantage-card advantage-card--3 {% if widget_settings.card3-is-hidden %}hidden-mobile{% endif %}" {% if widget_settings.card3-image %}style="background-image: url({{ widget_settings.card3-image | image_url: 500, format: 'webp', resizing_type: 'fit_width', quality: 100 }})"{% endif %}>
                     <div class="advantage-card__content">
                         <h3 class="advantage-card__title" style="color: var(--hte-white) !important;">{{ widget_settings.card3-title }}</h3>
-                        <a href="/collection/programmy" class="advantage-card__button">Подобрать программу питания</a>
+                        <button class="advantage-card__button">Подобрать программу питания</button>
                     </div>
                 </div>
             </div>

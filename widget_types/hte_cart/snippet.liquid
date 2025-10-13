@@ -11,6 +11,31 @@
         {% assign pets_total_price = pets_total_price | plus: item.total_price %}
       {% endif %}
     {% endfor %}
+    
+    {% comment %} Проверяем наличие обычных товаров (не программы, не для питомцев, не доставка) {% endcomment %}
+    {% assign has_regular_items = false %}
+    {% for item in cart.items %}
+      {% assign is_program = false %}
+      {% assign is_pet_item = false %}
+      {% assign is_delivery = false %}
+      
+      {% if item.product.canonical_collection.url contains 'program' %}
+        {% assign is_program = true %}
+      {% endif %}
+      
+      {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}
+        {% assign is_pet_item = true %}
+      {% endif %}
+      
+      {% if item.product.canonical_collection.url contains 'dostavka' %}
+        {% assign is_delivery = true %}
+      {% endif %}
+      
+      {% if is_program == false and is_pet_item == false and is_delivery == false %}
+        {% assign has_regular_items = true %}
+      {% endif %}
+    {% endfor %}
+    
     <form action="{{ cart_url }}" method="post" data-cart-form>
       <div class="cart-items-container">
         <!-- Заголовок корзины -->
@@ -228,7 +253,7 @@
                               </svg>
                             </button>
                           </div>
-                          <div>Комментарий: {{ item.comment }}</div>
+
                           <div class="cart-item-extra-info">
                             
                             <div class="cart-item-quantity cart-item-quantity_base">
@@ -509,9 +534,11 @@
               </div>
             </div>
             
+            {% if has_regular_items %}
             <div class="additional-note-card">
               <p>N.B. Товары из полезного магазина доставляются в первый день доставки программы</p>
             </div>
+            {% endif %}
           </div>
         </div>
         <input

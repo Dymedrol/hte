@@ -79,32 +79,6 @@ function initProgramsSection() {
         allTab.classList.add('active');
         filterCards('all');
     }
-    
-    // Quiz button functionality
-    const quizButton = document.querySelector('.quiz-button');
-    if (quizButton) {
-        quizButton.addEventListener('click', function() {
-            // Открываем поп-ап с квизом
-            if (typeof openQuizPopup === 'function') {
-                openQuizPopup();
-            } else {
-                console.log('Quiz popup not available');
-            }
-        });
-    }
-    
-    // Individual program button functionality
-    const individualProgramBtn = document.querySelector('.program-card .add-to-cart-btn');
-    if (individualProgramBtn) {
-        individualProgramBtn.addEventListener('click', function() {
-            // Открываем поп-ап с квизом
-            if (typeof openQuizPopup === 'function') {
-                openQuizPopup();
-            } else {
-                console.log('Quiz popup not available');
-            }
-        });
-    }
 } 
 
 initProgramsSection();
