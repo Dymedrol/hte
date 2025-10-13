@@ -783,9 +783,16 @@
   display: none;
   flex-direction: column;
   gap: var(--spacing-20);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
   
   &.active {
     display: flex;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
   }
 }
 
@@ -793,8 +800,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-15);
-  border-bottom: var(--border-width-thin) solid var(--hte-dark-accent);
 }
 
 .calendar-nav-btn {
@@ -809,14 +814,18 @@
   justify-content: center;
   transition: all 0.3s ease;
   
-  &:hover {
-    border-color: var(--hte-black);
+  &:hover:not(.disabled) {
+    background: var(--hte-dark-accent);
   }
   
   &.disabled {
     opacity: var(--opacity-low);
     cursor: not-allowed;
     pointer-events: none;
+  }
+  
+  &.disabled:hover {
+    background: var(--hte-white);
   }
 }
 
@@ -843,7 +852,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0;
-  padding: var(--spacing-15);
+  width: 189px;
 }
 
 .calendar-day-header {
@@ -876,18 +885,103 @@
   
   &.inactive {
     color: var(--hte-super-dark-accent);
+  }
+  
+  &.past {
+    color: var(--hte-grey-text);
+    opacity: var(--opacity-low);
     cursor: not-allowed;
+  }
+  
+  /* Специальные стили для недоступных дней */
+  &.unavailable {
+    color: var(--hte-grey-text);
+    opacity: var(--opacity-low);
+    cursor: not-allowed;
+    background: var(--hte-super-dark-accent);
+    border: var(--border-width-normal) solid var(--hte-white);
+    position: relative;
+  }
+  
+  &.unavailable::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 12px;
+    background: var(--hte-grey-text);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  
+  &.unavailable::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 12px;
+    background: var(--hte-grey-text);
+    transform: translate(-50%, -50%) rotate(-45deg);
   }
   
   &.active {
     color: var(--hte-black);
-    
-    &:hover {
-      background: var(--hte-dark-accent);
-    }
+  }
+  
+  &.outlined {
+    border: var(--border-width-normal) solid var(--hte-dark-accent);
   }
   
   &.selected {
+    background: var(--hte-black);
+    color: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: 40px;
+  }
+  
+  &.range-start,
+  &.range-end {
+    background: var(--hte-white);
+    color: var(--hte-black);
+    border: var(--border-width-normal) solid var(--hte-black);
+    border-radius: 40px;
+  }
+  
+  &.range-middle {
+    background: var(--hte-black);
+    color: var(--hte-white);
+    border-radius: 40px;
+  }
+  
+  &.range-preview {
+    background: var(--hte-dark-accent);
+    color: var(--hte-black);
+    opacity: var(--opacity-medium);
+  }
+  
+  &.excluded {
+    background: var(--hte-grey-text);
+    color: var(--hte-white);
+    border: var(--border-width-normal) solid var(--hte-grey-text);
+    border-radius: 40px;
+    opacity: var(--opacity-medium);
+  }
+  
+  /* Стили для выбора дат */
+  &.selectable:hover {
+    background: var(--hte-dark-accent);
+    transition: all 0.2s ease;
+  }
+  
+  &.selectable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    transition-delay: 0.1s;
+  }
+  
+  /* Отключаем hover для выбранного дня */
+  &.selected:hover {
     background: var(--hte-black);
     color: var(--hte-white);
     border: var(--border-width-normal) solid var(--hte-black);
@@ -1031,6 +1125,24 @@
   }
 }
 
+/* Calendar Responsive Styles */
+@media (max-width: 1320px) {
+  .calendar-dropdown {
+    width: 241px;
+    padding: var(--spacing-20);
+  }
+  
+  .calendar-grid {
+    width: 189px;
+  }
+  
+  .calendar-day,
+  .calendar-day-header {
+    width: 27px;
+    height: 27px;
+  }
+}
+
 /* Mobile Responsive for Popup */
 @media (max-width: 720px) {
   .popup-content {
@@ -1061,5 +1173,38 @@
   
   .popup-form {
     margin-bottom: var(--spacing-20);
+  }
+  
+  /* Calendar responsive styles */
+  .calendar-dropdown {
+    width: 241px;
+    padding: var(--spacing-20);
+  }
+  
+  .calendar-dropdown.active {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 0;
+  }
+  
+  .calendar-grid {
+    width: 189px;
+  }
+  
+  .calendar-day,
+  .calendar-day-header {
+    width: 27px;
+    height: 27px;
+    font-size: 12px;
+  }
+  
+  .calendar-month {
+    font-size: var(--hte-micro-text-14-font-size);
+  }
+  
+  .calendar-year {
+    font-size: var(--hte-micro-text-14-font-size);
   }
 }

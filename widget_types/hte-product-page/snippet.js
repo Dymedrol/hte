@@ -317,7 +317,16 @@ function initTimeSlotEventListeners() {
 // Функция для проверки валидности выбора даты и времени доставки
 function validateDeliverySelection() {
   const startDateInput = document.getElementById('startDateInput');
-  const hasDateSelected = startDateInput && startDateInput.value.trim() !== '';
+  const endDateInput = document.getElementById('endDateInput');
+  
+  // Проверяем, что выбрана хотя бы начальная дата
+  const hasStartDate = startDateInput && startDateInput.value.trim() !== '';
+  
+  // Для полного диапазона желательно иметь обе даты, но можно выбрать только одну
+  const hasEndDate = endDateInput && endDateInput.value.trim() !== '';
+  
+  // Считаем, что дата выбрана, если есть начальная (конечная опциональна для однодневной доставки)
+  const hasDateSelected = hasStartDate;
   
   const deliveryTimeInput = document.getElementById('deliveryTimeInput');
   const hasTimeSelected = deliveryTimeInput && deliveryTimeInput.value.trim() !== '';
@@ -328,6 +337,13 @@ function validateDeliverySelection() {
   const hasTimeSlotSelected = selectedTimeSlot !== null;
   
   const isValid = hasDateSelected && (hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
+  
+  console.log('✔️ Валидация:', {
+    hasStartDate,
+    hasEndDate,
+    hasTimeSelected: hasTimeSelected || hasGlobalTime || hasTimeSlotSelected,
+    isValid
+  });
   
   return isValid;
 }
@@ -419,6 +435,13 @@ function resetPopupDates() {
   deliveryDates = [];
   selectedDeliveryTime = null;
   
+  // Сбрасываем переменные диапазона дат
+  popupStartDate = null;
+  popupEndDate = null;
+  popupActiveInput = 'start';
+  popupExcludedDates = [];
+  popupHoverDate = null;
+  
   if (window.calendarDaysCount !== undefined) {
     window.calendarDaysCount = 0;
   }
@@ -506,14 +529,17 @@ function initQuantityPopup() {
       e.preventDefault();
       e.stopPropagation();
       
+      popupActiveInput = 'start';
+      
       const isActive = startDateCalendar.classList.contains('active');
       
-      if (isActive) {
+      if (isActive && popupActiveInput === 'start') {
         startDateCalendar.classList.remove('active');
       } else {
         startDateCalendar.classList.add('active');
         startDateCalendar.setAttribute('data-field-type', 'start');
         renderSimpleCalendar(startDateCalendar, 'start');
+        console.log('📅 Календарь открыт: режим выбора начальной даты');
       }
     });
   }
@@ -523,14 +549,25 @@ function initQuantityPopup() {
       e.preventDefault();
       e.stopPropagation();
       
+      // Если начальная дата не выбрана, переключаемся на выбор начальной
+      if (!popupStartDate) {
+        console.log('⚠️ Сначала выберите начальную дату');
+        popupActiveInput = 'start';
+        startDateInput.click();
+        return;
+      }
+      
+      popupActiveInput = 'end';
+      
       const isActive = startDateCalendar.classList.contains('active');
       
-      if (isActive) {
+      if (isActive && popupActiveInput === 'end') {
         startDateCalendar.classList.remove('active');
       } else {
         startDateCalendar.classList.add('active');
         startDateCalendar.setAttribute('data-field-type', 'end');
         renderSimpleCalendar(startDateCalendar, 'end');
+        console.log('📅 Календарь открыт: режим выбора конечной даты');
       }
     });
   }
@@ -617,9 +654,15 @@ function initQuantityPopup() {
 
   // Закрытие календаря при клике вне его
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.calendar-dropdown') && !e.target.closest('.input-field')) {
+    // Проверяем, что клик был не на календаре, не на инпуте и не на дне календаря
+    if (!e.target.closest('.calendar-dropdown') && 
+        !e.target.closest('.input-field') &&
+        !e.target.classList.contains('calendar-day')) {
       document.querySelectorAll('.calendar-dropdown.active').forEach(calendar => {
-        calendar.classList.remove('active');
+        // Закрываем календарь только если выбраны обе даты
+        if (popupStartDate && popupEndDate) {
+          calendar.classList.remove('active');
+        }
       });
     }
   });
@@ -684,11 +727,18 @@ function initQuantityPopup() {
   window.quantityPopupInitialized = true;
 }
 
-// Переменная для хранения текущего отображаемого месяца В ПОПАПЕ
+// Переменные для хранения текущего отображаемого месяца В ПОПАПЕ
 // ВАЖНО: эти переменные используются ТОЛЬКО для календарей в попапе выбора даты,
 // чтобы не влиять на календарь на основной странице для просмотра блюд
 let popupCurrentDisplayMonth = null;
 let popupCurrentDisplayYear = null;
+
+// Переменные для выбора диапазона дат
+let popupStartDate = null;
+let popupEndDate = null;
+let popupActiveInput = 'start'; // 'start' или 'end'
+let popupExcludedDates = [];
+let popupHoverDate = null;
 
 // Функция навигации по месяцам В ПОПАПЕ
 function navigateCalendarMonth(calendarElement, direction) {
@@ -750,12 +800,14 @@ function updateCalendarNavigationButtons(calendarElement) {
   nextBtn.classList.toggle('disabled', !canGoNext);
 }
 
-// Простая функция рендеринга календаря В ПОПАПЕ
+// Функция рендеринга календаря с поддержкой диапазона дат
 function renderSimpleCalendar(calendarElement, fieldType = 'start') {
   if (!calendarElement) return;
   
   const grid = calendarElement.querySelector('.calendar-grid');
   if (!grid) return;
+  
+  console.log('🔄 Рендеринг календаря | Режим:', popupActiveInput, '| Начальная:', popupStartDate ? formatDateForInput(popupStartDate) : 'не выбрана', '| Конечная:', popupEndDate ? formatDateForInput(popupEndDate) : 'не выбрана');
   
   // Очищаем календарь, оставляя заголовки
   const headers = grid.querySelectorAll('.calendar-day-header');
@@ -801,47 +853,36 @@ function renderSimpleCalendar(calendarElement, fieldType = 'start') {
     // Определяем, доступен ли день для доставки
     const isDeliveryDay = isDateAvailableForDelivery(currentDayDate);
     
+    dayElement.textContent = day;
+    
     if (isDeliveryDay) {
-      dayElement.className = 'calendar-day active';
-      dayElement.textContent = day;
+      dayElement.className = 'calendar-day';
+      
+      // Применяем стили для диапазона
+      applyDayStyles(dayElement, currentDayDate);
       
       // Добавляем обработчик клика для активных дней
       dayElement.addEventListener('click', (e) => {
         e.stopPropagation();
-        const selectedDate = new Date(year, month, day);
-        const formattedDate = `${day} ${getMonthName(month)} ${year}`;
-        
-        if (fieldType === 'start') {
-          const startDateInput = document.getElementById('startDateInput');
-          if (startDateInput) {
-            startDateInput.value = formattedDate;
-          }
-          // Устанавливаем выбранную дату в глобальную переменную
-          window.selectedDeliveryDates = [selectedDate];
-        } else if (fieldType === 'end') {
-          const endDateInput = document.getElementById('endDateInput');
-          if (endDateInput) {
-            endDateInput.value = formattedDate;
-          }
-          // Если есть начальная дата, создаем диапазон
-          if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
-            const startDate = window.selectedDeliveryDates[0];
-            const dates = [];
-            const current = new Date(startDate);
-            while (current <= selectedDate) {
-              dates.push(new Date(current));
-              current.setDate(current.getDate() + 1);
-            }
-            window.selectedDeliveryDates = dates;
-          }
+        selectDateInRange(new Date(year, month, day), calendarElement);
+      });
+      
+      // Добавляем hover эффекты
+      dayElement.addEventListener('mouseenter', () => {
+        if (popupActiveInput === 'end' && popupStartDate && !popupEndDate) {
+          popupHoverDate = new Date(year, month, day);
+          updateHoverPreview(calendarElement);
         }
-        
-        updateAddToCartButtonState();
-        calendarElement.classList.remove('active');
+      });
+      
+      dayElement.addEventListener('mouseleave', () => {
+        if (popupHoverDate) {
+          popupHoverDate = null;
+          updateHoverPreview(calendarElement);
+        }
       });
     } else {
-      dayElement.className = 'calendar-day inactive';
-      dayElement.textContent = day;
+      dayElement.className = 'calendar-day unavailable';
     }
     
     grid.appendChild(dayElement);
@@ -849,6 +890,11 @@ function renderSimpleCalendar(calendarElement, fieldType = 'start') {
   
   // Обновляем состояние кнопок навигации
   updateCalendarNavigationButtons(calendarElement);
+  
+  // Применяем hover preview если нужно
+  if (popupHoverDate && popupStartDate && !popupEndDate && popupActiveInput === 'end') {
+    updateHoverPreview(calendarElement);
+  }
 }
 
 // Функция для проверки доступности даты для доставки
@@ -877,6 +923,250 @@ function isDateAvailableForDelivery(date) {
   
   // Проверяем, что дата не раньше ближайшей доступной даты
   return date >= nearestDeliveryDate;
+}
+
+// Функция обновления hover preview без перерендеринга
+function updateHoverPreview(calendarElement) {
+  if (!calendarElement) return;
+  
+  const grid = calendarElement.querySelector('.calendar-grid');
+  if (!grid) return;
+  
+  const dayElements = grid.querySelectorAll('.calendar-day');
+  
+  dayElements.forEach(dayElement => {
+    // Получаем дату из текстового содержимого
+    const dayText = dayElement.textContent.trim();
+    if (!dayText || dayElement.classList.contains('inactive')) return;
+    
+    const day = parseInt(dayText);
+    if (isNaN(day)) return;
+    
+    const year = popupCurrentDisplayYear;
+    const month = popupCurrentDisplayMonth;
+    const currentDayDate = new Date(year, month, day);
+    
+    // Убираем preview класс
+    dayElement.classList.remove('range-preview');
+    
+    // Добавляем preview класс если нужно
+    if (popupHoverDate && popupStartDate && !popupEndDate && popupActiveInput === 'end') {
+      if (isInPreviewRange(currentDayDate, popupStartDate, popupHoverDate)) {
+        // Не добавляем preview к начальной дате
+        if (!isSameDate(currentDayDate, popupStartDate)) {
+          dayElement.classList.add('range-preview');
+        }
+      }
+    }
+  });
+}
+
+// Функция применения стилей к дню календаря
+function applyDayStyles(dayElement, date) {
+  // Удаляем все классы состояний кроме preview (он обновляется отдельно)
+  dayElement.classList.remove('active', 'range-start', 'range-end', 'range-middle', 'excluded', 'unavailable');
+  
+  // Проверяем, доступна ли дата
+  if (!isDateAvailableForDelivery(date)) {
+    dayElement.classList.add('unavailable');
+    return;
+  }
+  
+  dayElement.classList.add('active');
+  
+  // Проверяем, исключена ли дата
+  if (isDateExcluded(date)) {
+    dayElement.classList.add('excluded');
+    return;
+  }
+  
+  // Применяем классы для выбранного диапазона
+  if (popupStartDate && isSameDate(date, popupStartDate)) {
+    dayElement.classList.add('range-start');
+  } else if (popupEndDate && isSameDate(date, popupEndDate)) {
+    dayElement.classList.add('range-end');
+  } else if (isInSelectedRange(date)) {
+    dayElement.classList.add('range-middle');
+  }
+}
+
+// Функция выбора даты в диапазоне
+function selectDateInRange(date, calendarElement) {
+  console.log('🎯 Клик на дату:', formatDateForInput(date), '| Текущий режим:', popupActiveInput);
+  
+  // Если у нас уже есть полный диапазон и кликаем на день в диапазоне - исключаем его
+  if (popupStartDate && popupEndDate && isInSelectedRange(date)) {
+    toggleExcludedDate(date);
+    renderSimpleCalendar(calendarElement, popupActiveInput);
+    updatePopupInputs();
+    return;
+  }
+  
+  // Если клик на начало или конец диапазона - начинаем выбор заново
+  if (popupStartDate && popupEndDate && (isSameDate(date, popupStartDate) || isSameDate(date, popupEndDate))) {
+    popupStartDate = date;
+    popupEndDate = null;
+    popupActiveInput = 'end';
+    popupExcludedDates = [];
+    updatePopupInputs();
+    renderSimpleCalendar(calendarElement, 'end');
+    return;
+  }
+  
+  if (popupActiveInput === 'start' || !popupStartDate) {
+    // Выбираем начальную дату
+    popupStartDate = date;
+    popupEndDate = null; // Сбрасываем конечную дату
+    
+    // Очищаем исключенные дни при выборе новой начальной даты
+    popupExcludedDates = [];
+    
+    updatePopupInputs();
+    
+    // Переключаемся на выбор конечной даты
+    popupActiveInput = 'end';
+    
+    // Обновляем атрибут календаря
+    calendarElement.setAttribute('data-field-type', 'end');
+    
+    // Перерендериваем календарь
+    renderSimpleCalendar(calendarElement, 'end');
+    
+    console.log('✅ Начальная дата выбрана:', formatDateForInput(date), '| Режим: выбор конечной даты');
+  } else {
+    // Выбираем конечную дату
+    popupEndDate = date;
+    
+    // Если конечная дата раньше начальной, меняем местами
+    if (popupEndDate < popupStartDate) {
+      const temp = popupStartDate;
+      popupStartDate = popupEndDate;
+      popupEndDate = temp;
+      
+      // Очищаем исключенные дни при перевороте диапазона
+      popupExcludedDates = [];
+    }
+    
+    updatePopupInputs();
+    renderSimpleCalendar(calendarElement, 'end');
+    
+    console.log('✅ Конечная дата выбрана:', formatDateForInput(date), '| Диапазон полный');
+    
+    // Закрываем календарь после выбора обеих дат
+    setTimeout(() => {
+      calendarElement.classList.remove('active');
+    }, 300);
+  }
+}
+
+// Функция для переключения исключенной даты
+function toggleExcludedDate(date) {
+  const dateString = date.toDateString();
+  const index = popupExcludedDates.findIndex(d => d.toDateString() === dateString);
+  
+  if (index > -1) {
+    // Удаляем дату из исключенных
+    popupExcludedDates.splice(index, 1);
+  } else {
+    // Добавляем дату в исключенные
+    popupExcludedDates.push(date);
+  }
+  
+  updatePopupInputs();
+}
+
+// Функция проверки, исключена ли дата
+function isDateExcluded(date) {
+  return popupExcludedDates.some(d => d.toDateString() === date.toDateString());
+}
+
+// Функция проверки одинаковости дат
+function isSameDate(date1, date2) {
+  return date1.getDate() === date2.getDate() &&
+         date1.getMonth() === date2.getMonth() &&
+         date1.getFullYear() === date2.getFullYear();
+}
+
+// Функция проверки, находится ли дата в выбранном диапазоне
+function isInSelectedRange(date) {
+  if (!popupStartDate || !popupEndDate) return false;
+  
+  const start = popupStartDate < popupEndDate ? popupStartDate : popupEndDate;
+  const end = popupStartDate < popupEndDate ? popupEndDate : popupStartDate;
+  
+  return date >= start && date <= end && !isSameDate(date, start) && !isSameDate(date, end);
+}
+
+// Функция проверки, находится ли дата в preview диапазоне
+function isInPreviewRange(date, start, hover) {
+  if (!start || !hover) return false;
+  
+  const rangeStart = start < hover ? start : hover;
+  const rangeEnd = start < hover ? hover : start;
+  
+  return date >= rangeStart && date <= rangeEnd;
+}
+
+// Функция обновления инпутов с выбранными датами
+function updatePopupInputs() {
+  const startDateInput = document.getElementById('startDateInput');
+  const endDateInput = document.getElementById('endDateInput');
+  
+  if (startDateInput) {
+    if (popupStartDate) {
+      startDateInput.value = formatDateForInput(popupStartDate);
+      console.log('📝 Начальная дата обновлена:', startDateInput.value);
+    } else {
+      startDateInput.value = '';
+    }
+  }
+  
+  if (endDateInput) {
+    if (popupEndDate) {
+      endDateInput.value = formatDateForInput(popupEndDate);
+      console.log('📝 Конечная дата обновлена:', endDateInput.value);
+    } else {
+      endDateInput.value = '';
+    }
+  }
+  
+  // Обновляем глобальную переменную с массивом дат
+  updateSelectedDeliveryDates();
+  
+  // Обновляем состояние кнопки добавления в корзину
+  updateAddToCartButtonState();
+}
+
+// Функция для форматирования даты для инпута
+function formatDateForInput(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+// Функция обновления глобального массива выбранных дат
+function updateSelectedDeliveryDates() {
+  if (!popupStartDate || !popupEndDate) {
+    window.selectedDeliveryDates = popupStartDate ? [popupStartDate] : [];
+    return;
+  }
+  
+  const start = popupStartDate < popupEndDate ? popupStartDate : popupEndDate;
+  const end = popupStartDate < popupEndDate ? popupEndDate : popupStartDate;
+  
+  const dates = [];
+  const current = new Date(start);
+  
+  while (current <= end) {
+    // Добавляем дату только если она не исключена
+    if (!isDateExcluded(current)) {
+      dates.push(new Date(current));
+    }
+    current.setDate(current.getDate() + 1);
+  }
+  
+  window.selectedDeliveryDates = dates;
 }
 
 // Вспомогательные функции
