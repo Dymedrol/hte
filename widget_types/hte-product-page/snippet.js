@@ -850,8 +850,26 @@ function isDateAvailableForDelivery(date) {
   const currentDate = new Date(currentTime);
   currentDate.setHours(0, 0, 0, 0);
   
-  // Проверяем, что дата не в прошлом
-  return date >= currentDate;
+  // Определяем время заказа
+  const currentHour = currentTime.getHours();
+  const currentMinutes = currentTime.getMinutes();
+  const currentTimeInMinutes = currentHour * 60 + currentMinutes;
+  const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
+  
+  // Вычисляем ближайшую доступную дату доставки
+  let nearestDeliveryDate;
+  if (currentTimeInMinutes < deadlineTimeInMinutes) {
+    // До 13:30 - доставка на следующий день
+    nearestDeliveryDate = new Date(currentDate);
+    nearestDeliveryDate.setDate(currentDate.getDate() + 1);
+  } else {
+    // После 13:30 - доставка через день (+2 дня)
+    nearestDeliveryDate = new Date(currentDate);
+    nearestDeliveryDate.setDate(currentDate.getDate() + 2);
+  }
+  
+  // Проверяем, что дата не раньше ближайшей доступной даты
+  return date >= nearestDeliveryDate;
 }
 
 // Вспомогательные функции
