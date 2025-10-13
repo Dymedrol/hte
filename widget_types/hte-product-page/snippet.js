@@ -485,6 +485,11 @@ function initQuantityPopup() {
     // Сбрасываем даты при открытии поп-апа
     resetPopupDates();
     
+    // ВАЖНО: Сбрасываем месяц попапа к текущему месяцу при открытии
+    // Это гарантирует, что календарь в попапе не будет зависеть от календаря на основной странице
+    popupCurrentDisplayMonth = null;
+    popupCurrentDisplayYear = null;
+    
     popup.classList.add('active');
   });
   
@@ -679,27 +684,29 @@ function initQuantityPopup() {
   window.quantityPopupInitialized = true;
 }
 
-// Переменная для хранения текущего отображаемого месяца
-let currentDisplayMonth = null;
-let currentDisplayYear = null;
+// Переменная для хранения текущего отображаемого месяца В ПОПАПЕ
+// ВАЖНО: эти переменные используются ТОЛЬКО для календарей в попапе выбора даты,
+// чтобы не влиять на календарь на основной странице для просмотра блюд
+let popupCurrentDisplayMonth = null;
+let popupCurrentDisplayYear = null;
 
-// Функция навигации по месяцам
+// Функция навигации по месяцам В ПОПАПЕ
 function navigateCalendarMonth(calendarElement, direction) {
-  if (currentDisplayMonth === null || currentDisplayYear === null) {
+  if (popupCurrentDisplayMonth === null || popupCurrentDisplayYear === null) {
     const currentDate = window.currentTime ? new Date(window.currentTime) : new Date();
-    currentDisplayMonth = currentDate.getMonth();
-    currentDisplayYear = currentDate.getFullYear();
+    popupCurrentDisplayMonth = currentDate.getMonth();
+    popupCurrentDisplayYear = currentDate.getFullYear();
   }
   
-  currentDisplayMonth += direction;
+  popupCurrentDisplayMonth += direction;
   
   // Обработка перехода через границы года
-  if (currentDisplayMonth < 0) {
-    currentDisplayMonth = 11;
-    currentDisplayYear--;
-  } else if (currentDisplayMonth > 11) {
-    currentDisplayMonth = 0;
-    currentDisplayYear++;
+  if (popupCurrentDisplayMonth < 0) {
+    popupCurrentDisplayMonth = 11;
+    popupCurrentDisplayYear--;
+  } else if (popupCurrentDisplayMonth > 11) {
+    popupCurrentDisplayMonth = 0;
+    popupCurrentDisplayYear++;
   }
   
   // Получаем тип поля из атрибута
@@ -708,7 +715,7 @@ function navigateCalendarMonth(calendarElement, direction) {
   renderSimpleCalendar(calendarElement, fieldType);
 }
 
-// Функция для обновления состояния кнопок навигации
+// Функция для обновления состояния кнопок навигации В ПОПАПЕ
 function updateCalendarNavigationButtons(calendarElement) {
   const prevBtn = calendarElement.querySelector('.calendar-nav-btn.prev-btn');
   const nextBtn = calendarElement.querySelector('.calendar-nav-btn.next-btn');
@@ -720,20 +727,20 @@ function updateCalendarNavigationButtons(calendarElement) {
   const currentYear = currentDate.getFullYear();
   
   // Инициализируем, если не установлены
-  if (currentDisplayMonth === null || currentDisplayYear === null) {
-    currentDisplayMonth = currentMonth;
-    currentDisplayYear = currentYear;
+  if (popupCurrentDisplayMonth === null || popupCurrentDisplayYear === null) {
+    popupCurrentDisplayMonth = currentMonth;
+    popupCurrentDisplayYear = currentYear;
   }
   
   // Проверяем, можно ли перейти назад (не раньше текущего месяца)
-  const canGoPrev = currentDisplayYear > currentYear || 
-                   (currentDisplayYear === currentYear && currentDisplayMonth > currentMonth);
+  const canGoPrev = popupCurrentDisplayYear > currentYear || 
+                   (popupCurrentDisplayYear === currentYear && popupCurrentDisplayMonth > currentMonth);
   
   // Проверяем, можно ли перейти вперед (не более чем на 6 месяцев вперед)
   const maxMonth = new Date(currentDate);
   maxMonth.setMonth(maxMonth.getMonth() + 6);
-  const canGoNext = currentDisplayYear < maxMonth.getFullYear() || 
-                   (currentDisplayYear === maxMonth.getFullYear() && currentDisplayMonth < maxMonth.getMonth());
+  const canGoNext = popupCurrentDisplayYear < maxMonth.getFullYear() || 
+                   (popupCurrentDisplayYear === maxMonth.getFullYear() && popupCurrentDisplayMonth < maxMonth.getMonth());
   
   // Обновляем состояние кнопок
   prevBtn.disabled = !canGoPrev;
@@ -743,7 +750,7 @@ function updateCalendarNavigationButtons(calendarElement) {
   nextBtn.classList.toggle('disabled', !canGoNext);
 }
 
-// Простая функция рендеринга календаря
+// Простая функция рендеринга календаря В ПОПАПЕ
 function renderSimpleCalendar(calendarElement, fieldType = 'start') {
   if (!calendarElement) return;
   
@@ -756,14 +763,14 @@ function renderSimpleCalendar(calendarElement, fieldType = 'start') {
   headers.forEach(header => grid.appendChild(header));
   
   // Инициализируем текущий месяц, если не установлен
-  if (currentDisplayMonth === null || currentDisplayYear === null) {
+  if (popupCurrentDisplayMonth === null || popupCurrentDisplayYear === null) {
     const currentDate = window.currentTime ? new Date(window.currentTime) : new Date();
-    currentDisplayMonth = currentDate.getMonth();
-    currentDisplayYear = currentDate.getFullYear();
+    popupCurrentDisplayMonth = currentDate.getMonth();
+    popupCurrentDisplayYear = currentDate.getFullYear();
   }
   
-  const year = currentDisplayYear;
-  const month = currentDisplayMonth;
+  const year = popupCurrentDisplayYear;
+  const month = popupCurrentDisplayMonth;
   
   // Обновляем заголовок
   const monthElement = calendarElement.querySelector('.calendar-month');

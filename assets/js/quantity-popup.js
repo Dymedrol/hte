@@ -1042,6 +1042,10 @@ function initQuantityPopup() {
 
   console.log('✅ Попап и кнопка найдены, инициализируем обработчики');
   
+  // Переменные для сохранения состояния основного календаря
+  let savedMainCalendarMonth = null;
+  let savedMainCalendarYear = null;
+  
   // Открытие поп-апа по кнопке "Заказать доставку"
   addToCartBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -1067,6 +1071,13 @@ function initQuantityPopup() {
       popupTotal.style.display = 'none';
     } else if (popupTotal) {
       popupTotal.style.display = 'block';
+    }
+    
+    // ВАЖНО: Сохраняем текущее состояние основного календаря перед открытием попапа
+    if (window.calendarInstance && window.calendarInstance.displayMonth) {
+      savedMainCalendarMonth = window.calendarInstance.displayMonth.getMonth();
+      savedMainCalendarYear = window.calendarInstance.displayMonth.getFullYear();
+      console.log('📅 Сохранено состояние основного календаря:', savedMainCalendarMonth, savedMainCalendarYear);
     }
     
     // Обновляем даты доставки перед логированием
@@ -1465,6 +1476,20 @@ function initQuantityPopup() {
     }
   });
 
+  // Функция для восстановления состояния основного календаря
+  function restoreMainCalendarState() {
+    if (window.calendarInstance && savedMainCalendarMonth !== null && savedMainCalendarYear !== null) {
+      // Восстанавливаем сохраненное состояние месяца основного календаря
+      window.calendarInstance.displayMonth = new Date(savedMainCalendarYear, savedMainCalendarMonth, 1);
+      console.log('📅 Восстановлено состояние основного календаря:', savedMainCalendarMonth, savedMainCalendarYear);
+      
+      // Обновляем отображение календаря на основной странице
+      if (typeof window.calendarInstance.renderCalendar === 'function') {
+        window.calendarInstance.renderCalendar();
+      }
+    }
+  }
+  
   // Функция для сброса всех выбранных дат в поп-апа
   function resetPopupDates() {
     // Сбрасываем локальные переменные
@@ -1532,6 +1557,9 @@ function initQuantityPopup() {
     if (popupTotal) {
       popupTotal.style.display = 'none';
     }
+    
+    // ВАЖНО: Восстанавливаем состояние основного календаря при сбросе попапа
+    restoreMainCalendarState();
   }
 
   // Закрытие поп-апа по клику на overlay или кнопку закрытия
@@ -1539,6 +1567,8 @@ function initQuantityPopup() {
     overlay.addEventListener('click', () => {
       popup.classList.remove('active');
       resetPopupDates();
+      // Восстанавливаем состояние основного календаря при закрытии
+      restoreMainCalendarState();
     });
   }
   
@@ -1546,6 +1576,8 @@ function initQuantityPopup() {
     closeBtn.addEventListener('click', () => {
       popup.classList.remove('active');
       resetPopupDates();
+      // Восстанавливаем состояние основного календаря при закрытии
+      restoreMainCalendarState();
     });
   }
   
@@ -1554,6 +1586,8 @@ function initQuantityPopup() {
     if (e.key === 'Escape' && popup.classList.contains('active')) {
       popup.classList.remove('active');
       resetPopupDates();
+      // Восстанавливаем состояние основного календаря при закрытии
+      restoreMainCalendarState();
     }
   });
 
