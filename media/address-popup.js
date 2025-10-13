@@ -2748,6 +2748,7 @@ class AddressPopupManager {
                 if (pricePart) {
                     const price = parseInt(pricePart.trim());
                     if (!isNaN(price)) {
+                        console.log(`💰 Цена программы "${item.title}" из комментария: ${price} ₽/день`);
                         return price;
                     }
                 }
@@ -2755,11 +2756,21 @@ class AddressPopupManager {
         }
         
         // Если не найдено в комментарии, вычисляем из общей стоимости
-        const totalPrice = this.getRealItemPrice(item);
+        // ВАЖНО: Используем total_price из виртуальной корзины, а не цену из DOM
+        const totalPrice = item.total_price || 0;
         const quantity = item.quantity || 1;
-        const calculatedPrice = totalPrice / quantity;
-        console.log(`💰 Расчет цены программы "${item.title}": ${totalPrice} ₽ / ${quantity} дней = ${calculatedPrice} ₽/день`);
-        return calculatedPrice;
+        
+        if (totalPrice > 0) {
+            const calculatedPrice = totalPrice / quantity;
+            console.log(`💰 Расчет цены программы "${item.title}": ${totalPrice} ₽ (total_price) / ${quantity} дней = ${calculatedPrice} ₽/день`);
+            return calculatedPrice;
+        }
+        
+        // Запасной вариант: если total_price отсутствует, используем getRealItemPrice
+        const fallbackPrice = this.getRealItemPrice(item);
+        const fallbackCalculated = fallbackPrice / quantity;
+        console.log(`⚠️ Расчет цены программы "${item.title}" (запасной): ${fallbackPrice} ₽ / ${quantity} дней = ${fallbackCalculated} ₽/день`);
+        return fallbackCalculated;
     }
     
     /**
