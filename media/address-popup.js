@@ -1142,10 +1142,10 @@ class AddressPopupManager {
         }
         
         // Обновляем количество товаров
-        const countElement = document.querySelector('[data-cart-item-count]');
-        if (countElement && cartData.items_count) {
-            countElement.textContent = cartData.items_count;
-        }
+        // const countElement = document.querySelector('[data-cart-item-count]');
+        // if (countElement && cartData.items_count) {
+        //     countElement.textContent = cartData.items_count;
+        // }
         
         // Обновляем полную сумму
         const fullTotalElement = document.querySelector('[data-cart-full-total-price]');
