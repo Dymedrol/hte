@@ -1142,18 +1142,19 @@ class PetsQuiz {
     console.log(`Общее количество пакетиков: ${totalPackages}`);
     console.log(`Общая стоимость корзины: ${totalCartPrice} руб.`);
 
-    // Подготавливаем данные для ajaxAPI.cart.add
-    const cartData = {};
-    const comments = {};
-
     // Генерируем случайный pets-id (от 1 до 10000)
     const petsId = Math.floor(Math.random() * 10000) + 1;
-    
-    cartItems.forEach((item, index) => {
-      // Используем variantId как ключ для корзины
-      cartData[item.variantId] = item.quantity;
-      
-      // Создаем комментарий для каждого товара с датой доставки
+
+    // Показываем индикатор загрузки
+    const addToCartButton = document.getElementById('btn-add-to-cart');
+    if (addToCartButton) {
+      addToCartButton.disabled = true;
+      addToCartButton.textContent = 'Добавление...';
+    }
+
+    // Функция для отправки одного товара
+    const submitSingleForm = async (item, index) => {
+      // Создаем комментарий для товара
       let productComment = `${item.productTitle} (${item.quantity} шт. × ${item.pricePerPackage} руб. = ${item.totalPrice} руб.)`;
       
       // Добавляем количество товаров и pets-id
@@ -1169,62 +1170,100 @@ class PetsQuiz {
         productComment += ` | ${deliveryInfo}`;
       }
       
-      comments[item.variantId] = productComment;
-    });
+      // Добавляем общую информацию о рационе
+      productComment += ` | Рацион для питомца: ${this.calculationDetails.petType}, ${this.calculationDetails.weight}. ${this.calculationDetails.dailyAmount}, ${this.calculationDetails.weeklyAmount}. ${this.calculationDetails.packaging}, ${this.calculationDetails.totalWeight}. ${this.calculationDetails.excessAmount}. ${this.excludedAllergens}`;
 
-    // Добавляем общий комментарий к заказу
-    let generalComment = `Рацион для питомца: ${this.calculationDetails.petType}, ${this.calculationDetails.weight}. ${this.calculationDetails.dailyAmount}, ${this.calculationDetails.weeklyAmount}. ${this.calculationDetails.packaging}, ${this.calculationDetails.totalWeight}. ${this.calculationDetails.excessAmount}. ${this.excludedAllergens}.`;
-    
-    // Добавляем дату и время доставки в общий комментарий, если они выбраны
-    if (this.selectedDeliveryDate) {
-      const deliveryDateStr = this.deliveryDatePopup.formatDate(this.selectedDeliveryDate);
-      let deliveryInfo = `Дата доставки: ${deliveryDateStr}`;
-      if (this.selectedDeliveryTime) {
-        deliveryInfo += `, время: ${this.selectedDeliveryTime}`;
+      console.log(`Создание формы для товара ${index + 1}:`, item.productTitle);
+      console.log(`Комментарий: ${productComment}`);
+
+      // Создаем форму
+      const form = document.createElement('form');
+      form.action = '/cart_items';
+      form.method = 'post';
+      form.setAttribute('data-product-id', item.productId);
+      form.style.display = 'none';
+
+      // Добавляем поле variant_id
+      const variantInput = document.createElement('input');
+      variantInput.type = 'hidden';
+      variantInput.name = 'variant_id';
+      variantInput.value = item.variantId;
+      form.appendChild(variantInput);
+
+      // Добавляем поле quantity
+      const quantityInput = document.createElement('input');
+      quantityInput.type = 'hidden';
+      quantityInput.name = 'quantity';
+      quantityInput.value = item.quantity;
+      form.appendChild(quantityInput);
+
+      // Добавляем поле comment
+      const commentInput = document.createElement('input');
+      commentInput.type = 'hidden';
+      commentInput.name = 'comment';
+      commentInput.value = productComment;
+      form.appendChild(commentInput);
+
+      // Добавляем форму в DOM
+      document.body.appendChild(form);
+
+      // Отправляем форму через fetch
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch('/cart_items', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        if (response.ok) {
+          console.log(`Товар ${index + 1} успешно добавлен в корзину`);
+          // Удаляем форму из DOM
+          document.body.removeChild(form);
+        } else {
+          throw new Error(`Ошибка при добавлении товара ${index + 1}`);
+        }
+      } catch (error) {
+        console.error(`Ошибка при добавлении товара ${index + 1}:`, error);
+        // Удаляем форму из DOM
+        if (document.body.contains(form)) {
+          document.body.removeChild(form);
+        }
+        throw error;
       }
-      generalComment += ` ${deliveryInfo}.`;
-    }
+    };
 
-    console.log('Данные для корзины:', cartData);
-    console.log('Комментарии:', comments);
-    console.log('Общий комментарий:', generalComment);
-
-    // Показываем индикатор загрузки
-    const addToCartButton = document.getElementById('btn-add-to-cart');
-    if (addToCartButton) {
-      addToCartButton.disabled = true;
-      addToCartButton.textContent = 'Добавление...';
-    }
-
-    // Добавляем товары в корзину через AJAX API
-    ajaxAPI.cart.add(cartData, {
-      comments: comments,
-      order_comment: generalComment
-    })
-    .done((response) => {
-      console.log('Товары успешно добавлены в корзину:', response);
-      
-      // Показываем сообщение об успехе
-      const message = `Программа добавлена в корзину!\n\n` +
-        `Количество продуктов: ${cartItems.length}\n` +
-        `Общее количество пакетиков: ${totalPackages}\n` +
-        `Общая стоимость: ${totalCartPrice} руб.`;
-      
-      // Переходим на страницу корзины
-      window.location.href = '/cart_items';
-    })
-    .fail((error) => {
-      console.error('Ошибка при добавлении в корзину:', error);
-      
-      // Показываем сообщение об ошибке
-      alert('Произошла ошибка при добавлении товаров в корзину. Попробуйте еще раз.');
-      
-      // Восстанавливаем кнопку
-      if (addToCartButton) {
-        addToCartButton.disabled = false;
-        addToCartButton.textContent = 'Добавить в корзину';
+    // Отправляем формы последовательно
+    (async () => {
+      try {
+        for (let i = 0; i < cartItems.length; i++) {
+          await submitSingleForm(cartItems[i], i);
+          // Небольшая задержка между запросами для гарантии последовательной обработки
+          if (i < cartItems.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 300));
+          }
+        }
+        
+        console.log('Все товары успешно добавлены в корзину');
+        
+        // Переходим на страницу корзины
+        window.location.href = '/cart_items';
+      } catch (error) {
+        console.error('Ошибка при добавлении товаров в корзину:', error);
+        
+        // Показываем сообщение об ошибке
+        alert('Произошла ошибка при добавлении товаров в корзину. Попробуйте еще раз.');
+        
+        // Восстанавливаем кнопку
+        if (addToCartButton) {
+          addToCartButton.disabled = false;
+          addToCartButton.textContent = 'Добавить в корзину';
+        }
       }
-    });
+    })();
   }
 
   getExcludedProducts() {
