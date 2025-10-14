@@ -43,6 +43,9 @@ class SettingsPanelBuilder {
     // Инициализируем event listeners после создания всех секций
     this.initializeEventListeners();
     
+    // Применяем параметры из URL (если есть)
+    this.applyURLParameters();
+    
     // Вызываем callback если он был передан
     if (this.onComplete && typeof this.onComplete === 'function') {
       this.onComplete();
@@ -899,6 +902,157 @@ class SettingsPanelBuilder {
    */
   getElements() {
     return this.elements;
+  }
+
+  /**
+   * Получает параметры из URL
+   * @returns {Object} - объект с параметрами calories и diet
+   */
+  getURLParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+      calories: urlParams.get('calories'),
+      diet: urlParams.get('diet')
+    };
+  }
+
+  /**
+   * Маппинг значений diet из URL на внутренние значения
+   */
+  getDietMapping() {
+    return {
+      'pescatarian': 'pescatarian',
+      'vegetarian': 'vegetarian',
+      'vegan': 'vegan'
+    };
+  }
+
+  /**
+   * Применяет параметры из URL к опциям
+   */
+  applyURLParameters() {
+    const urlParams = this.getURLParameters();
+    
+    // Применяем параметр calories
+    if (urlParams.calories) {
+      this.applyCaloriesFromURL(urlParams.calories);
+    }
+    
+    // Применяем параметр diet
+    if (urlParams.diet) {
+      this.applyDietFromURL(urlParams.diet);
+    }
+  }
+
+  /**
+   * Применяет калорийность из URL параметра
+   * @param {string} caloriesParam - значение калорийности из URL
+   */
+  applyCaloriesFromURL(caloriesParam) {
+    const calorieOptions = this.config.PRODUCT_CONFIG?.calorieOptions;
+    
+    if (!calorieOptions || calorieOptions.length === 0) {
+      console.log('Calorie options not available, skipping URL parameter');
+      return;
+    }
+    
+    // Проверяем, есть ли такая калорийность в конфигурации
+    const matchingOption = calorieOptions.find(option => option.value === caloriesParam);
+    
+    if (!matchingOption) {
+      console.log(`Calorie option ${caloriesParam} not found in configuration`);
+      return;
+    }
+    
+    // Находим DOM элемент с этой калорийностью
+    const calorieElement = document.querySelector(`.calorie-option[data-calories="${caloriesParam}"]`);
+    
+    if (calorieElement) {
+      // Убираем active класс у всех опций
+      document.querySelectorAll('.calorie-option').forEach(option => {
+        option.classList.remove('active');
+      });
+      
+      // Добавляем active класс к выбранной опции
+      calorieElement.classList.add('active');
+      
+      console.log(`✅ Applied calories from URL: ${caloriesParam}`);
+      
+      // Обновляем meal options после изменения калорийности
+      this.updateMealOptions();
+      
+      // Пересчитываем цену
+      if (window.productSection && window.productSection.priceManager) {
+        window.productSection.priceManager.recalculateTotalPrice();
+      }
+      
+      // Обновляем блюда
+      if (window.productSection && window.productSection.dishesManager) {
+        window.productSection.dishesManager.updateDishesAndNutrition();
+      }
+    } else {
+      console.log(`Calorie option element not found for ${caloriesParam}`);
+    }
+  }
+
+  /**
+   * Применяет тип диеты из URL параметра
+   * @param {string} dietParam - значение диеты из URL
+   */
+  applyDietFromURL(dietParam) {
+    const dietTypes = this.config.PRODUCT_CONFIG?.dietTypes;
+    
+    if (!dietTypes || dietTypes.length === 0) {
+      console.log('Diet types not available, skipping URL parameter');
+      return;
+    }
+    
+    // Получаем маппинг для диет
+    const dietMapping = this.getDietMapping();
+    const dietValue = dietMapping[dietParam];
+    
+    if (!dietValue) {
+      console.log(`Unknown diet parameter: ${dietParam}`);
+      return;
+    }
+    
+    // Проверяем, есть ли такая диета в конфигурации
+    const matchingDiet = dietTypes.find(diet => diet.value === dietValue);
+    
+    if (!matchingDiet) {
+      console.log(`Diet type ${dietValue} not found in configuration`);
+      return;
+    }
+    
+    // Находим DOM элемент с этой диетой
+    const dietElement = document.querySelector(`.diet-option[data-diet="${dietValue}"]`);
+    
+    if (dietElement) {
+      // Убираем active класс у всех опций
+      document.querySelectorAll('.diet-option').forEach(option => {
+        option.classList.remove('active');
+      });
+      
+      // Добавляем active класс к выбранной опции
+      dietElement.classList.add('active');
+      
+      console.log(`✅ Applied diet from URL: ${dietParam} -> ${dietValue}`);
+      
+      // Обновляем meal options после изменения диеты
+      this.updateMealOptions();
+      
+      // Пересчитываем цену
+      if (window.productSection && window.productSection.priceManager) {
+        window.productSection.priceManager.recalculateTotalPrice();
+      }
+      
+      // Обновляем блюда
+      if (window.productSection && window.productSection.dishesManager) {
+        window.productSection.dishesManager.updateDishesAndNutrition();
+      }
+    } else {
+      console.log(`Diet option element not found for ${dietValue}`);
+    }
   }
 }
 
