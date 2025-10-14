@@ -2,13 +2,74 @@
   <input type="hidden" name="_method" value="put">
   <input type="hidden" name="make_order" value="">
   {% if cart.items.size > 0 %}
-    {% comment %} Подсчитываем товары для питомцев {% endcomment %}
-    {% assign pets_items_count = 0 %}
-    {% assign pets_total_price = 0 %}
+    {% comment %} Группируем товары для питомцев по pets-id {% endcomment %}
+    {% assign pets_groups = "" | split: "," %}
+    {% assign pets_groups_data = "" %}
+    
     {% for item in cart.items %}
       {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}
-        {% assign pets_items_count = pets_items_count | plus: item.quantity %}
-        {% assign pets_total_price = pets_total_price | plus: item.total_price %}
+        {% comment %} Извлекаем pets-id и тип питомца из комментария {% endcomment %}
+        {% assign comment_parts = item.comment | split: '|' %}
+        {% assign pets_id = "" %}
+        {% assign pet_type = "" %}
+        
+        {% for part in comment_parts %}
+          {% assign trimmed_part = part | strip %}
+          {% if trimmed_part contains 'pets-id:' %}
+            {% assign pets_id_parts = trimmed_part | split: 'pets-id:' %}
+            {% if pets_id_parts.size > 1 %}
+              {% assign pets_id = pets_id_parts[1] | strip %}
+            {% endif %}
+          {% endif %}
+          {% if trimmed_part contains 'Рацион для питомца:' %}
+            {% assign pet_type_parts = trimmed_part | split: 'Рацион для питомца:' %}
+            {% if pet_type_parts.size > 1 %}
+              {% assign pet_type = pet_type_parts[1] | strip %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        
+        {% comment %} Если pets-id не найден, используем "default" {% endcomment %}
+        {% if pets_id == "" %}
+          {% assign pets_id = "default" %}
+        {% endif %}
+        
+        {% comment %} Если тип не найден, используем "Питомец" {% endcomment %}
+        {% if pet_type == "" %}
+          {% assign pet_type = "Питомец" %}
+        {% endif %}
+        
+        {% comment %} Добавляем или обновляем группу {% endcomment %}
+        {% assign group_key = pets_id %}
+        {% assign group_found = false %}
+        
+        {% comment %} Сохраняем данные в специальном формате: pets-id::type::count::price;; {% endcomment %}
+        {% if pets_groups_data == "" %}
+          {% assign pets_groups_data = group_key | append: "::" | append: pet_type | append: "::" | append: item.quantity | append: "::" | append: item.total_price | append: ";;" %}
+        {% else %}
+          {% assign current_groups = pets_groups_data | split: ";;" %}
+          {% assign new_groups_data = "" %}
+          
+          {% for group in current_groups %}
+            {% if group != "" %}
+              {% assign group_parts = group | split: "::" %}
+              {% if group_parts[0] == group_key %}
+                {% assign group_found = true %}
+                {% assign new_count = group_parts[2] | plus: item.quantity %}
+                {% assign new_price = group_parts[3] | plus: item.total_price %}
+                {% assign new_groups_data = new_groups_data | append: group_key | append: "::" | append: pet_type | append: "::" | append: new_count | append: "::" | append: new_price | append: ";;" %}
+              {% else %}
+                {% assign new_groups_data = new_groups_data | append: group | append: ";;" %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
+          {% unless group_found %}
+            {% assign new_groups_data = new_groups_data | append: group_key | append: "::" | append: pet_type | append: "::" | append: item.quantity | append: "::" | append: item.total_price | append: ";;" %}
+          {% endunless %}
+          
+          {% assign pets_groups_data = new_groups_data %}
+        {% endif %}
       {% endif %}
     {% endfor %}
     
@@ -427,60 +488,89 @@
               {% endunless %}
             {% endfor %}
             
-            {% comment %} Добавляем карточку "Рацион для питомца" если есть товары для питомцев {% endcomment %}
-            {% if pets_items_count > 0 %}
-              <div class="cart-item cart-item_pets-summary">
-                <div class="cart-item-content">
-                  <div class="cart-item-main">
-                    <div class="cart-item-image" style="background-image: url({{ 'puppy-icon.png' | asset_url }});"></div>
-                    
-                    <div class="cart-item-details">
-                      <div class="cart-item-top">
-                        <div class="cart-item-header">
-                          <div class="cart-item-info">
-                            <h2 class="cart-item-title">Рацион для питомца</h2>
-                            <div class="cart-item-tags">
-                              <span class="tag">{{ pets_items_count }} 
-                                {% assign quantity = pets_items_count %}
-                                {% assign last_digit = quantity | modulo: 10 %}
-                                {% assign last_two_digits = quantity | modulo: 100 %}
-                                {% if last_two_digits >= 11 and last_two_digits <= 19 %}
-                                  товаров
-                                {% elsif last_digit == 1 %}
-                                  товар
-                                {% elsif last_digit >= 2 and last_digit <= 4 %}
-                                  товара
-                                {% else %}
-                                  товаров
-                                {% endif %}
-                              </span>
+            {% comment %} Добавляем карточки для каждой группы питомцев {% endcomment %}
+            {% if pets_groups_data != "" %}
+              {% assign pets_groups_array = pets_groups_data | split: ";;" %}
+              
+              {% for group in pets_groups_array %}
+                {% if group != "" %}
+                  {% assign group_data = group | split: "::" %}
+                  {% assign pets_id = group_data[0] %}
+                  {% assign pet_type = group_data[1] %}
+                  {% assign group_count = group_data[2] %}
+                  {% assign group_price = group_data[3] %}
+                  
+                  {% comment %} Определяем заголовок и изображение по типу питомца {% endcomment %}
+                  {% assign card_title = "Рацион для питомца" %}
+                  {% assign card_image = "puppy-icon.png" %}
+                  
+                  {% assign pet_type_lower = pet_type | downcase %}
+                  
+                  {% if pet_type_lower contains 'кошка' or pet_type_lower contains 'котенок' or pet_type_lower contains 'кот' %}
+                    {% assign card_title = "Рацион для котят и кошек" %}
+                    {% assign card_image = "cat-icon.png" %}
+                  {% elsif pet_type_lower contains 'щенок' %}
+                    {% assign card_title = "Рацион для щенков" %}
+                    {% assign card_image = "puppy-icon.png" %}
+                  {% elsif pet_type_lower contains 'собака' or pet_type_lower contains 'взрослая собака' or pet_type_lower contains 'пес' %}
+                    {% assign card_title = "Рацион для взрослой собаки" %}
+                    {% assign card_image = "dog-icon.png" %}
+                  {% endif %}
+                  
+                  <div class="cart-item cart-item_pets-summary" data-pets-id="{{ pets_id }}" data-pet-type="{{ pet_type }}">
+                    <div class="cart-item-content">
+                      <div class="cart-item-main">
+                        <div class="cart-item-image" style="background-image: url({{ card_image | asset_url }});"></div>
+                        
+                        <div class="cart-item-details">
+                          <div class="cart-item-top">
+                            <div class="cart-item-header">
+                              <div class="cart-item-info">
+                                <h2 class="cart-item-title">{{ card_title }}</h2>
+                                <div class="cart-item-tags">
+                                  <span class="tag">{{ group_count }} 
+                                    {% assign quantity = group_count | plus: 0 %}
+                                    {% assign last_digit = quantity | modulo: 10 %}
+                                    {% assign last_two_digits = quantity | modulo: 100 %}
+                                    {% if last_two_digits >= 11 and last_two_digits <= 19 %}
+                                      товаров
+                                    {% elsif last_digit == 1 %}
+                                      товар
+                                    {% elsif last_digit >= 2 and last_digit <= 4 %}
+                                      товара
+                                    {% else %}
+                                      товаров
+                                    {% endif %}
+                                  </span>
+                                </div>
+                              </div>
+                              <button class="remove-item-btn js-pets-delete" aria-label="Удалить товары для этого питомца" data-pets-id="{{ pets_id }}" type="button">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                  <path d="M6 6L18 18M6 18L18 6" stroke="#9D9D9D" stroke-width="1.5"/>
+                                </svg>
+                              </button>
                             </div>
                           </div>
-                          <button class="remove-item-btn js-pets-delete" aria-label="Удалить все товары для питомцев" type="button">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                              <path d="M6 6L18 18M6 18L18 6" stroke="#9D9D9D" stroke-width="1.5"/>
-                            </svg>
-                          </button>
+                        </div>
+                      </div>
+                      
+                      <div class="cart-item-bottom">
+                        <div class="mobile-remove-link">
+                          <a href="#" class="remove-item-link js-pets-delete-mobile" data-pets-id="{{ pets_id }}">Удалить из корзины</a>
+                        </div>
+                        <div class="price-breakdown pets-price-breakdown">
+                          <div class="price-row total">
+                            <span class="price-label">Итого:</span>
+                            <span class="price-value">
+                              <span class="price-amount">{{ group_price | money }}</span>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  
-                  <div class="cart-item-bottom">
-                    <div class="mobile-remove-link">
-                      <a href="#" class="remove-item-link js-pets-delete-mobile">Удалить из корзины</a>
-                    </div>
-                    <div class="price-breakdown pets-price-breakdown">
-                      <div class="price-row total">
-                        <span class="price-label">Итого:</span>
-                        <span class="price-value">
-                          <span class="price-amount">{{ pets_total_price | money }}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                {% endif %}
+              {% endfor %}
             {% endif %}
           </div>
         
@@ -497,12 +587,6 @@
                   <div data-cart-total-price style="display: none;"></div>
                   <div id="cart-total-price"></div>
                 </div>
-                {% if pets_items_count > 0 %}
-                <div class="summary-row">
-                  <div>Рацион для питомца:</div>
-                  <div>{{ pets_total_price | money }}</div>
-                </div>
-                {% endif %}
                 <div class="summary-row" style="display: none">
                   <div>Скидка:</div>
                   <div class="discount">TODO</div>

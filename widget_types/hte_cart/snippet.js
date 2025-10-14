@@ -369,6 +369,165 @@ function handleToggleSwitchClick(event) {
     });
 }
 
+// Функция для проверки комментариев товаров для питомцев
+function checkPetsItemsComments() {
+    console.log('🐾 ===== ПРОВЕРКА КОММЕНТАРИЕВ ТОВАРОВ ДЛЯ ПИТОМЦЕВ =====');
+    
+    const petsItems = document.querySelectorAll('.cart-item_pets');
+    console.log('🔍 Найдено товаров для питомцев:', petsItems.length);
+    
+    petsItems.forEach((item, index) => {
+        const itemId = item.getAttribute('data-item-id');
+        const title = item.querySelector('.cart-item-title')?.textContent || 'Без названия';
+        const dataComment = item.getAttribute('data-comment');
+        
+        console.log(`\n🐾 Товар для питомца ${index + 1}:`);
+        console.log(`   📝 Название: ${title}`);
+        console.log(`   🆔 ID: ${itemId}`);
+        console.log(`   💬 Комментарий (data-comment):`, dataComment);
+        
+        // Извлекаем pets-id из комментария
+        if (dataComment) {
+            const petsIdMatch = dataComment.match(/pets-id:\s*(\S+)/);
+            const petTypeMatch = dataComment.match(/Рацион для питомца:\s*([^|]+)/);
+            
+            console.log(`   🔑 pets-id:`, petsIdMatch ? petsIdMatch[1] : '❌ НЕ НАЙДЕН');
+            console.log(`   🐕 Тип питомца:`, petTypeMatch ? petTypeMatch[1].trim() : '❌ НЕ НАЙДЕН');
+            
+            const hasDates = dataComment.includes('Даты доставки:') || 
+                           dataComment.includes('Массив дат:') ||
+                           dataComment.includes('Выбранные даты:');
+            console.log(`   📅 Есть даты в комментарии:`, hasDates ? '✅ ДА' : '❌ НЕТ');
+            
+            if (hasDates) {
+                console.log(`   📋 Полный комментарий:`, dataComment);
+            }
+        } else {
+            console.log(`   ⚠️ Комментарий отсутствует!`);
+        }
+    });
+    
+    console.log('\n🐾 ===== КОНЕЦ ПРОВЕРКИ =====');
+}
+
+// Функция для проверки группировки питомцев в карточках
+function checkPetsGrouping() {
+    console.log('📊 ===== ПРОВЕРКА ГРУППИРОВКИ ТОВАРОВ ДЛЯ ПИТОМЦЕВ =====');
+    
+    // Проверяем индивидуальные товары для питомцев
+    const individualPetsItems = document.querySelectorAll('.cart-item_pets:not(.cart-item_pets-summary)');
+    console.log('🛍️ Найдено индивидуальных товаров для питомцев:', individualPetsItems.length);
+    
+    const itemsByPetsId = {};
+    
+    individualPetsItems.forEach((item, index) => {
+        const itemId = item.getAttribute('data-item-id');
+        const title = item.querySelector('.cart-item-title')?.textContent?.trim() || 'Без названия';
+        const dataComment = item.getAttribute('data-comment');
+        
+        if (dataComment) {
+            const petsIdMatch = dataComment.match(/pets-id:\s*([^\|]+)/);
+            const petTypeMatch = dataComment.match(/Рацион для питомца:\s*([^\|]+)/);
+            
+            const petsId = petsIdMatch ? petsIdMatch[1].trim() : 'default';
+            const petType = petTypeMatch ? petTypeMatch[1].trim() : 'Неизвестно';
+            
+            if (!itemsByPetsId[petsId]) {
+                itemsByPetsId[petsId] = {
+                    type: petType,
+                    items: []
+                };
+            }
+            itemsByPetsId[petsId].items.push(title);
+        }
+    });
+    
+    console.log('\n🔍 Группировка по pets-id:');
+    Object.keys(itemsByPetsId).forEach(petsId => {
+        const group = itemsByPetsId[petsId];
+        console.log(`\n  🆔 pets-id: "${petsId}"`);
+        console.log(`     🐕 Тип: ${group.type}`);
+        console.log(`     📦 Товаров: ${group.items.length}`);
+        console.log(`     🛍️ Список:`, group.items);
+    });
+    
+    // Проверяем сводные карточки
+    const petsSummaryCards = document.querySelectorAll('.cart-item_pets-summary');
+    console.log('\n\n📋 ===== СВОДНЫЕ КАРТОЧКИ =====');
+    console.log('🔍 Найдено сводных карточек:', petsSummaryCards.length);
+    
+    petsSummaryCards.forEach((card, index) => {
+        const petsId = card.getAttribute('data-pets-id');
+        const petType = card.getAttribute('data-pet-type');
+        const title = card.querySelector('.cart-item-title')?.textContent || 'Без названия';
+        const count = card.querySelector('.cart-item-tags .tag')?.textContent || '0';
+        const price = card.querySelector('.price-amount')?.textContent || '0';
+        const imageEl = card.querySelector('.cart-item-image');
+        const imageUrl = imageEl ? imageEl.style.backgroundImage : 'нет';
+        
+        console.log(`\n📦 Карточка ${index + 1}:`);
+        console.log(`   🔑 pets-id: "${petsId}"`);
+        console.log(`   🐕 Тип питомца: "${petType}"`);
+        console.log(`   📝 Заголовок: "${title}"`);
+        console.log(`   🖼️ Картинка: ${imageUrl}`);
+        console.log(`   📊 Количество товаров: ${count}`);
+        console.log(`   💰 Итоговая цена: ${price}`);
+        
+        // Проверяем правильность заголовка и картинки
+        const petTypeLower = petType.toLowerCase();
+        let expectedTitle = 'Рацион для питомца';
+        let expectedImage = 'puppy-icon.png';
+        
+        if (petTypeLower.includes('кошка') || petTypeLower.includes('котенок') || petTypeLower.includes('кот')) {
+            expectedTitle = 'Рацион для котят и кошек';
+            expectedImage = 'cat-icon.png';
+        } else if (petTypeLower.includes('щенок')) {
+            expectedTitle = 'Рацион для щенков';
+            expectedImage = 'puppy-icon.png';
+        } else if (petTypeLower.includes('собака') || petTypeLower.includes('взрослая собака') || petTypeLower.includes('пес')) {
+            expectedTitle = 'Рацион для взрослой собаки';
+            expectedImage = 'dog-icon.png';
+        }
+        
+        const titleCorrect = title === expectedTitle;
+        const imageCorrect = imageUrl.includes(expectedImage);
+        
+        console.log(`   ✅ Заголовок правильный: ${titleCorrect ? 'ДА' : 'НЕТ'} (ожидается: "${expectedTitle}")`);
+        console.log(`   ✅ Картинка правильная: ${imageCorrect ? 'ДА' : 'НЕТ'} (ожидается: "${expectedImage}")`);
+    });
+    
+    // Проверяем сводку в правой колонке (товары для питомцев убраны из сводки)
+    console.log('\n\n💰 ===== СВОДКА В ПРАВОЙ КОЛОНКЕ =====');
+    console.log('ℹ️ Товары для питомцев НЕ отображаются в правой колонке');
+    console.log('ℹ️ Они показаны только в левой колонке в виде карточек-суммари');
+    
+    // Итоговая сводка
+    console.log('\n\n📊 ===== ИТОГОВАЯ СВОДКА =====');
+    console.log(`🛍️ Индивидуальных товаров для питомцев: ${individualPetsItems.length}`);
+    console.log(`🆔 Уникальных pets-id: ${Object.keys(itemsByPetsId).length}`);
+    console.log(`📋 Сводных карточек: ${petsSummaryCards.length}`);
+    
+    if (Object.keys(itemsByPetsId).length === petsSummaryCards.length) {
+        console.log('✅ Количество сводных карточек соответствует количеству уникальных pets-id');
+    } else {
+        console.warn('⚠️ ВНИМАНИЕ! Количество сводных карточек НЕ соответствует количеству уникальных pets-id!');
+        console.warn(`   Ожидается: ${Object.keys(itemsByPetsId).length}, найдено: ${petsSummaryCards.length}`);
+    }
+    
+    console.log('\n📊 ===== КОНЕЦ ПРОВЕРКИ ГРУППИРОВКИ =====');
+    
+    return {
+        individualItems: individualPetsItems.length,
+        uniquePetsIds: Object.keys(itemsByPetsId).length,
+        summaryCards: petsSummaryCards.length,
+        itemsByPetsId: itemsByPetsId
+    };
+}
+
+// Делаем функции доступными глобально
+window.checkPetsItemsComments = checkPetsItemsComments;
+window.checkPetsGrouping = checkPetsGrouping;
+
 $(document).ready(function() {
     // Инициализируем управление meal-option-item для premium продуктов
     managePremiumMealOptions();
@@ -378,6 +537,12 @@ $(document).ready(function() {
     
     // Обновляем информацию о ближайшей доставке
     updateDeliveryNoteSummary();
+    
+    // Проверяем комментарии товаров для питомцев при загрузке
+    setTimeout(() => {
+        checkPetsItemsComments();
+        checkPetsGrouping();
+    }, 1000);
     
     // Используем делегирование событий для обработки всех toggle-switch
     document.addEventListener('click', handleToggleSwitchClick);
@@ -479,30 +644,46 @@ $(document).ready(function() {
         }, 100);
     });
     
-    // Обрабатываем удаление всех товаров для питомцев
+    // Обрабатываем удаление товаров для питомцев по pets-id
     $(document).on('click', '.js-pets-delete', function(e) {
         e.preventDefault();
         
-        // Находим все товары для питомцев в корзине
+        const deleteBtn = this;
+        const petsId = deleteBtn.getAttribute('data-pets-id');
+        
+        console.log('Удаление товаров для питомца с pets-id:', petsId);
+        
+        // Находим все товары для питомцев с этим pets-id
         const petsItems = document.querySelectorAll('.cart-item_pets');
         const itemIds = [];
         
         petsItems.forEach(item => {
             const itemId = item.getAttribute('data-item-id');
-            if (itemId) {
-                itemIds.push(parseInt(itemId)); // Преобразуем в число
+            const comment = item.getAttribute('data-comment');
+            
+            // Проверяем, содержит ли комментарий нужный pets-id
+            if (itemId && comment) {
+                if (petsId) {
+                    // Если указан конкретный pets-id, проверяем его в комментарии
+                    if (comment.includes(`pets-id: ${petsId}`) || comment.includes(`pets-id:${petsId}`)) {
+                        itemIds.push(parseInt(itemId));
+                        console.log(`Найден товар с pets-id ${petsId}:`, itemId);
+                    }
+                } else {
+                    // Если pets-id не указан (для обратной совместимости), удаляем все товары для питомцев
+                    itemIds.push(parseInt(itemId));
+                }
             }
         });
         
         if (itemIds.length === 0) {
-            console.log('Нет товаров для питомцев для удаления');
+            console.log('Нет товаров для удаления с pets-id:', petsId);
             return;
         }
         
-        console.log('Удаляем товары для питомцев:', itemIds);
+        console.log('Удаляем товары с ID:', itemIds);
         
         // Показываем индикатор загрузки
-        const deleteBtn = this;
         const originalContent = deleteBtn.innerHTML;
         deleteBtn.innerHTML = '<div class="loading-spinner"></div>';
         deleteBtn.disabled = true;
@@ -512,7 +693,7 @@ $(document).ready(function() {
             items: itemIds
         }, function(response) {
             if (response.success) {
-                console.log('Все товары для питомцев успешно удалены');
+                console.log('Товары для питомца успешно удалены');
                 // Перезагружаем страницу для обновления корзины
                 window.location.reload();
             } else {
@@ -525,30 +706,46 @@ $(document).ready(function() {
         });
     });
     
-    // Обрабатываем удаление всех товаров для питомцев через мобильную ссылку
+    // Обрабатываем удаление товаров для питомцев через мобильную ссылку по pets-id
     $(document).on('click', '.js-pets-delete-mobile', function(e) {
         e.preventDefault();
         
-        // Находим все товары для питомцев в корзине
+        const deleteLink = this;
+        const petsId = deleteLink.getAttribute('data-pets-id');
+        
+        console.log('Удаление товаров для питомца с pets-id (мобильная версия):', petsId);
+        
+        // Находим все товары для питомцев с этим pets-id
         const petsItems = document.querySelectorAll('.cart-item_pets');
         const itemIds = [];
         
         petsItems.forEach(item => {
             const itemId = item.getAttribute('data-item-id');
-            if (itemId) {
-                itemIds.push(parseInt(itemId)); // Преобразуем в число
+            const comment = item.getAttribute('data-comment');
+            
+            // Проверяем, содержит ли комментарий нужный pets-id
+            if (itemId && comment) {
+                if (petsId) {
+                    // Если указан конкретный pets-id, проверяем его в комментарии
+                    if (comment.includes(`pets-id: ${petsId}`) || comment.includes(`pets-id:${petsId}`)) {
+                        itemIds.push(parseInt(itemId));
+                        console.log(`Найден товар с pets-id ${petsId}:`, itemId);
+                    }
+                } else {
+                    // Если pets-id не указан (для обратной совместимости), удаляем все товары для питомцев
+                    itemIds.push(parseInt(itemId));
+                }
             }
         });
         
         if (itemIds.length === 0) {
-            console.log('Нет товаров для питомцев для удаления');
+            console.log('Нет товаров для удаления с pets-id:', petsId);
             return;
         }
         
-        console.log('Удаляем товары для питомцев (мобильная версия):', itemIds);
+        console.log('Удаляем товары с ID (мобильная версия):', itemIds);
         
         // Показываем индикатор загрузки
-        const deleteLink = this;
         const originalContent = deleteLink.innerHTML;
         deleteLink.innerHTML = 'Удаление...';
         deleteLink.style.pointerEvents = 'none';
@@ -558,7 +755,7 @@ $(document).ready(function() {
             items: itemIds
         }, function(response) {
             if (response.success) {
-                console.log('Все товары для питомцев успешно удалены (мобильная версия)');
+                console.log('Товары для питомца успешно удалены (мобильная версия)');
                 // Перезагружаем страницу для обновления корзины
                 window.location.reload();
             } else {
