@@ -290,6 +290,18 @@ class QuizPopup {
             }
         };
         
+        // Helper function to set data attributes for URL parameters
+        const setItemDataAttributes = (element, calories, diet = null) => {
+            if (element) {
+                element.setAttribute('data-calories', calories);
+                if (diet && diet !== 'no-preference') {
+                    element.setAttribute('data-diet', diet);
+                } else {
+                    element.removeAttribute('data-diet');
+                }
+            }
+        };
+        
         console.log('=== QUIZ RESULTS ANALYSIS ===');
         console.log('showAppropriateProgramItems called');
         console.log('step2Answer (calories):', step2Answer);
@@ -320,14 +332,16 @@ class QuizPopup {
             const sportItem = document.querySelector('.quiz-programs-list .sport-program-item');
             if (sportItem) {
                 sportItem.style.display = 'flex';
+                setItemDataAttributes(sportItem, '2300');
                 logProgramWithCalories('Sport Program', '2300', sportItem);
             }
-        } else if (step2Answer === '2800') {
-            console.log('🎯 Showing Sport Program for 2800 calories');
+        } else if (step2Answer === '2500') {
+            console.log('🎯 Showing Sport Program for 2500 calories');
             const sport2800Item = document.querySelector('.quiz-programs-list .sport-2800-program-item');
             if (sport2800Item) {
                 sport2800Item.style.display = 'flex';
-                logProgramWithCalories('Sport Program', '2800', sport2800Item);
+                setItemDataAttributes(sport2800Item, '2500');
+                logProgramWithCalories('Sport Program', '2500', sport2800Item);
             }
         } else if (step2Answer === '1800') {
             console.log('🎯 Processing 1800 calories');
@@ -338,23 +352,26 @@ class QuizPopup {
             }
             
             if (step3Answer === 'no-preference') {
-                console.log('📋 For 1800 calories + no-preference: showing Premium 1800 + Base 1800');
+                console.log('📋 For 1800 calories + no-preference: showing Premium 1800 + Comfort 1800');
                 const premium1800NoPrefItem = document.querySelector('.quiz-programs-list .premium-1800-no-preference-item');
                 const base1800Item = document.querySelector('.quiz-programs-list .base-1800-program-item');
                 
                 if (premium1800NoPrefItem) {
                     premium1800NoPrefItem.style.display = 'flex';
+                    setItemDataAttributes(premium1800NoPrefItem, '1800', 'no-preference');
                     logProgramWithCalories('Premium Program', '1800', premium1800NoPrefItem);
                 }
                 if (base1800Item) {
                     base1800Item.style.display = 'flex';
-                    logProgramWithCalories('Base Program', '1800', base1800Item);
+                    setItemDataAttributes(base1800Item, '1800', 'no-preference');
+                    logProgramWithCalories('Comfort Program', '1800', base1800Item);
                 }
             } else if (step3Answer === 'pescatarian') {
                 console.log('📋 For 1800 calories + pescatarian: showing Premium 1800 with pescatarian option');
                 const premium1800PescatarianItem = document.querySelector('.quiz-programs-list .premium-1800-pescatarian-item');
                 if (premium1800PescatarianItem) {
                     premium1800PescatarianItem.style.display = 'flex';
+                    setItemDataAttributes(premium1800PescatarianItem, '1800', 'pescatarian');
                     logProgramWithCalories('Premium Program with pescatarian option', '1800', premium1800PescatarianItem);
                 }
             } else if (step3Answer === 'vegetarian') {
@@ -362,6 +379,7 @@ class QuizPopup {
                 const premium1800VegetarianItem = document.querySelector('.quiz-programs-list .premium-1800-vegetarian-item');
                 if (premium1800VegetarianItem) {
                     premium1800VegetarianItem.style.display = 'flex';
+                    setItemDataAttributes(premium1800VegetarianItem, '1800', 'vegetarian');
                     logProgramWithCalories('Premium Program with vegetarian option', '1800', premium1800VegetarianItem);
                 }
             } else if (step3Answer === 'vegan') {
@@ -369,6 +387,7 @@ class QuizPopup {
                 const premium1800VeganItem = document.querySelector('.quiz-programs-list .premium-1800-vegan-item');
                 if (premium1800VeganItem) {
                     premium1800VeganItem.style.display = 'flex';
+                    setItemDataAttributes(premium1800VeganItem, '1800', 'vegan');
                     logProgramWithCalories('Premium Program with vegan option', '1800', premium1800VeganItem);
                 }
             }
@@ -381,21 +400,24 @@ class QuizPopup {
             }
             
             if (step3Answer === 'no-preference') {
-                console.log('📋 For 1300 calories + no-preference: showing Premium 1300 + Base 1300 + Start 1300');
+                console.log('📋 For 1300 calories + no-preference: showing Premium 1300 + Comfort 1300 + Start 1300');
                 const premium1300NoPrefItem = document.querySelector('.quiz-programs-list .premium-1300-no-preference-item');
                 const base1300Item = document.querySelector('.quiz-programs-list .base-1300-program-item');
                 const start1300Item = document.querySelector('.quiz-programs-list .start-1300-program-item');
                 
                 if (premium1300NoPrefItem) {
                     premium1300NoPrefItem.style.display = 'flex';
+                    setItemDataAttributes(premium1300NoPrefItem, '1300', 'no-preference');
                     logProgramWithCalories('Premium Program', '1300', premium1300NoPrefItem);
                 }
                 if (base1300Item) {
                     base1300Item.style.display = 'flex';
-                    logProgramWithCalories('Base Program', '1300', base1300Item);
+                    setItemDataAttributes(base1300Item, '1300', 'no-preference');
+                    logProgramWithCalories('Comfort Program', '1300', base1300Item);
                 }
                 if (start1300Item) {
                     start1300Item.style.display = 'flex';
+                    setItemDataAttributes(start1300Item, '1300', 'no-preference');
                     logProgramWithCalories('Start Program', '1300', start1300Item);
                 }
             } else if (step3Answer === 'pescatarian') {
@@ -403,6 +425,7 @@ class QuizPopup {
                 const premium1300PescatarianItem = document.querySelector('.quiz-programs-list .premium-1300-pescatarian-item');
                 if (premium1300PescatarianItem) {
                     premium1300PescatarianItem.style.display = 'flex';
+                    setItemDataAttributes(premium1300PescatarianItem, '1300', 'pescatarian');
                     logProgramWithCalories('Premium Program with pescatarian option', '1300', premium1300PescatarianItem);
                 }
             } else if (step3Answer === 'vegetarian') {
@@ -410,6 +433,7 @@ class QuizPopup {
                 const premium1300VegetarianItem = document.querySelector('.quiz-programs-list .premium-1300-vegetarian-item');
                 if (premium1300VegetarianItem) {
                     premium1300VegetarianItem.style.display = 'flex';
+                    setItemDataAttributes(premium1300VegetarianItem, '1300', 'vegetarian');
                     logProgramWithCalories('Premium Program with vegetarian option', '1300', premium1300VegetarianItem);
                 }
             } else if (step3Answer === 'vegan') {
@@ -417,6 +441,7 @@ class QuizPopup {
                 const premium1300VeganItem = document.querySelector('.quiz-programs-list .premium-1300-vegan-item');
                 if (premium1300VeganItem) {
                     premium1300VeganItem.style.display = 'flex';
+                    setItemDataAttributes(premium1300VeganItem, '1300', 'vegan');
                     logProgramWithCalories('Premium Program with vegan option', '1300', premium1300VeganItem);
                 }
             }
@@ -436,14 +461,17 @@ class QuizPopup {
                 
                 if (premium1000NoPrefItem) {
                     premium1000NoPrefItem.style.display = 'flex';
+                    setItemDataAttributes(premium1000NoPrefItem, '1000', 'no-preference');
                     logProgramWithCalories('Premium Program', '1000', premium1000NoPrefItem);
                 }
                 if (detoxItem) {
                     detoxItem.style.display = 'flex';
+                    setItemDataAttributes(detoxItem, '1000', 'no-preference');
                     logProgramWithCalories('Detox Program', '1000', detoxItem);
                 }
                 if (start1000Item) {
                     start1000Item.style.display = 'flex';
+                    setItemDataAttributes(start1000Item, '1000', 'no-preference');
                     logProgramWithCalories('Start Program', '1000', start1000Item);
                 }
             } else if (step3Answer === 'pescatarian') {
@@ -451,6 +479,7 @@ class QuizPopup {
                 const premium1000PescatarianItem = document.querySelector('.quiz-programs-list .premium-1000-pescatarian-item');
                 if (premium1000PescatarianItem) {
                     premium1000PescatarianItem.style.display = 'flex';
+                    setItemDataAttributes(premium1000PescatarianItem, '1000', 'pescatarian');
                     logProgramWithCalories('Premium Program with pescatarian option', '1000', premium1000PescatarianItem);
                 }
             } else if (step3Answer === 'vegetarian') {
@@ -459,10 +488,12 @@ class QuizPopup {
                 const detoxItem = document.querySelector('.quiz-programs-list .detox-program-item');
                 if (premium1000VegetarianItem) {
                     premium1000VegetarianItem.style.display = 'flex';
+                    setItemDataAttributes(premium1000VegetarianItem, '1000', 'vegetarian');
                     logProgramWithCalories('Premium Program with vegetarian option', '1000', premium1000VegetarianItem);
                 }
                 if (detoxItem) {
                     detoxItem.style.display = 'flex';
+                    setItemDataAttributes(detoxItem, '1000', 'vegetarian');
                     logProgramWithCalories('Detox Program', '1000', detoxItem);
                 }
             } else if (step3Answer === 'vegan') {
@@ -471,10 +502,12 @@ class QuizPopup {
                 const detoxItem = document.querySelector('.quiz-programs-list .detox-program-item');
                 if (premium1000VeganItem) {
                     premium1000VeganItem.style.display = 'flex';
+                    setItemDataAttributes(premium1000VeganItem, '1000', 'vegan');
                     logProgramWithCalories('Premium Program with vegan option', '1000', premium1000VeganItem);
                 }
                 if (detoxItem) {
                     detoxItem.style.display = 'flex';
+                    setItemDataAttributes(detoxItem, '1000', 'vegan');
                     logProgramWithCalories('Detox Program', '1000', detoxItem);
                 }
             }
@@ -524,13 +557,38 @@ class QuizPopup {
                 
                 if (programClass && programPages[programClass]) {
                     const targetPage = programPages[programClass];
-                    console.log(`Opening program page: ${targetPage} for ${programClass}`);
+                    
+                    // Get calories and diet from data attributes
+                    const calories = item.getAttribute('data-calories');
+                    const diet = item.getAttribute('data-diet');
+                    
+                    // Build URL with parameters
+                    let finalUrl = targetPage;
+                    const params = new URLSearchParams();
+                    
+                    if (calories) {
+                        params.append('calories', calories);
+                    }
+                    
+                    if (diet) {
+                        params.append('diet', diet);
+                    }
+                    
+                    // Add parameters to URL if any exist
+                    const paramString = params.toString();
+                    if (paramString) {
+                        finalUrl += '?' + paramString;
+                    }
+                    
+                    console.log(`Opening program page: ${finalUrl} for ${programClass}`);
+                    console.log(`  - Calories: ${calories || 'none'}`);
+                    console.log(`  - Diet: ${diet || 'none'}`);
                     
                     // Close quiz popup
                     this.close();
                     
-                    // Navigate to the program page
-                    window.location.href = targetPage;
+                    // Navigate to the program page with parameters
+                    window.location.href = finalUrl;
                 }
             });
         });
