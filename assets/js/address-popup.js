@@ -2380,11 +2380,15 @@ class AddressPopupManager {
         for (const part of commentParts) {
             const trimmedPart = part.trim();
             
-            // Ищем блоки с датами
-            if (trimmedPart.includes('Выбранные даты:') || trimmedPart.includes('Массив дат:')) {
-                const datePart = trimmedPart.split(/Выбранные даты:|Массив дат:/)[1];
+            // Ищем блоки с датами (включая товары для питомцев)
+            if (trimmedPart.includes('Выбранные даты:') || trimmedPart.includes('Массив дат:') || trimmedPart.includes('Дата доставки:')) {
+                const datePart = trimmedPart.split(/Выбранные даты:|Массив дат:|Дата доставки:/)[1];
                 if (datePart) {
-                    const dateString = datePart.trim();
+                    // Убираем время если оно есть (например: "16.10.2025, время: 08:00-09:00")
+                    let dateString = datePart.trim();
+                    if (dateString.includes(',')) {
+                        dateString = dateString.split(',')[0].trim();
+                    }
                     
                     // Парсим даты из строки
                     for (let i = 0; i < datePatterns.length; i++) {
@@ -2562,7 +2566,15 @@ class AddressPopupManager {
                 // Проверяем, является ли товар программой питания
                 const isProgram = this.isProgramItem(item);
                 
-                if (isProgram) {
+                // Проверяем, является ли товар рационом для питомцев
+                const isPetsItem = comment && comment.includes('pets-id:');
+                
+                if (isPetsItem) {
+                    // Для товаров питомцев: вся стоимость в один день доставки
+                    const itemTotalPrice = item.total_price || 0;
+                    console.log(`🐾 Товар для питомцев "${item.title}": ${itemTotalPrice} ₽ (полная стоимость в один день)`);
+                    totalCost += itemTotalPrice;
+                } else if (isProgram) {
                     // Для программ: цена программы в день
                     const dailyPrice = this.getProgramDailyPrice(item);
                     console.log(`💰 Программа "${item.title}": ${dailyPrice} ₽/день`);
@@ -2588,7 +2600,19 @@ class AddressPopupManager {
      * Проверяет, является ли товар программой питания
      */
     isProgramItem(item) {
-        // Проверяем по canonical_collection или другим признакам
+        // Сначала проверяем, не товар ли это для питомцев
+        let comment = item.comment || '';
+        if (!comment) {
+            comment = this.getCommentFromDOM(item) || '';
+        }
+        
+        // Если в комментарии есть pets-id, это товар для питомцев, а НЕ программа
+        if (comment && comment.includes('pets-id:')) {
+            console.log(`🐾 Товар "${item.title}" это рацион для питомцев, НЕ программа`);
+            return false;
+        }
+        
+        // Проверяем по canonical_collection
         if (item.canonical_collection && item.canonical_collection.includes('program')) {
             return true;
         }

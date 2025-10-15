@@ -434,12 +434,53 @@ class PetsQuiz {
     
     // Инициализируем попап выбора даты доставки
     this.deliveryDatePopup = null;
+    
+    // Элемент для loading overlay
+    this.loadingOverlay = null;
   }
 
   init() {
     this.bindEvents();
     this.updateProgress();
     this.initDeliveryDatePopup();
+    this.initLoadingOverlay();
+  }
+  
+  initLoadingOverlay() {
+    // Инициализируем элемент loading overlay
+    this.loadingOverlay = document.getElementById('petsQuizLoadingOverlay');
+  }
+  
+  showLoading(text = 'Добавляем товары в корзину...', subtext = 'Пожалуйста, подождите') {
+    if (!this.loadingOverlay) {
+      this.loadingOverlay = document.getElementById('petsQuizLoadingOverlay');
+    }
+    
+    if (this.loadingOverlay) {
+      // Обновляем текст загрузки, если нужно
+      const loadingText = this.loadingOverlay.querySelector('.loading-text');
+      const loadingSubtext = this.loadingOverlay.querySelector('.loading-subtext');
+      
+      if (loadingText) loadingText.textContent = text;
+      if (loadingSubtext) loadingSubtext.textContent = subtext;
+      
+      // Показываем overlay с небольшой задержкой для плавной анимации
+      setTimeout(() => {
+        this.loadingOverlay.classList.add('active');
+      }, 10);
+      
+      // Блокируем скролл страницы
+      document.body.style.overflow = 'hidden';
+    }
+  }
+  
+  hideLoading() {
+    if (this.loadingOverlay) {
+      this.loadingOverlay.classList.remove('active');
+      
+      // Восстанавливаем скролл страницы
+      document.body.style.overflow = '';
+    }
   }
   
   initDeliveryDatePopup() {
@@ -632,8 +673,21 @@ class PetsQuiz {
     const btnNextStep2 = document.getElementById('btn-next-step2');
     if (btnNextStep2) {
       btnNextStep2.addEventListener('click', () => {
-        this.calculateDiet();
-        this.nextStep();
+        // Показываем loader при расчете
+        this.showLoading('Рассчитываем рацион...', 'Подбираем подходящие продукты');
+        
+        // Небольшая задержка для показа loader
+        setTimeout(() => {
+          try {
+            this.calculateDiet();
+            this.hideLoading();
+            this.nextStep();
+          } catch (error) {
+            console.error('Ошибка при расчете рациона:', error);
+            this.hideLoading();
+            alert('Произошла ошибка при расчете рациона. Попробуйте еще раз.');
+          }
+        }, 100);
       });
     }
 
@@ -1114,6 +1168,9 @@ class PetsQuiz {
       console.log('Выбранное время доставки:', this.selectedDeliveryTime);
     }
     
+    // Показываем индикатор загрузки
+    this.showLoading('Добавляем товары в корзину...', 'Пожалуйста, подождите');
+    
     // Подготавливаем данные для корзины
     const cartItems = this.distributedProducts.map((product, index) => {
       const cartItem = {
@@ -1144,13 +1201,6 @@ class PetsQuiz {
 
     // Генерируем случайный pets-id (от 1 до 10000)
     const petsId = Math.floor(Math.random() * 10000) + 1;
-
-    // Показываем индикатор загрузки
-    const addToCartButton = document.getElementById('btn-add-to-cart');
-    if (addToCartButton) {
-      addToCartButton.disabled = true;
-      addToCartButton.textContent = 'Добавление...';
-    }
 
     // Функция для отправки одного товара
     const submitSingleForm = async (item, index) => {
@@ -1249,19 +1299,21 @@ class PetsQuiz {
         
         console.log('Все товары успешно добавлены в корзину');
         
-        // Переходим на страницу корзины
-        window.location.href = '/cart_items';
+        // Скрываем индикатор загрузки перед переходом
+        // (небольшая задержка для плавности)
+        setTimeout(() => {
+          this.hideLoading();
+          // Переходим на страницу корзины
+          window.location.href = '/cart_items';
+        }, 300);
       } catch (error) {
         console.error('Ошибка при добавлении товаров в корзину:', error);
         
+        // Скрываем индикатор загрузки
+        this.hideLoading();
+        
         // Показываем сообщение об ошибке
         alert('Произошла ошибка при добавлении товаров в корзину. Попробуйте еще раз.');
-        
-        // Восстанавливаем кнопку
-        if (addToCartButton) {
-          addToCartButton.disabled = false;
-          addToCartButton.textContent = 'Добавить в корзину';
-        }
       }
     })();
   }
@@ -1388,6 +1440,9 @@ class PetsQuiz {
     this.distributedProducts = [];
     this.selectedDeliveryDate = null;
     this.selectedDeliveryTime = null;
+    
+    // Скрываем loading если он активен
+    this.hideLoading();
     
     this.showStep(1);
     
