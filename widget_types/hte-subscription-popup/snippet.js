@@ -359,52 +359,54 @@ class SubscriptionPopupAutoManager {
     console.log('❌ Ошибка валидации:', message);
   }
 
-  // Отправляет данные на Mindbox API
-  async submitToMindboxAPI(email) {
+  // Отправляет данные на Mindbox API через SDK
+  submitToMindboxAPI(email) {
     const submitBtn = document.getElementById('subscriptionPopupBtn');
     
     if (!submitBtn) return;
+
+    // Проверяем наличие Mindbox SDK
+    if (typeof mindbox === 'undefined') {
+      console.error('❌ Mindbox SDK не загружен');
+      this.showApiError();
+      return;
+    }
 
     // Показываем состояние загрузки
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Отправляем...';
     submitBtn.disabled = true;
 
-    try {
-      const response = await fetch('https://api.s.mindbox.ru/v3/operations/async?endpointId=HowtogreenRu&operation=SubscribeForm', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customer: {
-            email: email,
-            subscriptions: [
-              {
-                pointOfContact: "Email"
-              }
-            ]
-          }
-        })
-      });
-
-      if (response.ok) {
+    // Используем Mindbox SDK для отправки
+    mindbox("async", {
+      operation: "SubscribeForm",
+      data: {
+        customer: {
+          email: email
+        }
+      },
+      onSuccess: () => {
         console.log('✅ Подписка успешно отправлена на Mindbox API');
+        
         // Запоминаем, что пользователь подписался
         this.rememberUserSubscribed();
+        
         // Показываем экран благодарности
         this.showThanksScreen();
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        
+        // Восстанавливаем кнопку
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      },
+      onError: (error) => {
+        console.error('❌ Ошибка отправки на Mindbox API:', error);
+        this.showApiError();
+        
+        // Восстанавливаем кнопку
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
       }
-    } catch (error) {
-      console.error('❌ Ошибка отправки на Mindbox API:', error);
-      this.showApiError();
-    } finally {
-      // Восстанавливаем кнопку
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }
+    });
   }
 
   // Показывает ошибку API

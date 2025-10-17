@@ -1733,12 +1733,24 @@
         flex-direction: column;
         gap: var(--spacing-16);
         
-        // Десктопная версия - элементы в ряд, итого справа
+        // Десктопная версия - элементы в ряд, прижаты к левому краю
         @media (min-width: 768px) {
             flex-direction: row;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: flex-end;
-            gap: var(--spacing-20);
+            gap: var(--spacing-60);
+        }
+    }
+    
+    // Убираем фиксированную ширину у delivery-info в карточках питомцев
+    .delivery-info {
+        width: auto;
+        min-width: auto;
+        
+        // Десктопная версия - первая (слева)
+        @media (min-width: 768px) {
+            order: 1;
+            width: 330px;
         }
     }
     
@@ -1747,12 +1759,12 @@
         
         // Мобильная версия - внизу
         @media (max-width: 767px) {
-            order: 2;
+            order: 3;
         }
         
-        // Десктопная версия - слева
+        // Десктопная версия - посередине
         @media (min-width: 768px) {
-            order: 1;
+            order: 2;
         }
     }
     
@@ -1779,9 +1791,9 @@
             }
         }
         
-        // Десктопная версия - справа внизу
+        // Десктопная версия - последняя (справа)
         @media (min-width: 768px) {
-            order: 2;
+            order: 3;
             
             .price-row.total {
                 justify-content: flex-end;

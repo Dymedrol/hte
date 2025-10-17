@@ -43,9 +43,58 @@
         {% assign group_key = pets_id %}
         {% assign group_found = false %}
         
-        {% comment %} Сохраняем данные в специальном формате: pets-id::type::count::price;; {% endcomment %}
+        {% comment %} Извлекаем даты и время доставки из комментария {% endcomment %}
+        {% assign delivery_dates = "" %}
+        {% assign delivery_time = "" %}
+        
+        {% for part in comment_parts %}
+          {% assign trimmed_part = part | strip %}
+          
+          {% comment %} Извлекаем дату {% endcomment %}
+          {% if trimmed_part contains 'Выбранные даты:' or trimmed_part contains 'Массив дат:' or trimmed_part contains 'Дата доставки:' %}
+            {% if trimmed_part contains 'Выбранные даты:' %}
+              {% assign date_part = trimmed_part | split: 'Выбранные даты:' %}
+            {% elsif trimmed_part contains 'Массив дат:' %}
+              {% assign date_part = trimmed_part | split: 'Массив дат:' %}
+            {% elsif trimmed_part contains 'Дата доставки:' %}
+              {% assign date_part = trimmed_part | split: 'Дата доставки:' %}
+            {% endif %}
+            
+            {% if date_part.size > 1 %}
+              {% assign date_string = date_part[1] | strip %}
+              {% comment %} Убираем ", время:" и все что после него {% endcomment %}
+              {% if date_string contains ', время' %}
+                {% assign date_clean = date_string | split: ', время' %}
+                {% assign delivery_dates = date_clean[0] | strip %}
+              {% elsif date_string contains ',время' %}
+                {% assign date_clean = date_string | split: ',время' %}
+                {% assign delivery_dates = date_clean[0] | strip %}
+              {% else %}
+                {% assign delivery_dates = date_string %}
+              {% endif %}
+              
+              {% comment %} Извлекаем время из той же строки если оно есть {% endcomment %}
+              {% if date_string contains 'время:' %}
+                {% assign time_parts = date_string | split: 'время:' %}
+                {% if time_parts.size > 1 %}
+                  {% assign delivery_time = time_parts[1] | strip %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+          
+          {% comment %} Также ищем время в отдельной части комментария {% endcomment %}
+          {% if delivery_time == "" and trimmed_part contains 'Время доставки:' %}
+            {% assign time_part = trimmed_part | split: 'Время доставки:' %}
+            {% if time_part.size > 1 %}
+              {% assign delivery_time = time_part[1] | strip %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        
+        {% comment %} Сохраняем данные в специальном формате: pets-id::type::count::price::dates::time;; {% endcomment %}
         {% if pets_groups_data == "" %}
-          {% assign pets_groups_data = group_key | append: "::" | append: pet_type | append: "::" | append: item.quantity | append: "::" | append: item.total_price | append: ";;" %}
+          {% assign pets_groups_data = group_key | append: "::" | append: pet_type | append: "::" | append: item.quantity | append: "::" | append: item.total_price | append: "::" | append: delivery_dates | append: "::" | append: delivery_time | append: ";;" %}
         {% else %}
           {% assign current_groups = pets_groups_data | split: ";;" %}
           {% assign new_groups_data = "" %}
@@ -57,7 +106,16 @@
                 {% assign group_found = true %}
                 {% assign new_count = group_parts[2] | plus: item.quantity %}
                 {% assign new_price = group_parts[3] | plus: item.total_price %}
-                {% assign new_groups_data = new_groups_data | append: group_key | append: "::" | append: pet_type | append: "::" | append: new_count | append: "::" | append: new_price | append: ";;" %}
+                {% comment %} Если даты еще не сохранены для этой группы, сохраняем их {% endcomment %}
+                {% assign existing_dates = group_parts[4] | default: "" %}
+                {% assign existing_time = group_parts[5] | default: "" %}
+                {% if existing_dates == "" and delivery_dates != "" %}
+                  {% assign existing_dates = delivery_dates %}
+                {% endif %}
+                {% if existing_time == "" and delivery_time != "" %}
+                  {% assign existing_time = delivery_time %}
+                {% endif %}
+                {% assign new_groups_data = new_groups_data | append: group_key | append: "::" | append: pet_type | append: "::" | append: new_count | append: "::" | append: new_price | append: "::" | append: existing_dates | append: "::" | append: existing_time | append: ";;" %}
               {% else %}
                 {% assign new_groups_data = new_groups_data | append: group | append: ";;" %}
               {% endif %}
@@ -65,7 +123,7 @@
           {% endfor %}
           
           {% unless group_found %}
-            {% assign new_groups_data = new_groups_data | append: group_key | append: "::" | append: pet_type | append: "::" | append: item.quantity | append: "::" | append: item.total_price | append: ";;" %}
+            {% assign new_groups_data = new_groups_data | append: group_key | append: "::" | append: pet_type | append: "::" | append: item.quantity | append: "::" | append: item.total_price | append: "::" | append: delivery_dates | append: "::" | append: delivery_time | append: ";;" %}
           {% endunless %}
           
           {% assign pets_groups_data = new_groups_data %}
@@ -367,17 +425,43 @@
                     <div class="cart-item-bottom">
                       <div class="delivery-info">
                           <div class="delivery-row">
-                            <div class="info-icon" data-tooltip="Доставка товаров из полезного магазина осуществляется в первый день доставки программы">i</div>
+                            {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}
+                              <div class="info-icon" data-tooltip="Дата доставки рациона для питомца">i</div>
+                            {% else %}
+                              <div class="info-icon" data-tooltip="Доставка товаров из полезного магазина осуществляется в первый день доставки программы">i</div>
+                            {% endif %}
                             <span class="delivery-label" id="delivery-date-label">Доставка:</span>
                             <span class="delivery-value">
                               {% assign comment_parts = item.comment | split: '|' %}
                               {% assign delivery_dates_found = false %}
                               {% for part in comment_parts %}
-                                {% if part contains 'Даты доставки:' %}
-                                  {% assign date_part = part | split: 'Даты доставки:' %}
+                                {% assign trimmed_part = part | strip %}
+                                {% if trimmed_part contains 'Даты доставки:' or trimmed_part contains 'Выбранные даты:' or trimmed_part contains 'Массив дат:' or trimmed_part contains 'Дата доставки:' %}
+                                  {% comment %} Правильно извлекаем дату в зависимости от формата {% endcomment %}
+                                  {% if trimmed_part contains 'Выбранные даты:' %}
+                                    {% assign date_part = trimmed_part | split: 'Выбранные даты:' %}
+                                  {% elsif trimmed_part contains 'Массив дат:' %}
+                                    {% assign date_part = trimmed_part | split: 'Массив дат:' %}
+                                  {% elsif trimmed_part contains 'Дата доставки:' %}
+                                    {% assign date_part = trimmed_part | split: 'Дата доставки:' %}
+                                  {% elsif trimmed_part contains 'Даты доставки:' %}
+                                    {% assign date_part = trimmed_part | split: 'Даты доставки:' %}
+                                  {% endif %}
+                                  
                                   {% if date_part.size > 1 %}
-                                    {% assign date_string = date_part[1] | strip | remove: '[' | remove: ']' %}
+                                    {% assign date_string_raw = date_part[1] | strip | remove: '[' | remove: ']' %}
                                     {% assign delivery_dates_found = true %}
+                                    
+                                    {% comment %} Убираем ", время:" и все что после него {% endcomment %}
+                                    {% if date_string_raw contains ', время' %}
+                                      {% assign date_clean = date_string_raw | split: ', время' %}
+                                      {% assign date_string = date_clean[0] | strip %}
+                                    {% elsif date_string_raw contains ',время' %}
+                                      {% assign date_clean = date_string_raw | split: ',время' %}
+                                      {% assign date_string = date_clean[0] | strip %}
+                                    {% else %}
+                                      {% assign date_string = date_string_raw %}
+                                    {% endif %}
                                     
                                     {% comment %} Пытаемся найти диапазон дат {% endcomment %}
                                     {% if date_string contains ' - ' %}
@@ -386,9 +470,13 @@
                                     {% elsif date_string contains ',' %}
                                       {% comment %} Несколько дат через запятую - берем первую и последнюю {% endcomment %}
                                       {% assign dates_array = date_string | split: ',' %}
-                                      {% assign first_date = dates_array.first | strip | remove: '[' | remove: ']' %}
-                                      {% assign last_date = dates_array.last | strip | remove: '[' | remove: ']' %}
-                                      {{ first_date }} - {{ last_date }}
+                                      {% assign first_date = dates_array.first | strip %}
+                                      {% assign last_date = dates_array.last | strip %}
+                                      {% if first_date == last_date %}
+                                        {{ first_date }}
+                                      {% else %}
+                                        {{ first_date }} - {{ last_date }}
+                                      {% endif %}
                                     {% else %}
                                       {% comment %} Одна дата - показываем как есть {% endcomment %}
                                       {{ date_string }}
@@ -397,24 +485,46 @@
                                 {% endif %}
                               {% endfor %}
                               {% unless delivery_dates_found %}
-                                В первый день доставки программы
+                                {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}
+                                  Дата доставки не указана
+                                {% else %}
+                                  В первый день доставки программы
+                                {% endif %}
                               {% endunless %}
                             </span>
                           </div>
                            <div class="delivery-row">
-                            <div class="info-icon" data-tooltip="Доставка товаров из полезного магазина осуществляется в первый день доставки программы">i</div>
+                            {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}
+                              <div class="info-icon" data-tooltip="Время доставки рациона для питомца">i</div>
+                            {% else %}
+                              <div class="info-icon" data-tooltip="Доставка товаров из полезного магазина осуществляется в первый день доставки программы">i</div>
+                            {% endif %}
                             <span class="delivery-label" id="delivery-time-label">Время:</span>
                             <span class="delivery-value">
                               {% assign comment_parts = item.comment | split: '|' %}
+                              {% assign time_found = false %}
                               {% for part in comment_parts %}
-                                {% if part contains 'Время доставки:' %}
-                                  {% assign time_part = part | split: 'Время доставки:' %}
+                                {% assign trimmed_part = part | strip %}
+                                
+                                {% comment %} Ищем время в отдельной части "Время доставки:" {% endcomment %}
+                                {% if trimmed_part contains 'Время доставки:' %}
+                                  {% assign time_part = trimmed_part | split: 'Время доставки:' %}
                                   {% if time_part.size > 1 %}
                                     {{ time_part[1] | strip }}
+                                    {% assign time_found = true %}
+                                  {% endif %}
+                                {% endif %}
+                                
+                                {% comment %} Также ищем "время:" внутри строки с датой {% endcomment %}
+                                {% if time_found == false and trimmed_part contains 'время:' and trimmed_part contains 'Дата доставки:' or trimmed_part contains 'Выбранные даты:' or trimmed_part contains 'Массив дат:' %}
+                                  {% assign time_parts = trimmed_part | split: 'время:' %}
+                                  {% if time_parts.size > 1 %}
+                                    {{ time_parts[1] | strip }}
+                                    {% assign time_found = true %}
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
-                              {% unless item.comment contains 'Время доставки:' %}
+                              {% unless time_found %}
                                 С 6:00 до 10:00
                               {% endunless %}
                             </span>
@@ -499,21 +609,23 @@
                   {% assign pet_type = group_data[1] %}
                   {% assign group_count = group_data[2] %}
                   {% assign group_price = group_data[3] %}
+                  {% assign group_dates = group_data[4] %}
+                  {% assign group_time = group_data[5] %}
                   
                   {% comment %} Определяем заголовок и изображение по типу питомца {% endcomment %}
-                  {% assign card_title = "Рацион для питомца" %}
+                  {% assign card_title = "Недельный рацион для питомца" %}
                   {% assign card_image = "puppy-icon.png" %}
                   
                   {% assign pet_type_lower = pet_type | downcase %}
                   
                   {% if pet_type_lower contains 'кошка' or pet_type_lower contains 'котенок' or pet_type_lower contains 'кот' %}
-                    {% assign card_title = "Рацион для котят и кошек" %}
+                    {% assign card_title = "Недельный рацион для котят и кошек" %}
                     {% assign card_image = "cat-icon.png" %}
                   {% elsif pet_type_lower contains 'щенок' %}
-                    {% assign card_title = "Рацион для щенков" %}
+                    {% assign card_title = "Недельный рацион для щенков" %}
                     {% assign card_image = "puppy-icon.png" %}
                   {% elsif pet_type_lower contains 'собака' or pet_type_lower contains 'взрослая собака' or pet_type_lower contains 'пес' %}
-                    {% assign card_title = "Рацион для взрослой собаки" %}
+                    {% assign card_title = "Недельный рацион для взрослой собаки" %}
                     {% assign card_image = "dog-icon.png" %}
                   {% endif %}
                   
@@ -555,6 +667,49 @@
                       </div>
                       
                       <div class="cart-item-bottom">
+                        <div class="delivery-info">
+                          <div class="delivery-row">
+                            <div class="info-icon" data-tooltip="Дата доставки рациона для питомца">i</div>
+                            <span class="delivery-label">Доставка:</span>
+                            <span class="delivery-value">
+                              {% if group_dates != "" %}
+                                {% assign date_string = group_dates | strip | remove: '[' | remove: ']' %}
+                                {% comment %} Пытаемся найти диапазон дат {% endcomment %}
+                                {% if date_string contains ' - ' %}
+                                  {% comment %} Уже есть диапазон дат {% endcomment %}
+                                  {{ date_string }}
+                                {% elsif date_string contains ',' %}
+                                  {% comment %} Несколько дат через запятую - берем первую и последнюю {% endcomment %}
+                                  {% assign dates_array = date_string | split: ',' %}
+                                  {% assign first_date = dates_array.first | strip | remove: '[' | remove: ']' %}
+                                  {% assign last_date = dates_array.last | strip | remove: '[' | remove: ']' %}
+                                  {% if first_date == last_date %}
+                                    {{ first_date }}
+                                  {% else %}
+                                    {{ first_date }} - {{ last_date }}
+                                  {% endif %}
+                                {% else %}
+                                  {% comment %} Одна дата - показываем как есть {% endcomment %}
+                                  {{ date_string }}
+                                {% endif %}
+                              {% else %}
+                                Дата доставки не указана
+                              {% endif %}
+                            </span>
+                          </div>
+                          <div class="delivery-row">
+                            <div class="info-icon" data-tooltip="Время доставки рациона для питомца">i</div>
+                            <span class="delivery-label">Время:</span>
+                            <span class="delivery-value">
+                              {% if group_time != "" %}
+                                {{ group_time }}
+                              {% else %}
+                                С 6:00 до 10:00
+                              {% endif %}
+                            </span>
+                          </div>
+                        </div>
+                        
                         <div class="mobile-remove-link">
                           <a href="#" class="remove-item-link js-pets-delete-mobile" data-pets-id="{{ pets_id }}">Удалить из корзины</a>
                         </div>
