@@ -77,10 +77,200 @@ function updateDeliveryNoteSummary() {
             updateDeliveryNoteByTime(deliveryNoteElement);
         }
     } else {
-        console.log('Нет программ в корзине, используем логику по времени');
-        // Нет программ - используем логику по времени
-        updateDeliveryNoteByTime(deliveryNoteElement);
+        console.log('Нет программ в корзине, проверяем товары полезного магазина и питомцев');
+        // Нет программ - проверяем товары полезного магазина и карточки питомцев
+        const hasOtherItemsDelivery = analyzeOtherItemsDelivery(deliveryNoteElement);
+        
+        if (!hasOtherItemsDelivery) {
+            console.log('Не найдено дат в других товарах, используем логику по времени');
+            // Если не нашли даты в других товарах - используем логику по времени
+            updateDeliveryNoteByTime(deliveryNoteElement);
+        }
     }
+}
+
+// Функция для анализа товаров полезного магазина и карточек питомцев
+function analyzeOtherItemsDelivery(deliveryNoteElement) {
+    console.log('🔍 Анализ товаров полезного магазина и карточек питомцев...');
+    
+    let earliestDeliveryInfo = null;
+    
+    // 1. Анализируем обычные товары (не программы, не доставка)
+    const allCartItems = document.querySelectorAll('.cart-item');
+    const regularItems = [];
+    
+    allCartItems.forEach(item => {
+        const canonicalCollection = item.getAttribute('data-canonical-collection') || '';
+        const isPetsItem = item.classList.contains('cart-item_pets');
+        const isPetsSummary = item.classList.contains('cart-item_pets-summary');
+        
+        // Исключаем программы и товары доставки, но включаем обычные товары для питомцев
+        if (!canonicalCollection.includes('program') && 
+            !canonicalCollection.includes('dostavka') &&
+            !isPetsSummary) { // Не включаем сводные карточки на этом этапе
+            regularItems.push(item);
+        }
+    });
+    
+    console.log('Найдено обычных товаров:', regularItems.length);
+    
+    // Анализируем обычные товары
+    regularItems.forEach((item, index) => {
+        const comment = getItemComment(item);
+        if (!comment) return;
+        
+        console.log(`Товар ${index + 1}, комментарий:`, comment);
+        
+        const deliveryInfo = extractDeliveryInfo(comment);
+        if (deliveryInfo.date && deliveryInfo.time) {
+            const parsedDate = parseDeliveryDate(deliveryInfo.date);
+            
+            if (parsedDate) {
+                if (!earliestDeliveryInfo || parsedDate < earliestDeliveryInfo.date) {
+                    earliestDeliveryInfo = {
+                        date: parsedDate,
+                        time: deliveryInfo.time
+                    };
+                    console.log(`✅ Новая самая ранняя дата из товаров: ${deliveryInfo.date} с ${deliveryInfo.time}`);
+                }
+            }
+        }
+    });
+    
+    // 2. Анализируем объединенные карточки питомцев
+    const petsSummaryCards = document.querySelectorAll('.cart-item_pets-summary');
+    console.log('Найдено карточек питомцев:', petsSummaryCards.length);
+    
+    petsSummaryCards.forEach((card, index) => {
+        const petsId = card.getAttribute('data-pets-id');
+        console.log(`🐾 Карточка питомца ${index + 1}, pets-id: ${petsId}`);
+        
+        // Находим все товары для этого питомца
+        const petsItems = document.querySelectorAll(`.cart-item_pets`);
+        
+        petsItems.forEach(petsItem => {
+            const comment = getItemComment(petsItem);
+            if (!comment) return;
+            
+            // Проверяем, что это товар для нужного питомца
+            if (comment.includes(`pets-id: ${petsId}`) || comment.includes(`pets-id:${petsId}`)) {
+                const deliveryInfo = extractDeliveryInfo(comment);
+                
+                if (deliveryInfo.date && deliveryInfo.time) {
+                    const parsedDate = parseDeliveryDate(deliveryInfo.date);
+                    
+                    if (parsedDate) {
+                        if (!earliestDeliveryInfo || parsedDate < earliestDeliveryInfo.date) {
+                            earliestDeliveryInfo = {
+                                date: parsedDate,
+                                time: deliveryInfo.time
+                            };
+                            console.log(`✅ Новая самая ранняя дата из товаров питомцев: ${deliveryInfo.date} с ${deliveryInfo.time}`);
+                        }
+                    }
+                }
+            }
+        });
+    });
+    
+    // 3. Устанавливаем результат
+    if (earliestDeliveryInfo) {
+        const formattedDate = formatDeliveryDate(earliestDeliveryInfo.date);
+        deliveryNoteElement.textContent = `Ближайшая доставка: ${formattedDate} с ${earliestDeliveryInfo.time}`;
+        console.log(`✅ Установлена ближайшая доставка из других товаров: ${formattedDate} с ${earliestDeliveryInfo.time}`);
+        return true;
+    }
+    
+    console.log('❌ Не найдено дат доставки в товарах полезного магазина и питомцев');
+    return false;
+}
+
+// Функция для получения комментария товара
+function getItemComment(item) {
+    // Сначала пробуем получить из data-comment атрибута
+    const dataComment = item.getAttribute('data-comment');
+    if (dataComment) {
+        return dataComment;
+    }
+    
+    // Затем пробуем из input[data-comment]
+    const commentInput = item.querySelector('input[data-comment]');
+    if (commentInput) {
+        return commentInput.value || '';
+    }
+    
+    return null;
+}
+
+// Функция для извлечения информации о дате и времени доставки из комментария
+function extractDeliveryInfo(comment) {
+    const commentParts = comment.split('|');
+    let deliveryDate = null;
+    let deliveryTime = null;
+    
+    commentParts.forEach(part => {
+        const trimmedPart = part.trim();
+        
+        // Ищем дату доставки (разные форматы)
+        if (trimmedPart.includes('Даты доставки:') || 
+            trimmedPart.includes('Выбранные даты:') || 
+            trimmedPart.includes('Массив дат:') || 
+            trimmedPart.includes('Дата доставки:')) {
+            
+            let datePart = null;
+            
+            if (trimmedPart.includes('Выбранные даты:')) {
+                datePart = trimmedPart.split('Выбранные даты:')[1];
+            } else if (trimmedPart.includes('Массив дат:')) {
+                datePart = trimmedPart.split('Массив дат:')[1];
+            } else if (trimmedPart.includes('Дата доставки:')) {
+                datePart = trimmedPart.split('Дата доставки:')[1];
+            } else if (trimmedPart.includes('Даты доставки:')) {
+                datePart = trimmedPart.split('Даты доставки:')[1];
+            }
+            
+            if (datePart) {
+                // Убираем время если оно есть в строке с датой
+                let cleanDate = datePart.trim();
+                if (cleanDate.includes(', время')) {
+                    cleanDate = cleanDate.split(', время')[0].trim();
+                } else if (cleanDate.includes(',время')) {
+                    cleanDate = cleanDate.split(',время')[0].trim();
+                }
+                
+                // Убираем квадратные скобки
+                cleanDate = cleanDate.replace(/[\[\]]/g, '');
+                
+                // Если есть несколько дат через запятую, берем первую (самую раннюю)
+                if (cleanDate.includes(',')) {
+                    cleanDate = cleanDate.split(',')[0].trim();
+                }
+                
+                deliveryDate = cleanDate;
+            }
+        }
+        
+        // Ищем время доставки
+        if (trimmedPart.includes('Время доставки:')) {
+            const timePart = trimmedPart.split('Время доставки:')[1];
+            if (timePart) {
+                deliveryTime = timePart.trim();
+            }
+        }
+        
+        // Также ищем время внутри строки с датой
+        if (!deliveryTime && trimmedPart.includes('время:')) {
+            const timePart = trimmedPart.split('время:')[1];
+            if (timePart) {
+                deliveryTime = timePart.trim();
+            }
+        }
+    });
+    
+    return {
+        date: deliveryDate,
+        time: deliveryTime
+    };
 }
 
 // Функция для обновления времени доставки на основе текущего времени
