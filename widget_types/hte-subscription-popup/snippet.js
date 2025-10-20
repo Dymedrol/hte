@@ -199,13 +199,17 @@ class SubscriptionPopupAutoManager {
   // Показывает экран благодарности
   showThanksScreen() {
     const popupForm = document.getElementById('popupForm');
-    const popupThanks = document.getElementById('popupThanks');
+    const popupThanks = document.getElementById('subscriptionPopupThanks');
     
     if (popupForm && popupThanks) {
+      console.log('🎉 Показываем экран благодарности');
+      
       // Скрываем форму
       popupForm.style.display = 'none';
-      // Показываем экран благодарности
+      // Показываем экран благодарности (принудительно устанавливаем стиль)
       popupThanks.style.display = 'flex';
+      popupThanks.style.visibility = 'visible';
+      popupThanks.style.opacity = '1';
       
       // Автоматически закрываем попап через 3 секунды
       setTimeout(() => {
@@ -215,6 +219,10 @@ class SubscriptionPopupAutoManager {
           document.body.style.overflow = '';
         }
       }, 3000);
+    } else {
+      console.error('❌ Не найдены элементы popupForm или popupThanks');
+      console.log('popupForm:', popupForm);
+      console.log('popupThanks:', popupThanks);
     }
   }
 
@@ -477,5 +485,28 @@ window.subscriptionPopupAutoManager = new SubscriptionPopupAutoManager();
 document.addEventListener('DOMContentLoaded', () => {
   subscriptionPopupAutoManager.init();
 });
+
+// Глобальная функция для открытия попапа из консоли браузера
+window.openSubscriptionPopup = function() {
+  console.log('🎯 Открываем попап подписки из консоли');
+  subscriptionPopupAutoManager.showPopup();
+};
+
+// Глобальная функция для сброса памяти (для тестирования)
+window.resetSubscriptionPopupMemory = function() {
+  console.log('🔄 Сбрасываем память попапа подписки');
+  subscriptionPopupAutoManager.resetAllMemory();
+};
+
+// Глобальная функция для просмотра статистики
+window.getSubscriptionPopupStats = function() {
+  console.log(subscriptionPopupAutoManager.getStats());
+};
+
+// Глобальная функция для тестирования экрана благодарности
+window.testThanksScreen = function() {
+  console.log('🧪 Тестируем экран благодарности');
+  subscriptionPopupAutoManager.showThanksScreen();
+};
 
 // Что бы открыть попап subscription на кнопку или ссылку нужно либо добавить href="#open_subscription_popup", или класс '.open-subscription-popup', либо дата-атрибут data-href="#open_subscription_popup"
