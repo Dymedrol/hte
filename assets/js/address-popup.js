@@ -130,31 +130,32 @@ class AddressPopupManager {
         // Пробуем разные способы извлечения числового значения
         let cartTotal = null;
         
-        // Способ 1: Ищем число с валютным символом (например: "74400 ₽")
-        const match1 = cartTotalText.match(/(\d+(?:\s\d+)*)\s*[₽$€]/);
+        // Способ 1: Ищем число с валютным символом, включая десятичные (например: "55243.5 ₽")
+        const match1 = cartTotalText.match(/(\d+(?:[.,]\d+)?(?:\s\d+)*)\s*[₽$€]/);
         if (match1) {
-            const cleaned1 = match1[1].replace(/\s/g, '');
-            cartTotal = parseInt(cleaned1);
+            const cleaned1 = match1[1].replace(/\s/g, '').replace(',', '.');
+            cartTotal = parseFloat(cleaned1);
         }
         
-        // Способ 2: Ищем только цифры
-        const match2 = cartTotalText.match(/\d+/);
+        // Способ 2: Ищем числа с десятичной частью (например: "55243.5" или "55243,5")
+        const match2 = cartTotalText.match(/\d+[.,]?\d*/);
         if (match2 && !cartTotal) {
-            cartTotal = parseInt(match2[0]);
+            const cleaned2 = match2[0].replace(',', '.');
+            cartTotal = parseFloat(cleaned2);
         }
         
-        // Способ 3: Ищем числа с пробелами (например: "66 000")
-        const match3 = cartTotalText.match(/(\d+(?:\s\d+)*)/);
+        // Способ 3: Ищем числа с пробелами и десятичными (например: "55 243.5")
+        const match3 = cartTotalText.match(/(\d+(?:\s\d+)*(?:[.,]\d+)?)/);
         if (match3 && !cartTotal) {
-            const cleaned3 = match3[1].replace(/\s/g, '');
-            cartTotal = parseInt(cleaned3);
+            const cleaned3 = match3[1].replace(/\s/g, '').replace(',', '.');
+            cartTotal = parseFloat(cleaned3);
         }
         
-        // Способ 4: Ищем числа с разделителями (пробелы, запятые)
-        const match4 = cartTotalText.match(/[\d\s,]+/);
+        // Способ 4: Ищем числа с разделителями (пробелы, запятые, точки)
+        const match4 = cartTotalText.match(/[\d\s,.]+/);
         if (match4 && !cartTotal) {
-            const cleaned4 = match4[0].replace(/[\s,]/g, '');
-            cartTotal = parseInt(cleaned4);
+            const cleaned4 = match4[0].replace(/\s/g, '').replace(',', '.');
+            cartTotal = parseFloat(cleaned4);
         }
 
         if (isNaN(cartTotal) || cartTotal === null) {
@@ -220,7 +221,9 @@ class AddressPopupManager {
             return;
         }
         
-        const formattedPrice = `${productsPrice} ₽`;
+        // Округляем до целого числа
+        const roundedPrice = Math.round(productsPrice);
+        const formattedPrice = `${roundedPrice} ₽`;
         cartTotalPriceElement.textContent = formattedPrice;
     }
     
@@ -234,19 +237,27 @@ class AddressPopupManager {
         const deliveryPrice = this.calculateCurrentDeliveryPrice();
         const productsPrice = this.virtualCart.total_price - deliveryPrice;
         const totalPrice = this.virtualCart.total_price;
+        const roundedTotalPrice = Math.round(totalPrice);
+        const formattedTotalPrice = `${roundedTotalPrice} ₽`;
         
         // Обновляем стоимость товаров (без доставки)
         this.updateCartTotalPrice(productsPrice);
         
-        // Обновляем итоговую сумму (с доставкой)
+        // Обновляем итоговую сумму (с доставкой) в [data-cart-full-total-price]
         const totalPriceElement = document.querySelector('[data-cart-full-total-price]');
         if (totalPriceElement) {
-            const formattedTotalPrice = this.virtualCart.total_price_formatted || `${totalPrice} ₽`;
             totalPriceElement.textContent = formattedTotalPrice;
-            console.log('💰 Обновлена итоговая сумма:', formattedTotalPrice);
+            console.log('💰 Обновлена итоговая сумма [data-cart-full-total-price]:', formattedTotalPrice);
         }
         
-        console.log('💰 Автоматически обновлена итоговая сумма:', productsPrice, '₽ (товары),', totalPrice, '₽ (общая)');
+        // Также обновляем .total-price
+        const totalPriceClassElement = document.querySelector('.total-price');
+        if (totalPriceClassElement) {
+            totalPriceClassElement.textContent = formattedTotalPrice;
+            console.log('💰 Обновлена итоговая сумма .total-price:', formattedTotalPrice);
+        }
+        
+        console.log('💰 Автоматически обновлена итоговая сумма:', Math.round(productsPrice), '₽ (товары),', roundedTotalPrice, '₽ (общая)');
     }
     
     // Удаление товаров доставки из корзины при загрузке страницы
@@ -1135,10 +1146,13 @@ class AddressPopupManager {
     updateCartDisplay(cartData) {
         console.log('🔄 Обновление отображения корзины...');
         
+        // Округляем цену до целого числа
+        const roundedTotalPrice = Math.round(cartData.total_price);
+        
         // Обновляем общую сумму
         const totalElement = document.querySelector('[data-cart-total-price]');
         if (totalElement && cartData.total_price) {
-            totalElement.textContent = cartData.total_price_formatted || `${cartData.total_price} ₽`;
+            totalElement.textContent = `${roundedTotalPrice} ₽`;
         }
         
         // Обновляем количество товаров
@@ -1150,15 +1164,14 @@ class AddressPopupManager {
         // Обновляем полную сумму
         const fullTotalElement = document.querySelector('[data-cart-full-total-price]');
         if (fullTotalElement && cartData.total_price) {
-            fullTotalElement.textContent = cartData.total_price_formatted || `${cartData.total_price} ₽`;
+            fullTotalElement.textContent = `${roundedTotalPrice} ₽`;
         }
         
         // Обновляем итоговую сумму в .total-price
         const totalPriceElement = document.querySelector('.total-price');
         if (totalPriceElement && cartData.total_price) {
-            const formattedPrice = cartData.total_price_formatted || `${cartData.total_price} ₽`;
-            totalPriceElement.textContent = formattedPrice;
-            console.log('💰 Итоговая сумма обновлена в .total-price:', formattedPrice);
+            totalPriceElement.textContent = `${roundedTotalPrice} ₽`;
+            console.log('💰 Итоговая сумма обновлена в .total-price:', `${roundedTotalPrice} ₽`);
         } else if (totalPriceElement) {
             console.warn('⚠️ Элемент .total-price найден, но нет данных о цене');
         } else {
