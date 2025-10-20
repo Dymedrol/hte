@@ -2362,7 +2362,7 @@ class AddressPopupManager {
     
     /**
      * Парсит даты из комментария товара
-     * Ищет строки "Выбранные даты:" или "Массив дат:" и извлекает даты
+     * Ищет строки "Выбранные даты:", "Массив дат:", "Дата доставки:" и "ISO даты:" и извлекает даты
      */
     parseDatesFromComment(comment) {
         console.log('🔍 Парсинг дат из комментария:', comment);
@@ -2374,7 +2374,47 @@ class AddressPopupManager {
         
         const dates = [];
         
-        // Паттерны для поиска дат
+        // Разбиваем комментарий на части по разделителю |
+        const commentParts = comment.split('|');
+        
+        // Сначала ищем ISO даты (самый надежный формат)
+        for (const part of commentParts) {
+            const trimmedPart = part.trim();
+            
+            if (trimmedPart.includes('ISO даты:')) {
+                const datePart = trimmedPart.split('ISO даты:')[1];
+                if (datePart) {
+                    // Убираем квадратные скобки
+                    let dateString = datePart.trim().replace(/[\[\]]/g, '');
+                    
+                    // Разбиваем по запятым, если есть несколько дат
+                    const datesList = dateString.split(',').map(d => d.trim());
+                    
+                    // Парсим ISO даты (формат YYYY-MM-DD)
+                    const isoPattern = /(\d{4})-(\d{1,2})-(\d{1,2})/g;
+                    
+                    datesList.forEach(dateStr => {
+                        const match = dateStr.match(isoPattern);
+                        if (match) {
+                            match.forEach(isoDate => {
+                                if (!dates.includes(isoDate)) {
+                                    dates.push(isoDate);
+                                    console.log('✅ Найдена ISO дата:', isoDate);
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                // Если нашли ISO даты, возвращаем их и выходим
+                if (dates.length > 0) {
+                    console.log('📅 Найдены ISO даты в комментарии:', dates);
+                    return dates.sort();
+                }
+            }
+        }
+        
+        // Если ISO дат нет, парсим другие форматы
         const datePatterns = [
             /(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)/gi,
             /(\d{1,2})\.(\d{1,2})\.(\d{4})/g,
@@ -2387,23 +2427,35 @@ class AddressPopupManager {
             'июля': 6, 'августа': 7, 'сентября': 8, 'октября': 9, 'ноября': 10, 'декабря': 11
         };
         
-        // Разбиваем комментарий на части по разделителю |
-        const commentParts = comment.split('|');
-        
         for (const part of commentParts) {
             const trimmedPart = part.trim();
             
             // Ищем блоки с датами (включая товары для питомцев)
-            if (trimmedPart.includes('Выбранные даты:') || trimmedPart.includes('Массив дат:') || trimmedPart.includes('Дата доставки:')) {
-                const datePart = trimmedPart.split(/Выбранные даты:|Массив дат:|Дата доставки:/)[1];
+            if (trimmedPart.includes('Выбранные даты:') || trimmedPart.includes('Массив дат:') || trimmedPart.includes('Дата доставки:') || trimmedPart.includes('Даты доставки:')) {
+                let datePart = null;
+                
+                if (trimmedPart.includes('Выбранные даты:')) {
+                    datePart = trimmedPart.split('Выбранные даты:')[1];
+                } else if (trimmedPart.includes('Массив дат:')) {
+                    datePart = trimmedPart.split('Массив дат:')[1];
+                } else if (trimmedPart.includes('Даты доставки:')) {
+                    datePart = trimmedPart.split('Даты доставки:')[1];
+                } else if (trimmedPart.includes('Дата доставки:')) {
+                    datePart = trimmedPart.split('Дата доставки:')[1];
+                }
+                
                 if (datePart) {
-                    // Убираем время если оно есть (например: "16.10.2025, время: 08:00-09:00")
-                    let dateString = datePart.trim();
-                    if (dateString.includes(',')) {
-                        dateString = dateString.split(',')[0].trim();
+                    // Убираем квадратные скобки
+                    let dateString = datePart.trim().replace(/[\[\]]/g, '');
+                    
+                    // Убираем время если оно есть в конце строки
+                    if (dateString.includes(', время:')) {
+                        dateString = dateString.split(', время:')[0].trim();
+                    } else if (dateString.includes(',время:')) {
+                        dateString = dateString.split(',время:')[0].trim();
                     }
                     
-                    // Парсим даты из строки
+                    // Парсим даты из строки (может быть несколько через запятую)
                     for (let i = 0; i < datePatterns.length; i++) {
                         const pattern = datePatterns[i];
                         let match;
@@ -2454,7 +2506,7 @@ class AddressPopupManager {
         }
         
         console.log('📅 Найдены даты в комментарии:', dates);
-        return dates;
+        return dates.sort();
     }
     
     /**
@@ -2625,14 +2677,24 @@ class AddressPopupManager {
             return false;
         }
         
+        // Проверяем по названию - если это рацион для питомцев
+        const itemTitle = item.title ? item.title.toLowerCase() : '';
+        const petsKeywords = ['рацион для собак', 'рацион для кошек', 'рацион для щенков', 'рацион для котят', 'для взрослых собак', 'для взрослых кошек'];
+        
+        for (const keyword of petsKeywords) {
+            if (itemTitle.includes(keyword)) {
+                console.log(`🐾 Товар "${item.title}" это рацион для питомцев (по названию), НЕ программа`);
+                return false;
+            }
+        }
+        
         // Проверяем по canonical_collection
         if (item.canonical_collection && item.canonical_collection.includes('program')) {
             return true;
         }
         
-        // Дополнительная проверка по названию (на случай, если canonical_collection не работает)
-        const programNames = ['старт', 'база', 'премиум', 'спорт', 'детокс', 'перезагрузка'];
-        const itemTitle = item.title ? item.title.toLowerCase() : '';
+        // Дополнительная проверка по названию программы (на случай, если canonical_collection не работает)
+        const programNames = ['старт', 'база', 'премиум', 'комфорт', 'спорт', 'детокс', 'перезагрузка'];
         
         for (const programName of programNames) {
             if (itemTitle.includes(programName)) {
@@ -2666,6 +2728,9 @@ class AddressPopupManager {
         const allCartItems = document.querySelectorAll('.cart-item');
         console.log(`🔍 Найдено элементов .cart-item в DOM: ${allCartItems.length}`);
         
+        let bestMatch = null;
+        let bestMatchLength = 0;
+        
         for (let i = 0; i < allCartItems.length; i++) {
             const element = allCartItems[i];
             const titleElement = element.querySelector('.cart-item-title');
@@ -2676,30 +2741,29 @@ class AddressPopupManager {
                 const domTitle = titleElement.textContent.trim();
                 const virtualTitle = item.title.trim();
                 
-                // Точное совпадение
+                // Точное совпадение - сразу возвращаем
                 if (domTitle === virtualTitle) {
                     console.log(`✅ Найден товар "${item.title}" в DOM (точное совпадение)`);
                     return element;
                 }
                 
-                // Частичное совпадение - если одно название содержит другое
+                // Частичное совпадение - ищем самое длинное
                 if (domTitle.includes(virtualTitle) || virtualTitle.includes(domTitle)) {
-                    console.log(`✅ Найден товар "${item.title}" в DOM (частичное совпадение: "${domTitle}")`);
-                    return element;
-                }
-                
-                // Поиск по ключевым словам для программ
-                const programKeywords = ['старт', 'база', 'премиум', 'спорт', 'детокс', 'перезагрузка'];
-                const virtualLower = virtualTitle.toLowerCase();
-                const domLower = domTitle.toLowerCase();
-                
-                for (const keyword of programKeywords) {
-                    if (virtualLower.includes(keyword) && domLower.includes(keyword)) {
-                        console.log(`✅ Найден товар "${item.title}" в DOM (совпадение по ключевому слову "${keyword}": "${domTitle}")`);
-                        return element;
+                    const matchLength = Math.min(domTitle.length, virtualTitle.length);
+                    if (matchLength > bestMatchLength) {
+                        bestMatch = element;
+                        bestMatchLength = matchLength;
+                        console.log(`🔍 Кандидат на совпадение (длина ${matchLength}): "${domTitle}"`);
                     }
                 }
             }
+        }
+        
+        // Если нашли частичное совпадение, возвращаем лучшее
+        if (bestMatch) {
+            const bestTitle = bestMatch.querySelector('.cart-item-title')?.textContent.trim();
+            console.log(`✅ Найден товар "${item.title}" в DOM (лучшее совпадение: "${bestTitle}")`);
+            return bestMatch;
         }
         
         console.log(`❌ Не найден элемент корзины для товара "${item.title}"`);

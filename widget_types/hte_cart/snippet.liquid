@@ -131,30 +131,6 @@
       {% endif %}
     {% endfor %}
     
-    {% comment %} Проверяем наличие обычных товаров (не программы, не для питомцев, не доставка) {% endcomment %}
-    {% assign has_regular_items = false %}
-    {% for item in cart.items %}
-      {% assign is_program = false %}
-      {% assign is_pet_item = false %}
-      {% assign is_delivery = false %}
-      
-      {% if item.product.canonical_collection.url contains 'program' %}
-        {% assign is_program = true %}
-      {% endif %}
-      
-      {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}
-        {% assign is_pet_item = true %}
-      {% endif %}
-      
-      {% if item.product.canonical_collection.url contains 'dostavka' %}
-        {% assign is_delivery = true %}
-      {% endif %}
-      
-      {% if is_program == false and is_pet_item == false and is_delivery == false %}
-        {% assign has_regular_items = true %}
-      {% endif %}
-    {% endfor %}
-    
     <form action="{{ cart_url }}" method="post" data-cart-form>
       <div class="cart-items-container">
         <!-- Заголовок корзины -->
@@ -355,6 +331,7 @@
                 </div>
               {% else %}
                 <div class="cart-item {% if item.product.canonical_collection.url contains 'dlya-pitomtsev' %}cart-item_pets{% endif %}" data-comment="{{ item.comment }}" data-product-id="{{ item.product.id }}" data-item-id="{{ item.id }}" data-canonical-collection="{{ item.product.canonical_collection.url }}" data-comment="{{ item.comment }}">
+                  <input data-comment type="text" name="cart[order_line_comments][{{ item.id }}]" value='{{ item.comment }}' style="display: none;"/>
                   <div class="cart-item-content">
                     <div class="cart-item-main">
                       <div class="cart-item-image" style="background-image: url({{ item.variant.first_image.medium_url }});"></div>
@@ -394,29 +371,6 @@
                               </div>
                             </div>
                             
-
-                            <div class="cart-item-program-info" style="display: none;">
-                              <div class="program-badge with-icon">
-                                <span>Добавить в программу</span>
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                  <path d="M4 6L8 10L12 6" stroke="#9D9D9D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                                <div class="program-dropdown">
-                                  <div class="program-list">
-                                    <div class="program-item" data-program="premium">ПРЕМИУМ</div>
-                                    <div class="program-item" data-program="base">БАЗА</div>
-                                    <div class="program-item" data-program="start">СТАРТ</div>
-                                    <div class="program-item" data-program="sport">СПОРТ</div>
-                                    <div class="program-item" data-program="detox">ДЕТОКС</div>
-                                    <div class="program-item" data-program="perezagruzka">ПЕРЕЗАГРУЗКА</div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="program-note">
-                                <div class="info-icon" data-tooltip="Добавьте это блюдо из меню в свою программу, чтобы получать его вместе с выбранным рационом" style="--tooltip-left: 50%; --tooltip-transform: translateX(-50%);">i</div>
-                                <span>Добавьте это блюдо из меню в свою программу, чтобы получать его вместе с выбранным рационом</span>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -779,12 +733,6 @@
                 </div>
               </div>
             </div>
-            
-            {% if has_regular_items %}
-            <div class="additional-note-card">
-              <p>N.B. Товары из полезного магазина доставляются в первый день доставки программы</p>
-            </div>
-            {% endif %}
           </div>
         </div>
         <input

@@ -645,30 +645,6 @@
     text-align: center;
 }
 
-/* Дополнительная карточка с примечанием */
-.additional-note-card {
-    align-self: stretch;
-    padding: var(--spacing-20);
-    background: var(--hte-bg-fill);
-    border-radius: var(--border-radius-xl);
-    outline: var(--border-width-thin) solid var(--hte-dark-accent);
-    outline-offset: calc(-1 * var(--border-width-thin));
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-25);
-}
-
-.additional-note-card p {
-    align-self: stretch;
-    color: var(--hte-black);
-    font-family: var(--hte-body-18-font-family);
-    font-size: var(--hte-body-18-font-size);
-    font-weight: var(--hte-body-18-font-weight);
-    line-height: 120%;
-    margin: 0;
-    text-align: center;
-}
-
 /* Блок аддонов */
 .cart-addons {
     width: 100%;
