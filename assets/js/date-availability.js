@@ -3,7 +3,9 @@
 
 /**
  * Проверяет, доступен ли день для выбора
- * Доступные дни - только те, что показываем в меню (начиная с завтрашнего дня)
+ * Доступные дни рассчитываются с учетом времени заказа:
+ * - Если заказ до 13:30 - доставка с завтрашнего дня (+1 день)
+ * - Если заказ после 13:30 - доставка с послезавтра (+2 дня)
  * 
  * @param {Date} date - Дата для проверки
  * @param {Date} currentTime - Текущее время (обычно из глобальной переменной currentTime)
@@ -13,23 +15,36 @@
  */
 
 function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule = "every-day") {
-  // Доступные дни - только те, что показываем в меню (начиная с завтрашнего дня)
-  const tomorrow = new Date(currentTime);
-  tomorrow.setDate(tomorrow.getDate() + 1); // Завтрашний день
-  tomorrow.setHours(0, 0, 0, 0);
+  // Рассчитываем первый доступный день с учетом времени заказа
+  const currentHour = currentTime.getHours();
+  const currentMinutes = currentTime.getMinutes();
+  const currentTimeInMinutes = currentHour * 60 + currentMinutes;
+  const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
+  
+  const firstAvailableDay = new Date(currentTime);
+  
+  if (currentTimeInMinutes < deadlineTimeInMinutes) {
+    // Если заказ до 13:30 - доставка завтра (+1 день)
+    firstAvailableDay.setDate(currentTime.getDate() + 1);
+  } else {
+    // Если заказ после 13:30 - доставка послезавтра (+2 дня)
+    firstAvailableDay.setDate(currentTime.getDate() + 2);
+  }
+  
+  firstAvailableDay.setHours(0, 0, 0, 0);
   
   const maxDate = new Date(currentTime);
   maxDate.setMonth(maxDate.getMonth() + maxMonthsAhead);
   maxDate.setHours(23, 59, 59, 999);
   
   // Базовая проверка диапазона
-  if (date < tomorrow || date > maxDate) {
+  if (date < firstAvailableDay || date > maxDate) {
     return false;
   }
   
   // Проверка графика доставки
   if (deliverySchedule === "every-other-day") {
-    return isDeliveryDay(date, tomorrow);
+    return isDeliveryDay(date, firstAvailableDay);
   }
   
   // Для "every-day" все дни в диапазоне доступны
@@ -39,6 +54,7 @@ function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule
 /**
  * Проверяет, доступен ли день для выбора в date-picker (без учета графика доставки)
  * Используется только для date-picker-calendar, который показывает все дни программы
+ * Учитывает время заказа (13:30) для определения первого доступного дня
  * 
  * @param {Date} date - Дата для проверки
  * @param {Date} currentTime - Текущее время (обычно из глобальной переменной currentTime)
@@ -46,30 +62,58 @@ function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule
  * @returns {boolean} - true если день доступен, false если недоступен
  */
 function isDateAvailableForPicker(date, currentTime, maxMonthsAhead = 6) {
-  // Доступные дни - только те, что показываем в меню (начиная с завтрашнего дня)
-  const tomorrow = new Date(currentTime);
-  tomorrow.setDate(tomorrow.getDate() + 1); // Завтрашний день
-  tomorrow.setHours(0, 0, 0, 0);
+  // Рассчитываем первый доступный день с учетом времени заказа
+  const currentHour = currentTime.getHours();
+  const currentMinutes = currentTime.getMinutes();
+  const currentTimeInMinutes = currentHour * 60 + currentMinutes;
+  const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
+  
+  const firstAvailableDay = new Date(currentTime);
+  
+  if (currentTimeInMinutes < deadlineTimeInMinutes) {
+    // Если заказ до 13:30 - доставка завтра (+1 день)
+    firstAvailableDay.setDate(currentTime.getDate() + 1);
+  } else {
+    // Если заказ после 13:30 - доставка послезавтра (+2 дня)
+    firstAvailableDay.setDate(currentTime.getDate() + 2);
+  }
+  
+  firstAvailableDay.setHours(0, 0, 0, 0);
   
   const maxDate = new Date(currentTime);
   maxDate.setMonth(maxDate.getMonth() + maxMonthsAhead);
   maxDate.setHours(23, 59, 59, 999);
   
   // Только базовая проверка диапазона, без учета графика доставки
-  return date >= tomorrow && date <= maxDate;
+  return date >= firstAvailableDay && date <= maxDate;
 }
 
 /**
- * Получает первый доступный день (завтрашний день)
+ * Получает первый доступный день с учетом времени заказа:
+ * - Если заказ до 13:30 - доставка завтра (+1 день)
+ * - Если заказ после 13:30 - доставка послезавтра (+2 дня)
  * 
  * @param {Date} currentTime - Текущее время
  * @returns {Date} - Первый доступный день
  */
 function getFirstAvailableDay(currentTime) {
-  const tomorrow = new Date(currentTime);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  return tomorrow;
+  const currentHour = currentTime.getHours();
+  const currentMinutes = currentTime.getMinutes();
+  const currentTimeInMinutes = currentHour * 60 + currentMinutes;
+  const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
+  
+  const firstAvailableDay = new Date(currentTime);
+  
+  if (currentTimeInMinutes < deadlineTimeInMinutes) {
+    // Если заказ до 13:30 - доставка завтра (+1 день)
+    firstAvailableDay.setDate(currentTime.getDate() + 1);
+  } else {
+    // Если заказ после 13:30 - доставка послезавтра (+2 дня)
+    firstAvailableDay.setDate(currentTime.getDate() + 2);
+  }
+  
+  firstAvailableDay.setHours(0, 0, 0, 0);
+  return firstAvailableDay;
 }
 
 /**

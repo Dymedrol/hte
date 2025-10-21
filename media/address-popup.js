@@ -56,11 +56,13 @@ class AddressPopupManager {
                 this.setupElements();
                 this.cleanDeliveryAddressesOnLoad();
                 this.initCartObserver();
+                this.checkAndRemoveExpiredItems();
             });
         } else {
             this.setupElements();
             this.cleanDeliveryAddressesOnLoad();
             this.initCartObserver();
+            this.checkAndRemoveExpiredItems();
         }
     }
     
@@ -89,6 +91,119 @@ class AddressPopupManager {
             this.cleanSingleCommentField(input, index);
         });
         
+    }
+    
+    // Проверка и удаление товаров с просроченными датами доставки
+    async checkAndRemoveExpiredItems() {
+        console.log('🔍 Проверка товаров на просроченные даты доставки...');
+        
+        try {
+            // Обновляем виртуальную корзину
+            await this.refreshCart();
+            
+            if (!this.virtualCart || !this.virtualCart.items) {
+                console.log('❌ Виртуальная корзина недоступна');
+                return;
+            }
+            
+            const expiredItems = [];
+            const currentDate = this.getCurrentMoscowDate();
+            console.log('📅 Текущая дата (Москва):', currentDate);
+            
+            // Проверяем каждый товар
+            this.virtualCart.items.forEach((item, index) => {
+                // Получаем комментарий
+                let comment = item.comment;
+                if (!comment) {
+                    comment = this.getCommentFromDOM(item);
+                }
+                
+                if (!comment) {
+                    console.log(`⏭️ Товар ${index + 1} "${item.title}": нет комментария`);
+                    return;
+                }
+                
+                // Парсим даты из комментария
+                const dates = this.parseDatesFromComment(comment);
+                
+                if (dates.length === 0) {
+                    console.log(`⏭️ Товар ${index + 1} "${item.title}": нет дат доставки`);
+                    return;
+                }
+                
+                // Проверяем, все ли даты просрочены
+                const allDatesExpired = dates.every(date => this.isDateExpired(date, currentDate));
+                
+                if (allDatesExpired) {
+                    console.log(`❌ Товар ${index + 1} "${item.title}": все даты просрочены (${dates.join(', ')})`);
+                    expiredItems.push({
+                        item: item,
+                        dates: dates,
+                        variantId: item.variant_id
+                    });
+                } else {
+                    console.log(`✅ Товар ${index + 1} "${item.title}": есть актуальные даты (${dates.join(', ')})`);
+                }
+            });
+            
+            // Если есть товары с просроченными датами - удаляем их
+            if (expiredItems.length > 0) {
+                console.log(`🗑️ Найдено товаров с просроченными датами: ${expiredItems.length}`);
+                
+                // Удаляем каждый просроченный товар
+                for (const expiredItem of expiredItems) {
+                    console.log(`🗑️ Удаляем товар "${expiredItem.item.title}" (variant_id: ${expiredItem.variantId})`);
+                    
+                    const success = await this.removeCartItemByVariantId(expiredItem.variantId);
+                    
+                    if (success) {
+                        console.log(`✅ Товар "${expiredItem.item.title}" успешно удален`);
+                    } else {
+                        console.error(`❌ Не удалось удалить товар "${expiredItem.item.title}"`);
+                    }
+                }
+                
+                // Перезагружаем страницу после удаления всех просроченных товаров
+                console.log('🔄 Перезагрузка страницы после удаления просроченных товаров...');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                console.log('✅ Просроченных товаров не найдено');
+            }
+            
+        } catch (error) {
+            console.error('❌ Ошибка при проверке просроченных товаров:', error);
+        }
+    }
+    
+    // Получение текущей даты по московскому времени
+    getCurrentMoscowDate() {
+        const moscowOffset = 3; // Москва UTC+3
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const moscowTime = new Date(utc + (moscowOffset * 3600000));
+        
+        // Возвращаем дату в формате YYYY-MM-DD
+        const year = moscowTime.getFullYear();
+        const month = String(moscowTime.getMonth() + 1).padStart(2, '0');
+        const day = String(moscowTime.getDate()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}`;
+    }
+    
+    // Проверка, является ли дата просроченной
+    isDateExpired(dateString, currentDate) {
+        if (!dateString || !currentDate) {
+            return false;
+        }
+        
+        // Сравниваем строки напрямую (обе в формате YYYY-MM-DD)
+        const isExpired = dateString < currentDate;
+        
+        console.log(`📅 Проверка даты: ${dateString} < ${currentDate} = ${isExpired}`);
+        
+        return isExpired;
     }
     
     // Инициализация наблюдателя за изменениями data-cart-total-price
@@ -312,19 +427,23 @@ class AddressPopupManager {
             return;
         }
         
+        console.log(`🗑️ Найдено товаров доставки для удаления: ${deliveryVariantsToRemove.length}`);
         
         // Удаляем каждый товар доставки по variant_id
         for (const variantId of deliveryVariantsToRemove) {
             const success = await this.removeCartItemByVariantId(variantId);
             if (success) {
+                console.log(`✅ Товар доставки удален (variant_id: ${variantId})`);
             } else {
                 console.error('❌ Не удалось удалить товар по variant_id:', variantId);
             }
         }
         
-        
-        // Обновляем корзину после удаления товаров доставки
-        await this.refreshCart();
+        // Перезагружаем страницу после удаления товаров доставки
+        console.log('🔄 Перезагрузка страницы после удаления товаров доставки...');
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
     }
     
     // Удаление существующих товаров доставки из корзины (при смене зоны)
@@ -3986,6 +4105,71 @@ window.forceRemoveDeliveryProducts = function() {
             }
         }
     });
+};
+
+// Функция для тестирования проверки просроченных товаров
+window.testCheckExpiredItems = function() {
+    console.log('🧪 Тестирование проверки просроченных товаров...');
+    
+    if (window.addressPopupManager) {
+        return window.addressPopupManager.checkAndRemoveExpiredItems();
+    } else {
+        console.error('❌ addressPopupManager не найден!');
+        return null;
+    }
+};
+
+// Функция для проверки дат всех товаров
+window.checkAllItemsDates = function() {
+    console.log('🔍 Проверка дат всех товаров в корзине...');
+    
+    if (!window.addressPopupManager || !window.addressPopupManager.virtualCart) {
+        console.error('❌ Виртуальная корзина недоступна');
+        return null;
+    }
+    
+    const currentDate = window.addressPopupManager.getCurrentMoscowDate();
+    console.log('📅 Текущая дата (Москва):', currentDate);
+    
+    const itemsInfo = [];
+    
+    window.addressPopupManager.virtualCart.items.forEach((item, index) => {
+        let comment = item.comment;
+        if (!comment) {
+            comment = window.addressPopupManager.getCommentFromDOM(item);
+        }
+        
+        if (!comment) {
+            itemsInfo.push({
+                index: index + 1,
+                title: item.title,
+                hasComment: false,
+                dates: [],
+                isExpired: false
+            });
+            return;
+        }
+        
+        const dates = window.addressPopupManager.parseDatesFromComment(comment);
+        const allDatesExpired = dates.every(date => 
+            window.addressPopupManager.isDateExpired(date, currentDate)
+        );
+        
+        itemsInfo.push({
+            index: index + 1,
+            title: item.title,
+            hasComment: true,
+            dates: dates,
+            isExpired: allDatesExpired,
+            variantId: item.variant_id
+        });
+        
+        console.log(`📦 Товар ${index + 1}: "${item.title}"`);
+        console.log(`   Даты: ${dates.join(', ') || 'нет дат'}`);
+        console.log(`   Просрочен: ${allDatesExpired ? '❌ ДА' : '✅ НЕТ'}`);
+    });
+    
+    return itemsInfo;
 };
 
 // Функция для тестирования удаления товара по variant_id

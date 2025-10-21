@@ -302,17 +302,30 @@ class DeliveryDatePopup {
   }
   
   isDateSelectable(date) {
-    // Завтрашний день как минимум
-    const tomorrow = new Date(this.currentDate);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
+    // Рассчитываем первый доступный день с учетом времени заказа
+    const currentHour = this.currentDate.getHours();
+    const currentMinutes = this.currentDate.getMinutes();
+    const currentTimeInMinutes = currentHour * 60 + currentMinutes;
+    const deadlineTimeInMinutes = 13 * 60 + 30; // 13:30
+    
+    const firstAvailableDay = new Date(this.currentDate);
+    
+    if (currentTimeInMinutes < deadlineTimeInMinutes) {
+      // Если заказ до 13:30 - доставка завтра (+1 день)
+      firstAvailableDay.setDate(this.currentDate.getDate() + 1);
+    } else {
+      // Если заказ после 13:30 - доставка послезавтра (+2 дня)
+      firstAvailableDay.setDate(this.currentDate.getDate() + 2);
+    }
+    
+    firstAvailableDay.setHours(0, 0, 0, 0);
     
     // Максимальная дата (через 6 месяцев)
     const maxDate = new Date(this.currentDate);
     maxDate.setMonth(maxDate.getMonth() + this.maxMonthsAhead);
     maxDate.setHours(23, 59, 59, 999);
     
-    return date >= tomorrow && date <= maxDate;
+    return date >= firstAvailableDay && date <= maxDate;
   }
   
   isSameDate(date1, date2) {

@@ -677,6 +677,16 @@ function initQuantityPopup() {
         return;
       }
       
+      // Сохраняем оригинальный текст кнопки
+      const originalText = addToCartPopupBtn.textContent;
+      
+      // Изменяем текст кнопки и делаем ее неактивной
+      addToCartPopupBtn.textContent = 'Добавление в корзину...';
+      addToCartPopupBtn.disabled = true;
+      addToCartPopupBtn.classList.add('disabled');
+      addToCartPopupBtn.style.opacity = '0.6';
+      addToCartPopupBtn.style.cursor = 'not-allowed';
+      
       // Формируем строку с информацией о заказе
       const orderInfoString = generateOrderInfoString();
       
@@ -684,6 +694,12 @@ function initQuantityPopup() {
       const form = document.getElementById('hte-product-form');
       if (!form) {
         console.log('❌ Форма hte-product-form не найдена');
+        // Восстанавливаем кнопку в случае ошибки
+        addToCartPopupBtn.textContent = originalText;
+        addToCartPopupBtn.disabled = false;
+        addToCartPopupBtn.classList.remove('disabled');
+        addToCartPopupBtn.style.opacity = '1';
+        addToCartPopupBtn.style.cursor = 'pointer';
         return;
       }
       
@@ -709,15 +725,18 @@ function initQuantityPopup() {
       const addToCartBtn = form.querySelector('#addToCartBtn');
       if (!addToCartBtn) {
         console.log('❌ Кнопка с id addToCartBtn не найдена в форме');
+        // Восстанавливаем кнопку в случае ошибки
+        addToCartPopupBtn.textContent = originalText;
+        addToCartPopupBtn.disabled = false;
+        addToCartPopupBtn.classList.remove('disabled');
+        addToCartPopupBtn.style.opacity = '1';
+        addToCartPopupBtn.style.cursor = 'pointer';
         return;
       }
       
       // Программно кликаем по кнопке добавления в корзину
+      // Попап остается открытым, переход на страницу корзины произойдет автоматически
       addToCartBtn.click();
-      
-      // Закрываем попап
-      popup.classList.remove('active');
-      resetPopupDates();
     });
   }
   

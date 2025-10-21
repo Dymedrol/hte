@@ -3,8 +3,6 @@
  * Отвечает за фильтрацию блюд, расчет КБЖУ и обновление галереи
  */
 
-
-
 class DishesManager {
   constructor(config, dateManager) {
     this.config = config;
@@ -79,12 +77,25 @@ class DishesManager {
         
         if (currentData) {
           return currentData;
+        } else {
+          console.warn(`⚠️ Данные для ключа "${dataKey}" не найдены`);
+        }
+      }
+      
+      // Если диеты нет, но есть калорийность - пытаемся найти по калорийности
+      if (selectedCalories && !selectedDiet) {
+        const availableKeys = Object.keys(window.PROGRAM_DISHES_DATA);
+        const matchingKey = availableKeys.find(key => key.startsWith(`${selectedCalories}-`));
+        
+        if (matchingKey) {
+          console.log(`✅ Найдены данные по калорийности: ${matchingKey}`);
+          return window.PROGRAM_DISHES_DATA[matchingKey];
         }
       }
       
       // Если не найдены текущие данные, возвращаем первый файл
       const firstKey = Object.keys(window.PROGRAM_DISHES_DATA)[0];
-
+      console.warn(`⚠️ Используются данные по умолчанию: ${firstKey}`);
       return window.PROGRAM_DISHES_DATA[firstKey];
     }
     
@@ -107,10 +118,32 @@ class DishesManager {
    * Получает выбранную диету
    */
   getSelectedDiet() {
+    // Сначала ищем активную опцию (видимую или скрытую)
     const activeDietOption = document.querySelector('.diet-option.active');
     if (activeDietOption) {
-      return activeDietOption.getAttribute('data-diet-type');
+      return activeDietOption.getAttribute('data-diet-type') || activeDietOption.getAttribute('data-diet');
     }
+    
+    // Если активной нет, ищем любую опцию диеты (может быть скрыта)
+    const anyDietOption = document.querySelector('.diet-option');
+    if (anyDietOption) {
+      return anyDietOption.getAttribute('data-diet-type') || anyDietOption.getAttribute('data-diet');
+    }
+    
+    // Если в DOM нет опций, пытаемся получить из конфигурации
+    const dietTypes = this.config?.PRODUCT_CONFIG?.dietTypes;
+    if (dietTypes && dietTypes.length > 0) {
+      return dietTypes[0].value;
+    }
+    
+    // В крайнем случае пытаемся извлечь из доступных ключей данных
+    if (window.PROGRAM_DISHES_DATA && typeof window.PROGRAM_DISHES_DATA === 'object') {
+      const firstKey = Object.keys(window.PROGRAM_DISHES_DATA)[0];
+      if (firstKey && firstKey.includes('-')) {
+        return firstKey.split('-')[1]; // Извлекаем часть после калорийности
+      }
+    }
+    
     return null;
   }
 
@@ -139,33 +172,45 @@ class DishesManager {
     if (programName === 'СТАРТ') {
       // Для программы СТАРТ: супы и снеки скрыты по умолчанию, показываются только при активации toggles
       
-      // Проверяем переключатель "С супом"
-      const soupToggle = document.querySelector('.meal-option:nth-child(1) .toggle-switch');
-      if (!soupToggle?.classList.contains('active')) {
-        // Если toggle НЕ активен, убираем супы
-        filteredDishes = filteredDishes.filter(dish => !dish.isSoup);
-      }
+      // Ищем переключатели по тексту лейбла, чтобы избежать конфликтов с другими опциями
+      const mealOptions = document.querySelectorAll('.meal-option');
       
-      // Проверяем переключатель "С перекусом"
-      const snackToggle = document.querySelector('.meal-option:nth-child(2) .toggle-switch');
-      if (!snackToggle?.classList.contains('active')) {
-        // Если toggle НЕ активен, убираем перекусы
-        filteredDishes = filteredDishes.filter(dish => !dish.isSnack);
-      }
+      mealOptions.forEach(option => {
+        const toggle = option.querySelector('.toggle-switch');
+        const label = option.querySelector('span')?.textContent?.trim().toLowerCase() || '';
+        
+        // Проверяем переключатель "С супом"
+        if (label.includes('с супом') && !toggle?.classList.contains('active')) {
+          // Если toggle НЕ активен, убираем супы
+          filteredDishes = filteredDishes.filter(dish => !dish.isSoup);
+        }
+        
+        // Проверяем переключатель "С перекусом"
+        if (label.includes('с перекусом') && !toggle?.classList.contains('active')) {
+          // Если toggle НЕ активен, убираем перекусы
+          filteredDishes = filteredDishes.filter(dish => !dish.isSnack);
+        }
+      });
     } else {
       // Для других программ (Premium, Detox и т.д.): стандартная логика - убираем блюда при активации toggles
       
-      // Проверяем переключатель "Убрать завтрак и перекус"
-      const breakfastToggle = document.querySelector('.meal-option:nth-child(1) .toggle-switch');
-      if (breakfastToggle?.classList.contains('active')) {
-        filteredDishes = filteredDishes.filter(dish => !dish.isBreakfast && !dish.isSnack);
-      }
+      // Ищем переключатели по тексту лейбла, чтобы избежать конфликтов с другими опциями (например, "Понизить глютен")
+      const mealOptions = document.querySelectorAll('.meal-option');
       
-      // Проверяем переключатель "Убрать ужин и перекус"
-      const dinnerToggle = document.querySelector('.meal-option:nth-child(2) .toggle-switch');
-      if (dinnerToggle?.classList.contains('active')) {
-        filteredDishes = filteredDishes.filter(dish => !dish.isDinner && !dish.isSnack);
-      }
+      mealOptions.forEach(option => {
+        const toggle = option.querySelector('.toggle-switch');
+        const label = option.querySelector('span')?.textContent?.trim().toLowerCase() || '';
+        
+        // Проверяем переключатель "Убрать завтрак и перекус"
+        if (label.includes('убрать завтрак') && toggle?.classList.contains('active')) {
+          filteredDishes = filteredDishes.filter(dish => !dish.isBreakfast && !dish.isSnack);
+        }
+        
+        // Проверяем переключатель "Убрать ужин и перекус"
+        if (label.includes('убрать ужин') && toggle?.classList.contains('active')) {
+          filteredDishes = filteredDishes.filter(dish => !dish.isDinner && !dish.isSnack);
+        }
+      });
     }
     
     return filteredDishes;
