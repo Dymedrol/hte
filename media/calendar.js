@@ -88,11 +88,24 @@ class Calendar {
     
     // Обработчики навигации календаря
     document.addEventListener('click', (e) => {
+      // ВАЖНО: Проверяем, что клик произошел внутри календаря, а не на других кнопках с такими же классами
+      const calendarElement = e.target.closest('.calendar-dropdown, #startDateCalendar, #endDateCalendar');
+      
+      // Также проверяем, что календарь открыт
+      if (!calendarElement || !this.isCalendarOpen) {
+        // Клик не внутри календаря или календарь закрыт - игнорируем
+        return;
+      }
+      
       if (e.target.closest('.calendar-nav-btn.prev-btn') || e.target.closest('.prev-btn')) {
+        e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
         this.previousMonth();
       } else if (e.target.closest('.calendar-nav-btn.next-btn') || e.target.closest('.next-btn')) {
+        e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
         this.nextMonth();
       }
     });

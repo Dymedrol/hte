@@ -11,6 +11,16 @@
     margin: 0;
 }
 
+@media screen and (max-width: 720px) {
+    .co-checkout-title, .co-title,  .co-title--h1 {
+        font-size: 14px !important;
+    }
+
+    .co-menu-toggle:before {
+        font-size: 14px !important;
+    }
+}
+
 .co-menu-toggle {
     font-family: var(--hte-h1-font-family) !important;
     font-size: var(--hte-h1-font-size) !important;
@@ -260,6 +270,12 @@
     opacity: 1 !important;
 }
 
+@media screen and (max-width: 720px) {
+    .co-payment_method-title, .co-input-title {
+        white-space: wrap !important;
+    }
+}
+
 .co-payment_method-description, .co-input-description {
     font-family: var(--hte-body-18-font-family);
     font-size: var(--hte-body-18-font-size);
@@ -281,7 +297,6 @@
     font-weight: var(--hte-micro-text-14-font-weight) !important;
     color: var(--HTE---new-light-accent) !important;
     text-decoration: none !important;
-    white-space: nowrap !important;
     text-transform: uppercase !important;
     opacity: 1 !important;
 }
@@ -365,4 +380,37 @@
 
 .co-checkout-block--padded {
     padding-bottom: 40px !important;
+}
+
+.link {
+    font-family: var(--hte-body-18-font-family) !important;
+    font-size: var(--hte-body-18-font-size) !important;
+    font-weight: var(--hte-body-18-font-weight) !important;
+    color: var(--hte-black) !important;
+    letter-spacing: var(--hte-body-18-letter-spacing) !important;
+    line-height: var(--hte-body-18-line-height) !important;
+    opacity: var(--opacity-high) !important;
+}
+
+.co-modal--fixed {
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: var(--border-radius-md) !important;
+}
+
+.co-button--password_recover {
+    display: inline-block !important;
+    margin-top: 20px !important;
+    font-family: var(--hte-body-18-font-family) !important;
+    font-size: var(--hte-body-18-font-size) !important;
+    font-weight: var(--hte-body-18-font-weight) !important;
+    color: var(--hte-black) !important;
+    letter-spacing: var(--hte-body-18-letter-spacing) !important;
+    line-height: var(--hte-body-18-line-height) !important;
+    opacity: var(--opacity-high) !important;
+}
+
+.co-sidebar-toggler_title {
+    font-family: var(--hte-h1-font-family);
+    text-transform: uppercase !important;
 }

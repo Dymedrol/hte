@@ -976,6 +976,150 @@ class AddressPopupManager {
         return 'after_7am'; // По умолчанию после 7 утра
     }
     
+    /**
+     * Получает время доставки для конкретной даты
+     * Если есть программа - берет время из программы
+     * Если программы нет - берет самое раннее время из всех товаров этого дня
+     */
+    getDeliveryTimeForDate(date) {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.log('❌ Виртуальная корзина недоступна для определения времени');
+            return 'after_7am';
+        }
+        
+        console.log(`🕐 Определяем время доставки для даты: ${date}`);
+        
+        let earliestHour = 24; // Максимальное значение
+        let hasProgram = false;
+        let programHour = null;
+        
+        this.virtualCart.items.forEach(item => {
+            // Получаем комментарий
+            let comment = item.comment;
+            if (!comment) {
+                comment = this.getCommentFromDOM(item);
+            }
+            
+            if (!comment) return;
+            
+            // Проверяем, есть ли эта дата в товаре
+            const itemDates = this.parseDatesFromComment(comment);
+            if (!itemDates.includes(date)) return;
+            
+            console.log(`📦 Товар "${item.title}" доставляется ${date}`);
+            
+            // Проверяем, является ли товар программой
+            const isProgram = this.isProgramItem(item);
+            
+            // Извлекаем время доставки
+            const timeMatch = comment.match(/Время доставки:\s*([^|]+)/);
+            if (timeMatch) {
+                const deliveryTime = timeMatch[1].trim();
+                const hourMatch = deliveryTime.match(/(\d{1,2}):(\d{2})/);
+                
+                if (hourMatch) {
+                    const hours = parseInt(hourMatch[1]);
+                    console.log(`🕐 Товар "${item.title}": время ${hours}:${hourMatch[2]}, программа: ${isProgram}`);
+                    
+                    // Если это программа, приоритет выше
+                    if (isProgram) {
+                        hasProgram = true;
+                        programHour = hours;
+                        console.log(`✅ Найдена программа с временем ${hours}:${hourMatch[2]}`);
+                    } else if (!hasProgram && hours < earliestHour) {
+                        // Если программы еще не нашли, запоминаем самое раннее время
+                        earliestHour = hours;
+                        console.log(`⏰ Обновлено самое раннее время: ${hours}:${hourMatch[2]}`);
+                    }
+                }
+            }
+        });
+        
+        // Определяем итоговое время
+        let finalHour = hasProgram ? programHour : earliestHour;
+        
+        if (finalHour < 24) {
+            const result = finalHour < 7 ? 'before_7am' : 'after_7am';
+            console.log(`🕐 Итоговое время для ${date}: ${finalHour}:00 → ${result} (${hasProgram ? 'из программы' : 'самое раннее'})`);
+            return result;
+        }
+        
+        console.log(`🕐 Время для ${date} не найдено, используем по умолчанию: after_7am`);
+        return 'after_7am'; // По умолчанию
+    }
+    
+    /**
+     * Получает время доставки для конкретной даты
+     * Если есть программа - берет время из программы
+     * Если программы нет - берет самое раннее время из всех товаров этого дня
+     */
+    getDeliveryTimeForDate(date) {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.log('❌ Виртуальная корзина недоступна для определения времени');
+            return 'after_7am';
+        }
+        
+        console.log(`🕐 Определяем время доставки для даты: ${date}`);
+        
+        let earliestHour = 24; // Максимальное значение
+        let hasProgram = false;
+        let programHour = null;
+        
+        this.virtualCart.items.forEach(item => {
+            // Получаем комментарий
+            let comment = item.comment;
+            if (!comment) {
+                comment = this.getCommentFromDOM(item);
+            }
+            
+            if (!comment) return;
+            
+            // Проверяем, есть ли эта дата в товаре
+            const itemDates = this.parseDatesFromComment(comment);
+            if (!itemDates.includes(date)) return;
+            
+            console.log(`📦 Товар "${item.title}" доставляется ${date}`);
+            
+            // Проверяем, является ли товар программой
+            const isProgram = this.isProgramItem(item);
+            
+            // Извлекаем время доставки
+            const timeMatch = comment.match(/Время доставки:\s*([^|]+)/);
+            if (timeMatch) {
+                const deliveryTime = timeMatch[1].trim();
+                const hourMatch = deliveryTime.match(/(\d{1,2}):(\d{2})/);
+                
+                if (hourMatch) {
+                    const hours = parseInt(hourMatch[1]);
+                    console.log(`🕐 Товар "${item.title}": время ${hours}:${hourMatch[2]}, программа: ${isProgram}`);
+                    
+                    // Если это программа, приоритет выше
+                    if (isProgram) {
+                        hasProgram = true;
+                        programHour = hours;
+                        console.log(`✅ Найдена программа с временем ${hours}:${hourMatch[2]}`);
+                    } else if (!hasProgram && hours < earliestHour) {
+                        // Если программы еще не нашли, запоминаем самое раннее время
+                        earliestHour = hours;
+                        console.log(`⏰ Обновлено самое раннее время: ${hours}:${hourMatch[2]}`);
+                    }
+                }
+            }
+        });
+        
+        // Определяем итоговое время
+        let finalHour = hasProgram ? programHour : earliestHour;
+        
+        if (finalHour < 24) {
+            const result = finalHour < 7 ? 'before_7am' : 'after_7am';
+            console.log(`🕐 Итоговое время для ${date}: ${finalHour}:00 → ${result} (${hasProgram ? 'из программы' : 'самое раннее'})`);
+            return result;
+        }
+        
+        console.log(`🕐 Время для ${date} не найдено, используем по умолчанию: after_7am`);
+        return 'after_7am'; // По умолчанию
+    }
+    
     // Определение товара доставки по зоне и условиям (ОБНОВЛЕННАЯ ВЕРСИЯ)
     determineDeliveryProduct(deliveryZone) {
         console.log('🎯 Определение товара доставки для зоны:', deliveryZone);
@@ -2955,32 +3099,74 @@ class AddressPopupManager {
     calculateCityZoneDelivery(deliveryZone, deliveryTime, uniqueDates) {
         console.log('🏢 Расчет для зон Сити:', deliveryZone);
         
-        let deliveryProduct = null;
-        
         if (deliveryZone === 'Сити 1') {
-            deliveryProduct = this.findDeliveryProductByTitle('Сити 1');
+            const deliveryProduct = this.findDeliveryProductByTitle('Сити 1');
+            const quantity = uniqueDates.length;
+            
+            console.log('🏢 Результат для Сити 1:', {
+                product: deliveryProduct?.title,
+                quantity: quantity,
+                totalPrice: deliveryProduct ? deliveryProduct.price * quantity : 0
+            });
+            
+            return {
+                product: deliveryProduct,
+                isFree: false,
+                quantity: quantity,
+                zone: deliveryZone,
+                paidDays: quantity,
+                freeDays: 0
+            };
         } else if (deliveryZone === 'Сити 2') {
-            const productTitle = deliveryTime === 'before_7am' ? 
+            // Для Сити 2 анализируем каждый день отдельно
+            const deliveryDays = {
+                'before_7am': [],
+                'after_7am': []
+            };
+            
+            console.log('🏢 Анализируем время доставки для каждого дня...');
+            
+            // Определяем время для каждого дня
+            uniqueDates.forEach(date => {
+                const timeForDate = this.getDeliveryTimeForDate(date);
+                deliveryDays[timeForDate].push(date);
+                console.log(`📅 ${date}: ${timeForDate}`);
+            });
+            
+            // Определяем какого товара больше
+            const before7Count = deliveryDays['before_7am'].length;
+            const after7Count = deliveryDays['after_7am'].length;
+            
+            console.log('🏢 Распределение дней:', {
+                before_7am: before7Count,
+                after_7am: after7Count
+            });
+            
+            // Берем тот вариант, которого больше дней
+            const primaryTime = before7Count > after7Count ? 'before_7am' : 'after_7am';
+            const productTitle = primaryTime === 'before_7am' ? 
                 'Сити 2 до 7 утра' : 'Сити 2 после 7 утра';
-            deliveryProduct = this.findDeliveryProductByTitle(productTitle);
+            
+            const deliveryProduct = this.findDeliveryProductByTitle(productTitle);
+            const quantity = uniqueDates.length;
+            
+            console.log('🏢 Результат для Сити 2:', {
+                product: productTitle,
+                quantity: quantity,
+                totalPrice: deliveryProduct ? deliveryProduct.price * quantity : 0,
+                selectedTime: primaryTime,
+                reason: `${primaryTime === 'before_7am' ? before7Count : after7Count} дней из ${quantity}`
+            });
+            
+            return {
+                product: deliveryProduct,
+                isFree: false,
+                quantity: quantity,
+                zone: deliveryZone,
+                paidDays: quantity,
+                freeDays: 0
+            };
         }
-        
-        const quantity = uniqueDates.length; // Количество уникальных дат
-        
-        console.log('🏢 Результат для Сити:', {
-            product: deliveryProduct?.title,
-            quantity: quantity,
-            totalPrice: deliveryProduct ? deliveryProduct.price * quantity : 0
-        });
-        
-        return {
-            product: deliveryProduct,
-            isFree: false,
-            quantity: quantity,
-            zone: deliveryZone,
-            paidDays: quantity,
-            freeDays: 0
-        };
     }
     
     /**

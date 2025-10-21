@@ -1,5 +1,6 @@
 // Простой поп-ап для выбора количества
 // Дима, сюда пихай актуальную цену, она встанет в верстку и будет использовать в рассчетах
+
 let calendarPrice = null; // Переменная для хранения цены календаря
 
 // Дим, тут у нас выводится посчитанное количество дней в календаре, забирай отсюда
@@ -1230,34 +1231,39 @@ function initQuantityPopup() {
   
   // Обработчики навигации календаря
   if (startDateCalendar) {
+    // Ищем кнопки ТОЛЬКО внутри календаря попапа, используя более специфичные селекторы
     const prevBtn = startDateCalendar.querySelector('.calendar-nav-btn.prev-btn') || startDateCalendar.querySelector('.prev-btn');
     const nextBtn = startDateCalendar.querySelector('.calendar-nav-btn.next-btn') || startDateCalendar.querySelector('.next-btn');
     const calendarGrid = startDateCalendar.querySelector('.calendar-grid');
     
-    if (prevBtn) {
+    if (prevBtn && !prevBtn.dataset.listenerAdded) {
+      prevBtn.dataset.listenerAdded = 'true'; // Помечаем, что обработчик уже добавлен
       prevBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation(); // Останавливаем всплытие полностью
         // Вызываем метод предыдущего месяца из основного календаря
         if (window.calendarInstance && typeof window.calendarInstance.previousMonth === 'function') {
           window.calendarInstance.previousMonth();
         } else {
           console.log('Предыдущий месяц - основной календарь недоступен');
         }
-      });
+      }, true); // Используем capturing phase
     }
     
-    if (nextBtn) {
+    if (nextBtn && !nextBtn.dataset.listenerAdded) {
+      nextBtn.dataset.listenerAdded = 'true'; // Помечаем, что обработчик уже добавлен
       nextBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation(); // Останавливаем всплытие полностью
         // Вызываем метод следующего месяца из основного календаря
         if (window.calendarInstance && typeof window.calendarInstance.nextMonth === 'function') {
           window.calendarInstance.nextMonth();
         } else {
           console.log('Следующий месяц - основной календарь недоступен');
         }
-      });
+      }, true); // Используем capturing phase
     }
     
     // Обработчик выбора даты

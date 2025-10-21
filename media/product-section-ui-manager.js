@@ -3,8 +3,6 @@
  * Отвечает за инициализацию DOM элементов и обработку событий
  */
 
-
-
 class UIManager {
   constructor(config, dateManager, dishesManager, priceManager) {
     this.config = config;
@@ -48,9 +46,12 @@ class UIManager {
    * Инициализирует все DOM элементы
    */
   initializeDOMElements() {
-    // Day navigation
-    this.elements.prevBtn = document.querySelector('.prev-btn');
-    this.elements.nextBtn = document.querySelector('.next-btn');
+    // Day navigation - используем более специфичные селекторы, чтобы не конфликтовать с кнопками календаря
+    const daysNavigationContainer = document.querySelector('.days-navigation') || document.querySelector('.product-section');
+    if (daysNavigationContainer) {
+      this.elements.prevBtn = daysNavigationContainer.querySelector('.prev-btn');
+      this.elements.nextBtn = daysNavigationContainer.querySelector('.next-btn');
+    }
     this.elements.daysContainer = document.querySelector('.days-container');
     this.elements.dayItems = document.querySelectorAll('.day-item');
     
