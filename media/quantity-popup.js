@@ -1173,7 +1173,10 @@ function initQuantityPopup() {
       const start = new Date(window.calendarStartDate);
       const end = new Date(window.calendarEndDate);
       
-      // Добавляем все даты в диапазоне, кроме исключенных
+      // Получаем график доставки из конфигурации
+      const deliverySchedule = window.PRODUCT_CONFIG?.deliverySchedule || window.PROGRAM_CONFIG?.deliverySchedule || 'every-day';
+      
+      // Добавляем даты в диапазоне, учитывая график доставки и исключенные даты
       const currentDate = new Date(start);
       while (currentDate <= end) {
         // Проверяем, не исключена ли дата
@@ -1183,7 +1186,24 @@ function initQuantityPopup() {
           );
         
         if (!isExcluded) {
-          window.selectedDeliveryDates.push(new Date(currentDate));
+          // Для графика "через день" проверяем, является ли дата днем доставки
+          if (deliverySchedule === 'every-other-day') {
+            // Получаем первый доступный день доставки для расчета графика
+            const currentTime = window.currentTime ? new Date(window.currentTime) : new Date();
+            
+            // Используем функции из DateAvailability для проверки доступности даты
+            if (typeof DateAvailability !== 'undefined' && DateAvailability.isDateAvailable) {
+              if (DateAvailability.isDateAvailable(currentDate, currentTime, 6, deliverySchedule)) {
+                window.selectedDeliveryDates.push(new Date(currentDate));
+              }
+            } else {
+              // Fallback: если DateAvailability недоступен, добавляем дату (старое поведение)
+              window.selectedDeliveryDates.push(new Date(currentDate));
+            }
+          } else {
+            // Для графика "каждый день" добавляем все даты
+            window.selectedDeliveryDates.push(new Date(currentDate));
+          }
         }
         
         currentDate.setDate(currentDate.getDate() + 1);
