@@ -242,6 +242,26 @@ class SettingsPanelBuilder {
     const toggleSwitch = event.target.closest('.toggle-switch');
     if (!toggleSwitch) return;
 
+    // Получаем текст опции
+    const optionText = toggleSwitch.parentElement.querySelector('span').textContent;
+    
+    // Проверяем взаимоисключение для опций "Убрать завтрак и перекус" и "Убрать ужин и перекус"
+    if (optionText.includes('Убрать завтрак и перекус') || optionText.includes('Убрать ужин и перекус')) {
+      // Если активируем одну из взаимоисключающих опций, деактивируем другую
+      if (!toggleSwitch.classList.contains('active')) {
+        // Если активируем переключатель, деактивируем противоположный
+        const allToggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+        allToggleSwitches.forEach(switchEl => {
+          const switchText = switchEl.parentElement.querySelector('span').textContent;
+          if (switchEl !== toggleSwitch && 
+              ((optionText.includes('завтрак') && switchText.includes('ужин')) ||
+               (optionText.includes('ужин') && switchText.includes('завтрак')))) {
+            switchEl.classList.remove('active');
+          }
+        });
+      }
+    }
+
     toggleSwitch.classList.toggle('active');
     
     // Пересчитываем цену после изменения

@@ -285,11 +285,29 @@ class UIManager {
    * @param {HTMLElement} clickedSwitch - нажатый переключатель
    */
   toggleSwitch(clickedSwitch) {
+    // Получаем текст опции
+    const optionText = clickedSwitch.parentElement.querySelector('span').textContent;
+    
+    // Проверяем взаимоисключение для опций "Убрать завтрак и перекус" и "Убрать ужин и перекус"
+    if (optionText.includes('Убрать завтрак и перекус') || optionText.includes('Убрать ужин и перекус')) {
+      // Если активируем одну из взаимоисключающих опций, деактивируем другую
+      if (!clickedSwitch.classList.contains('active')) {
+        // Если активируем переключатель, деактивируем противоположный
+        const allToggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+        allToggleSwitches.forEach(switchEl => {
+          const switchText = switchEl.parentElement.querySelector('span').textContent;
+          if (switchEl !== clickedSwitch && 
+              ((optionText.includes('завтрак') && switchText.includes('ужин')) ||
+               (optionText.includes('ужин') && switchText.includes('завтрак')))) {
+            switchEl.classList.remove('active');
+          }
+        });
+      }
+    }
+    
     // Переключаем состояние
     clickedSwitch.classList.toggle('active');
     
-    // Получаем текст опции
-    const optionText = clickedSwitch.parentElement.querySelector('span').textContent;
     const isActive = clickedSwitch.classList.contains('active');
     
     // console.log('Toggle switch:', {
