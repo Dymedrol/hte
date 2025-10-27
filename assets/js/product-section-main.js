@@ -4,8 +4,6 @@
  * Объединяет все подмодули в единую систему
  */
 
-
-
 class ProductSection {
   constructor() {
     this.config = null;
@@ -34,6 +32,16 @@ class ProductSection {
       
       // Создаем конфигурацию
       this.config = new ProductSectionConfig();
+      
+      // ВАЖНО: Сохраняем флаги Reload программы
+      if (options.isReloadProgram) {
+        this.config.isReloadProgram = options.isReloadProgram;
+        this.config.reloadAdapter = options.reloadAdapter;
+        console.log('✅ RELOAD: Флаги сохранены в config:', {
+          isReloadProgram: this.config.isReloadProgram,
+          hasAdapter: !!this.config.reloadAdapter
+        });
+      }
       
       // Проверяем, есть ли основной конфиг (загруженный из HTML)
       if (options.mainConfig) {

@@ -70,7 +70,12 @@ class SettingsPanelBuilder {
     }
 
     const section = this.createSection('calorie-selection-group');
-    const header = this.createSettingHeader('Выберите необходимую калорийность');
+    
+    // Для Reload программы используем другой заголовок
+    const isReloadProgram = this.config.isReloadProgram || false;
+    const headerText = isReloadProgram ? 'Выберите количество дней' : 'Выберите необходимую калорийность';
+    const header = this.createSettingHeader(headerText);
+    
     const optionsContainer = this.createCalorieOptions(calorieOptions);
 
     section.appendChild(header);

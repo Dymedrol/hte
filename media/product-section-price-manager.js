@@ -179,6 +179,13 @@ class PriceManager {
       return;
     }
     
+    // ДЛЯ RELOAD ПРОГРАММЫ: Цена берется только из формы, не пересчитываем
+    if (this.config.isReloadProgram && this.config.reloadAdapter) {
+      console.log('💰 RELOAD: Пропускаем стандартный пересчет, цена берется из формы');
+      this.config.reloadAdapter.updatePriceInPanel();
+      return;
+    }
+    
     // Для Premium программы цена калорийности является основной ценой
     let newPrice = this.calculateCalorieExtraCost();
     

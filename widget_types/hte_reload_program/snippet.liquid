@@ -261,6 +261,10 @@
 <script src="{{ 'quantity-popup.js' | asset_url }}" defer></script>
 <script src="{{ 'date-picker-calendar.js' | asset_url }}" defer></script>
 
+<!-- Адаптеры для программы Reload (загружаются ДО универсальной системы) -->
+<script src="{{ 'product-section-reload-adapter.js' | asset_url }}"></script>
+<script src="{{ 'reload-popup-adapter.js' | asset_url }}"></script>
+
 <!-- Универсальная система Product Section -->
 <script src="{{ 'product-section-config.js' | asset_url }}"></script>
 <script src="{{ 'product-section-date-manager.js' | asset_url }}"></script>
@@ -285,6 +289,12 @@
             await window.initializeProductSection();
           } else {
             console.error('❌ Функция initializeProductSection не найдена');
+          }
+          
+          // Инициализируем адаптер попапа для Reload программы ПЕРЕД инициализацией стандартного попапа
+          if (window.ReloadPopupAdapter) {
+            const popupAdapter = new ReloadPopupAdapter();
+            popupAdapter.initialize();
           }
           
           // Инициализируем попап выбора времени доставки ПОСЛЕ загрузки всех компонентов

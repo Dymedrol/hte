@@ -1063,7 +1063,17 @@ function initQuantityPopup() {
     // ШАГ 2: Вставляем переменную в верстку
     const calendarTotalValue = document.querySelector('.total-value');
     if (calendarTotalValue && calendarPrice) {
-      calendarTotalValue.textContent = `${calendarPrice} ₽ за ${calendarDaysCount} дней`;
+      // Проверяем, является ли это программой Reload
+      const productSection = document.getElementById('productSection');
+      const isReloadProgram = productSection && productSection.getAttribute('data-program') === 'reload';
+      
+      if (isReloadProgram) {
+        // Для Reload - только сумма, без "за N дней"
+        calendarTotalValue.textContent = `${calendarPrice} ₽`;
+      } else {
+        // Для других программ - с указанием дней
+        calendarTotalValue.textContent = `${calendarPrice} ₽ за ${calendarDaysCount} дней`;
+      }
     }
     
     // ШАГ 3: Проверяем и скрываем popup-total если дней не выбрано
@@ -1099,7 +1109,17 @@ function initQuantityPopup() {
     const popupTotal = document.querySelector('.popup-total');
     
     if (calendarTotalValue && calendarPrice) {
-      calendarTotalValue.textContent = `${calendarPrice} ₽ за ${window.calendarDaysCount} дней`;
+      // Проверяем, является ли это программой Reload
+      const productSection = document.getElementById('productSection');
+      const isReloadProgram = productSection && productSection.getAttribute('data-program') === 'reload';
+      
+      if (isReloadProgram) {
+        // Для Reload - только сумма, без "за N дней"
+        calendarTotalValue.textContent = `${calendarPrice} ₽`;
+      } else {
+        // Для других программ - с указанием дней
+        calendarTotalValue.textContent = `${calendarPrice} ₽ за ${window.calendarDaysCount} дней`;
+      }
     }
     
     // Обновляем общую стоимость в popup-total
@@ -1114,7 +1134,17 @@ function initQuantityPopup() {
         const totalPrice = parseInt(calendarPrice.replace(/\s/g, '')) * window.calendarDaysCount;
         const totalValueElement = popupTotal.querySelector('.total-value');
         if (totalValueElement) {
-          totalValueElement.textContent = `${totalPrice.toLocaleString('ru-RU')} ₽ за ${window.calendarDaysCount} дней`;
+          // Проверяем, является ли это программой Reload
+          const productSection = document.getElementById('productSection');
+          const isReloadProgram = productSection && productSection.getAttribute('data-program') === 'reload';
+          
+          if (isReloadProgram) {
+            // Для Reload - только сумма, без "за N дней"
+            totalValueElement.textContent = `${totalPrice.toLocaleString('ru-RU')} ₽`;
+          } else {
+            // Для других программ - с указанием дней
+            totalValueElement.textContent = `${totalPrice.toLocaleString('ru-RU')} ₽ за ${window.calendarDaysCount} дней`;
+          }
         }
       }
       

@@ -296,6 +296,7 @@
                       {% endfor %}
                       
                       <div class="price-breakdown">
+                          {% unless item.product.handle == 'perezagruzka' %}
                           <div class="price-row price-row_hide_mobile">
                             <span class="price-label">Программа:</span>
                             <span class="price-value">
@@ -316,6 +317,7 @@
                               </span>
                             </span>
                           </div>
+                          {% endunless %}
                         <div class="price-row total">
                           <span class="price-label">Итого:</span>
                           <span class="price-value">

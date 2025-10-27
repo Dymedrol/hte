@@ -3,8 +3,6 @@
  * Автоматически загружает конфигурацию и инициализирует модуль
  */
 
-
-
 class ProductSectionInitializer {
   constructor() {
     this.config = null;
@@ -18,6 +16,59 @@ class ProductSectionInitializer {
    */
   async loadConfigFromHTML() {
     try {
+      // Проверяем, является ли это страницей "Перезагрузка"
+      const productSection = document.getElementById('productSection');
+      const isReloadProgram = productSection && productSection.getAttribute('data-program') === 'reload';
+      
+      if (isReloadProgram) {
+        console.log('🔄 Обнаружена страница программы "Перезагрузка"');
+        
+        // Инициализируем адаптер для Reload
+        if (typeof ReloadProgramAdapter !== 'undefined') {
+          const reloadAdapter = new ReloadProgramAdapter();
+          if (await reloadAdapter.initialize()) {
+            const formConfig = reloadAdapter.getConfiguration();
+            
+            // Ждем загрузки аллергенов если они еще не загружены
+            if (!window.ALLERGENS_CONFIG && typeof window.loadAllergensConfig === 'function') {
+              try {
+                await window.loadAllergensConfig();
+              } catch (error) {
+                console.error('❌ Ошибка загрузки аллергенов:', error);
+              }
+            }
+            
+            this.config = {
+              configPath: 'reload-form-config',
+              dishesPath: null,
+              allergensConfig: window.ALLERGENS_CONFIG || null,
+              programInfo: {
+                name: formConfig.programName || 'ПЕРЕЗАГРУЗКА',
+                description: window.PROGRAM_CONFIG?.description || {},
+                duration: window.PROGRAM_CONFIG?.duration || 14,
+                image: window.PROGRAM_CONFIG?.image || '',
+                popupImage: window.PROGRAM_CONFIG?.popupImage || ''
+              },
+              defaults: {
+                calories: formConfig.calorieOptions?.[0]?.value || '1000',
+                diet: formConfig.dietTypes?.[0]?.value || 'classic',
+                allergenPrice: formConfig.allergens?.allergenPrice || 300
+              },
+              mainConfig: formConfig,
+              dishesData: window.PROGRAM_DISHES_DATA,
+              isReloadProgram: true,
+              reloadAdapter: reloadAdapter
+            };
+            
+            console.log('✅ Конфигурация для Reload из формы создана');
+            return this.config;
+          }
+        } else {
+          console.error('❌ ReloadProgramAdapter не найден! Убедитесь, что product-section-reload-adapter.js загружен');
+        }
+      }
+      
+      // Стандартная загрузка для других программ
       const mainConfig = window.PROGRAM_CONFIG;
       const dishesData = window.PROGRAM_DISHES_DATA;
       
@@ -654,7 +705,9 @@ class ProductSectionInitializer {
         configPath: this.config.configPath,
         dishesPath: this.config.dishesPath || null, // Может быть null для Premium
         allergensConfig: this.config.allergensConfig,
-        mainConfig: this.config.mainConfig
+        mainConfig: this.config.mainConfig,
+        isReloadProgram: this.config.isReloadProgram, // ВАЖНО: передаем флаг Reload
+        reloadAdapter: this.config.reloadAdapter       // ВАЖНО: передаем адаптер Reload
       });
 
       if (!success) {
@@ -694,6 +747,15 @@ class ProductSectionInitializer {
 
       this.isInitialized = true;
       // console.log('Product Section initialized successfully');
+      
+      // Активируем перехват событий для Reload программы
+      if (this.config?.isReloadProgram && this.config?.reloadAdapter) {
+        this.config.reloadAdapter.interceptOptionChanges();
+        // Устанавливаем начальную цену из формы
+        setTimeout(() => {
+          this.config.reloadAdapter.updatePriceInPanel();
+        }, 500);
+      }
       
       return true;
     } catch (error) {
