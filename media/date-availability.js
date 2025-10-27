@@ -14,6 +14,7 @@
  * @returns {boolean} - true если день доступен, false если недоступен
  */
 
+
 function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule = "every-day") {
   // Рассчитываем первый доступный день с учетом времени заказа
   const currentHour = currentTime.getHours();

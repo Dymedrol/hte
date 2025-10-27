@@ -161,6 +161,14 @@
     display: inline-flex;
   }
   
+    .programs-grid > div:not(.pets-card) {
+    align-self: stretch;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--spacing-5);
+    display: inline-flex;
+  }
+
   /* Program Card - Base Styles */
   .dropdown-menu .program-card {
     width: 132px;
@@ -203,7 +211,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #655E85 0%, #C2C1C8 100%);
+    background: #BBBBB7;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -212,6 +220,9 @@
   
   .dropdown-menu .dropdown-premium:hover::after {
     opacity: 1;
+  }
+   .dropdown-menu .dropdown-premium:hover::before {
+    filter: brightness(0.5);
   }
   
   /* Base Program */
@@ -236,7 +247,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #F7FFB1 0%, #DFB416 100%);
+    background: #BBBBB7;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -245,6 +256,9 @@
   
   .dropdown-menu .dropdown-base:hover::after {
     opacity: 1;
+  }
+   .dropdown-menu .dropdown-base:hover::before {
+    filter: brightness(0.5);
   }
   
   /* Start Program */
@@ -269,7 +283,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #FA7C2E 0%, #C43727 100%);
+    background: #BBBBB7;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -278,6 +292,9 @@
   
   .dropdown-menu .dropdown-start:hover::after {
     opacity: 1;
+  }
+  .dropdown-menu .dropdown-start:hover::before {
+    filter: brightness(0.5);
   }
   
   /* Sport Program */
@@ -302,7 +319,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #C32605 0%, #FFB200 100%);
+    background: #BBBBB7;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -312,6 +329,10 @@
   .dropdown-menu .dropdown-sport:hover::after {
     opacity: 1;
   }
+   .dropdown-menu .dropdown-sport:hover::before {
+    filter: brightness(0.5);
+  }
+  
   
   /* Detox Program */
   .dropdown-menu .dropdown-detox::before {
@@ -335,7 +356,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 58.30% 153.71% at 61.58% 42.86%, #537C29 0%, #8E9E53 100%);
+    background: #BBBBB7;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -344,6 +365,9 @@
   
   .dropdown-menu .dropdown-detox:hover::after {
     opacity: 1;
+  } 
+  .dropdown-menu .dropdown-detox:hover::before {
+    filter: brightness(0.5);
   }
   
   /* Reload Program */
@@ -368,7 +392,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 58.30% 52.67% at 61.58% 42.86%, #FF9330 0%, #B02A35 100%);
+    background: #BBBBB7;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -377,6 +401,9 @@
   
   .dropdown-menu .dropdown-reload:hover::after {
     opacity: 1;
+  }
+   .dropdown-menu .dropdown-reload:hover::before {
+    filter: brightness(0.5);
   }
   
   /* Hover эффекты для карточек программ */
@@ -394,11 +421,10 @@
   
   
   /* Белый текст при hover для всех карточек */
-  .dropdown-menu .program-card:not(.individual-card):hover .program-name {
+  .dropdown-menu .program-card:not(.individual-card):not(.pets-card):hover .program-name {
     color: var(--hte-white);
   }
-  
-  
+ 
   
   
   
@@ -410,7 +436,22 @@
     height: 132px;
     position: relative;
     background: var(--hte-bg-fill);
-    background-image: url('https://static.insales-cdn.com/files/1/5481/95835497/original/individual_desktop-3.jpg');
+    background-image: url('https://static.insales-cdn.com/files/1/1385/102147433/original/ind-wide.jpg');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    border: var(--border-width-normal) solid transparent;
+    transition: border-color 0.3s ease;
+  }
+
+    .dropdown-menu .pets-card {
+    width: 406px;
+    height: 132px;
+    position: relative;
+    background: var(--hte-bg-fill);
+    background-image: url('https://static.insales-cdn.com/files/1/1393/102147441/original/pets-wide.jpg');
     background-position: right center;
     background-repeat: no-repeat;
     background-size: auto 100%;
@@ -421,6 +462,9 @@
   }
   
   .dropdown-menu .individual-card:hover {
+    border-color: var(--hte-super-dark-accent);
+  }
+    .dropdown-menu .pets-card:hover {
     border-color: var(--hte-super-dark-accent);
   }
   
@@ -462,6 +506,15 @@
   
   /* Individual Program Name - такой же отступ как у обычных карточек */
   .dropdown-menu .individual-card .program-name {
+    left: var(--spacing-12);
+    top: var(--spacing-12);
+    position: absolute;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+  }
+    .dropdown-menu .pets-card .program-name {
     left: var(--spacing-12);
     top: var(--spacing-12);
     position: absolute;
@@ -772,8 +825,19 @@
     z-index: 3;
     color: var(--hte-black);
   }
+    .mobile-programs-grid .pets-card .program-name,
+  .mobile-programs-grid .pets-card .program-description {
+    position: relative;
+    z-index: 3;
+    color: var(--hte-black);
+  }
   
   .mobile-programs-grid .individual-card .program-description {
+    width: 210px;
+    white-space: normal;
+    font-size: 12px;
+  }
+    .mobile-programs-grid .pets-card .program-description {
     width: 210px;
     white-space: normal;
     font-size: 12px;

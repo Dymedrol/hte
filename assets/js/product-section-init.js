@@ -3,6 +3,7 @@
  * Автоматически загружает конфигурацию и инициализирует модуль
  */
 
+
 class ProductSectionInitializer {
   constructor() {
     this.config = null;

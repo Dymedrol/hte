@@ -4,6 +4,7 @@
  */
 
 
+
 class SettingsPanelBuilder {
   constructor(config, onComplete = null) {
     this.config = config;

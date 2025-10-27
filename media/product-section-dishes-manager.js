@@ -3,6 +3,7 @@
  * Отвечает за фильтрацию блюд, расчет КБЖУ и обновление галереи
  */
 
+
 class DishesManager {
   constructor(config, dateManager) {
     this.config = config;

@@ -4,6 +4,7 @@
  * Объединяет все подмодули в единую систему
  */
 
+
 class ProductSection {
   constructor() {
     this.config = null;

@@ -2,29 +2,26 @@
   "content": [
     {
       "type": "group",
-      "name": "Настройки виджета",
+      "name": "Текст",
       "items": [
+        {
+          "name":"super_title",
+          "label":"Надзаголовок",
+          "value":"Надзаголовок",
+          "help":"",
+          "type":"text"
+        },
         {
           "name":"title",
           "label":"Заголовок",
+          "value":"Заголовок",
           "help":"",
           "type":"text"
         },
         {
           "name":"subtitle",
           "label":"Подзаголовок",
-          "help":"",
-          "type":"text"
-        },
-        {
-          "name":"button_text",
-          "label":"Текст кнопки",
-          "help":"",
-          "type":"text"
-        },
-        {
-          "name":"button_link",
-          "label":"Ссылка кнопки",
+          "value":"Подзаголовок",
           "help":"",
           "type":"text"
         }

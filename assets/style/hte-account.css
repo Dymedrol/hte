@@ -1,5 +1,6 @@
 /* Куча стилей !important для аккаунта и страницы заказа */
 
+
 .co-checkout-title, .co-title,  .co-title--h1 {
     font-family: var(--hte-h1-font-family);
     font-size: var(--hte-h1-font-size) !important;

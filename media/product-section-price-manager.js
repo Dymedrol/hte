@@ -5,6 +5,7 @@
 
 
 
+
 class PriceManager {
   constructor(config) {
     this.config = config;

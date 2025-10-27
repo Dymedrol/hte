@@ -11,7 +11,7 @@
     overflow: hidden;
 
     width: 1200px;
-    height: 260px;
+    height: auto;
     padding: var(--spacing-35);
     margin: 0 auto;
 }
@@ -70,12 +70,13 @@
     color: var(--hte-black);
     margin: 0;
     opacity: var(--opacity-high);
-    white-space: nowrap;
+    max-width: 50%;
 }
 
 @media (max-width: 719px) {
     .how-to-it-section-subtitle {
         white-space: normal;
+        max-width: 100%;
     }
 }
 

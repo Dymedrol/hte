@@ -3,6 +3,7 @@
  * Управление попапом выбора адреса доставки в корзине с Яндекс картами
  */
 
+
 class AddressPopupManager {
     constructor() {
         this.popup = null;
@@ -4189,3 +4190,4 @@ window.removeCartItemByVariantId = function(variantId) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = AddressPopupManager;
 }
+;
