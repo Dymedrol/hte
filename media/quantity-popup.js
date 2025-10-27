@@ -954,7 +954,32 @@ function generateOrderInfoString() {
   parts.push(`Аллергены: ${allergensText}`);
   console.log('📝 Итоговый текст аллергенов:', allergensText);
   
-  // 2. Даты доставки
+  // 2. Выбранные опции питания (meal options)
+  let mealOptionsText = 'Не выбрано';
+  // Ищем переключатели meal options
+  const toggleSwitches = document.querySelectorAll('.meal-option .toggle-switch');
+  if (toggleSwitches.length > 0) {
+    const selectedMeals = [];
+    toggleSwitches.forEach((toggle, index) => {
+      if (toggle.classList.contains('active')) {
+        // Получаем текст опции из соседнего span элемента
+        const mealOption = toggle.closest('.meal-option');
+        if (mealOption) {
+          const spanElement = mealOption.querySelector('span');
+          if (spanElement) {
+            selectedMeals.push(spanElement.textContent.trim());
+          }
+        }
+      }
+    });
+    if (selectedMeals.length > 0) {
+      mealOptionsText = selectedMeals.join(', ');
+    }
+  }
+  parts.push(`Добавленные опции: ${mealOptionsText}`);
+  console.log('📝 Итоговый текст опций питания:', mealOptionsText);
+  
+  // 3. Даты доставки
   let deliveryDatesText = 'Не выбрано';
   if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
     const formattedDates = window.selectedDeliveryDates.map(date => {
@@ -972,7 +997,7 @@ function generateOrderInfoString() {
   }
   parts.push(`Даты доставки: ${deliveryDatesText}`);
   
-  // 3. Время доставки
+  // 4. Время доставки
   let deliveryTimeText = 'Не выбрано';
   if (window.selectedDeliveryTime) {
     deliveryTimeText = window.selectedDeliveryTime;
@@ -988,7 +1013,7 @@ function generateOrderInfoString() {
   }
   parts.push(`Время доставки: ${deliveryTimeText}`);
   
-  // 4. Массив дат
+  // 5. Массив дат
   let datesArrayText = '[]';
   if (window.selectedDeliveryDates && window.selectedDeliveryDates.length > 0) {
     const formattedDatesArray = window.selectedDeliveryDates.map(date => {
