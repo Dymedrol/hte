@@ -17,6 +17,16 @@
     z-index: 1000;
     transform: translateY(0);
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out;
+    
+    /* Исправления для мобильных браузеров (iOS Safari, Android Chrome) */
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    will-change: transform;
+    
+    /* Дополнительные исправления для Android Chrome */
+    -webkit-overflow-scrolling: touch;
+    transform: translate3d(0, 0, 0);
   }
   
   .header.scrolled {
@@ -26,6 +36,7 @@
   
   .header.hidden {
     transform: translateY(-100%);
+    -webkit-transform: translate3d(0, -100%, 0);
   }
   
   /* Logo Link */

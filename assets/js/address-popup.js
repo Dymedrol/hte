@@ -1759,8 +1759,8 @@ class AddressPopupManager {
                         // Определяем зону доставки
                         const deliveryZone = this.getDeliveryZone(coords);
                         
-                        // Ищем соответствующий товар доставки
-                        this.findDeliveryProductByZone(deliveryZone);
+                        // Обрабатываем выбор доставки (вместо только поиска товара)
+                        this.handleDeliverySelection(deliveryZone);
                         
                         // Добавляем маркер
                         this.addMarker(coords, address);
@@ -1850,8 +1850,8 @@ class AddressPopupManager {
         // Определяем зону доставки
         const deliveryZone = this.getDeliveryZone(coords);
         
-        // Ищем соответствующий товар доставки
-        this.findDeliveryProductByZone(deliveryZone);
+        // Обрабатываем выбор доставки (вместо только поиска товара)
+        this.handleDeliverySelection(deliveryZone);
         
         // Обновляем UI
         this.updateSelectedAddress(address, deliveryZone);

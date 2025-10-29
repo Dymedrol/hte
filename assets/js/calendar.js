@@ -553,19 +553,35 @@ class Calendar {
       // Вычисляем общее количество дней в диапазоне
       const start = this.startDate < this.endDate ? this.startDate : this.endDate;
       const end = this.startDate < this.endDate ? this.endDate : this.startDate;
-      const totalDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
       
-      // Подсчитываем исключенные дни, которые находятся в диапазоне
-      const excludedInRange = this.excludedDates.filter(date => {
-        return date >= start && date <= end;
-      }).length;
+      // Подсчитываем только доступные дни в диапазоне (исключаем недоступные и исключенные)
+      let activeDays = 0;
+      const currentDate = new Date(start);
       
-      // Вычитаем исключенные дни из диапазона
-      const activeDays = totalDays - excludedInRange;
+      while (currentDate <= end) {
+        // Проверяем, доступна ли дата для выбора
+        if (this.isDateSelectable(currentDate)) {
+          // Проверяем, не исключена ли дата
+          if (!this.isDateExcluded(currentDate)) {
+            activeDays++;
+          }
+        }
+        // Переходим к следующему дню
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      // Получаем график доставки из конфигурации
+      const deliverySchedule = window.PRODUCT_CONFIG?.deliverySchedule || window.PROGRAM_CONFIG?.deliverySchedule || 'every-day';
+      
+      // Для программ с доставкой через день умножаем количество дней на 2
+      let programDays = activeDays;
+      if (deliverySchedule === 'every-other-day') {
+        programDays = activeDays * 2;
+      }
       
       // Обновляем глобальные переменные
       if (window.calendarDaysCount !== undefined) {
-        window.calendarDaysCount = activeDays;
+        window.calendarDaysCount = programDays;
         
         // Обновляем даты для доставки
         window.calendarStartDate = start;
