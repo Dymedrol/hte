@@ -5,29 +5,46 @@
       "name": "{{ messages.delimiter }}",
       "items": [
         {
-          "name": "delemeter",
-          "options": [
-            [
-              "/",
-              "1"
-            ],
-            [
-              "-",
-              "2"
-            ],
-            [
-              ">",
-              "3"
-            ],
-            [
-             ".",
-             "4"
-           ]
-          ],
-          "value": null,
-          "label": "{{ messages.delimiter }}",
-          "general": true,
-          "type": "select"
+          "name": "title",
+          "label": "Заголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Подзаголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "phone",
+          "label": "Телефон",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "email",
+          "label": "Почта",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "messenger",
+          "label": "Мессенджеры",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "requisites",
+          "label": "Реквизиты",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "address",
+          "label": "Адрес",
+          "value": "",
+          "type": "text"
         }
       ]
     }

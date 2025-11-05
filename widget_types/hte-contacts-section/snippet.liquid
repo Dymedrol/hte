@@ -3,8 +3,8 @@
   <div class="contacts-container">
     <div class="contacts-content">
       <div class="contacts-header">
-        <h1 class="contacts-title">Контакты</h1>
-        <p class="contacts-subtitle">Ежедневно с 9:00 до 20:00</p>
+        <h1 class="contacts-title">{{ widget_settings.title }}</h1>
+        <p class="contacts-subtitle">{{ widget_settings.subtitle }}</p>
       </div>
       
       <div class="contacts-info">
@@ -12,7 +12,7 @@
           <div class="contact-label">Телефон</div>
           <div class="contact-details">
             <div class="contact-detail">
-              <span class="contact-text">+7 (495) 150-28-83</span>
+              <span class="contact-text">{{ widget_settings.phone }}</span>
               <img src="{{ 'copy-icon.svg' | asset_url }}" alt="Копировать" class="contact-icon">
             </div>
           </div>
@@ -22,7 +22,7 @@
           <div class="contact-label">Почта</div>
           <div class="contact-details">
             <div class="contact-detail">
-              <span class="contact-text">info@howtogreen.ru</span>
+              <span class="contact-text">{{ widget_settings.email }}</span>
               <img src="{{ 'copy-icon.svg' | asset_url }}" alt="Копировать" class="contact-icon">
             </div>
           </div>
@@ -32,7 +32,7 @@
           <div class="contact-label">Мессенджеры</div>
           <div class="contact-details">
             <div class="contact-detail">
-              <span class="contact-text">WhatsApp: +7 (916) 480-41-61</span>
+              <span class="contact-text">{{ widget_settings.messenger }}</span>
             </div>
           </div>
         </div>
@@ -48,16 +48,14 @@
       <div class="requisites-item">
         <div class="requisites-label">Реквизиты</div>
         <div class="requisites-details">
-          ООО «ХАУ ТУ»<br>
-          ИНН: ИНН 9703037385<br>
-          ОГРН 1217700278795
+          {{ widget_settings.requisites }}<br>
         </div>
       </div>
       
       <div class="requisites-item">
         <div class="requisites-label">Адрес</div>
         <div class="requisites-details">
-          123242, г. Москва, ул. Садовая-Кудринская д.&nbsp;7, этаж 1, помещение I, ком 12
+          {{ widget_settings.address }}
         </div>
       </div>
     </div>

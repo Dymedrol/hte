@@ -6,5 +6,11 @@
   "hide-mobile": false,
   "hide-desktop": false,
   "align": "start",
-  "delemeter": "1"
+  "title": "Заголовок",
+  "subtitle": "Подзаголовок",
+  "phone": "Телефон",
+  "email": "Почта",
+  "messenger": "Мессенджеры",
+  "requisites": "Реквизиты",
+  "address": "Адрес"
 }
