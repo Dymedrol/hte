@@ -3,30 +3,30 @@
     <!-- Left side - Text content -->
     <div class="pets-nutrition-content">
       <div class="pets-nutrition-header">
-        <h2 class="pets-nutrition-title">Полезные рационы для питомцев</h2>
+        <h2 class="pets-nutrition-title">{{ widget_settings.title }}</h2>
         <p class="pets-nutrition-description">
-          Сбалансированное питание для щенков, котят и взрослых животных.
+          {{ widget_settings.text }}
         </p>
       </div>
       
       <div class="pets-nutrition-subtitle">
-        Разработано совместно с ветеринарами-диетологами
+        {{ widget_settings.subtitle }}
       </div>
       
       <div class="pets-nutrition-footer">
-        <div class="pets-nutrition-flavors">11 вкусов</div>
+        <div class="pets-nutrition-flavors">{{ widget_settings.label-title }}</div>
         <div class="pets-nutrition-tags">
-          <span class="nutrition-tag">мясо</span>
-          <span class="nutrition-tag">птица</span>
-          <span class="nutrition-tag">рыба</span>
-          <span class="nutrition-tag">крупы</span>
-          <span class="nutrition-tag">овощи</span>
+          <span class="nutrition-tag">{{ widget_settings.label-text-1 }}</span>
+          <span class="nutrition-tag">{{ widget_settings.label-text-2 }}</span>
+          <span class="nutrition-tag">{{ widget_settings.label-text-3 }}</span>
+          <span class="nutrition-tag">{{ widget_settings.label-text-4 }}</span>
+          <span class="nutrition-tag">{{ widget_settings.label-text-5 }}</span>
         </div>
       </div>
     </div>
     
     <!-- Right side - Image -->
-    <div class="pets-nutrition-image" style="background-image: url({{ 'pet-cover.jpg' | file_url }})">
+    <div class="pets-nutrition-image" style="background-image: url({{ widget_settings.image | image_url: 1200, format: 'webp', resizing_type: 'fit_width' }})">
       <!-- Image will be set via CSS background -->
     </div>
   </div>

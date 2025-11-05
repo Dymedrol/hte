@@ -5,5 +5,15 @@
   "layout-pb": 0,
   "hide-mobile": false,
   "hide-desktop": false,
-  "align": "start"
+  "align": "start",
+  "title": "Надзаголовок",
+  "subtitle": "Заголовок",
+  "text": "Текст",
+  "image": "",
+  "label-title": "Тайтл",
+  "label-text-1": "Лейбл 1",
+  "label-text-2": "Лейбл 2",
+  "label-text-3": "Лейбл 3",
+  "label-text-4": "Лейбл 4",
+  "label-text-5": "лейбл 5"
 }
