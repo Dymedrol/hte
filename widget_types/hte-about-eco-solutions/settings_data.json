@@ -5,5 +5,21 @@
   "layout-pb": 0,
   "hide-mobile": false,
   "hide-desktop": false,
-  "align": "start"
+  "align": "start",
+  "title": "Заголовок",
+  "subtitle": "Подзаголовок",
+  "title_card_1": "Заголовок карточки 1",
+  "text_card_1": "Текст карточки 1",
+  "image_card_1": "",
+  "title_card_2": "Заголовок карточки 2",
+  "text_card_2": "Текст карточки 2",
+  "title_card_3": "Заголовок карточки 3",
+  "text_card_3": "Текст карточки 3",
+  "title_card_4": "Заголовок карточки 4",
+  "text_card_4": "Текст карточки 4",
+  "title_card_5": "Заголовок карточки 5",
+  "text_card_5": "Текст карточки 5",
+  "image_card_5": "",
+  "title_card_6": "Заголовок карточки 6",
+  "text_card_6": "Текст карточки 6"
 }

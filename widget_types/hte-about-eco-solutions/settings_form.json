@@ -1,4 +1,108 @@
 {
+  "content": [
+    {
+      "type": "group",
+      "name": "Настройки виджета",
+      "items": [
+        {
+          "name": "title",
+          "label": "Заголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Подзаголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "title_card_1",
+          "label": "Заголовок карточки 1",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text_card_1",
+          "label": "Текст карточки 1",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image_card_1",
+          "label": "Изображение",
+          "value": "",
+          "type": "file"
+        },
+        {
+          "name": "title_card_2",
+          "label": "Заголовок карточки 2",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text_card_2",
+          "label": "Текст карточки 2",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "title_card_3",
+          "label": "Заголовок карточки 3",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text_card_3",
+          "label": "Текст карточки 3",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "title_card_4",
+          "label": "Заголовок карточки 4",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text_card_4",
+          "label": "Текст карточки 4",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "title_card_5",
+          "label": "Заголовок карточки 5",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text_card_5",
+          "label": "Текст карточки 5",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image_card_5",
+          "label": "Изображение карточки 5",
+          "value": "",
+          "type": "file"
+        },
+        {
+          "name": "title_card_6",
+          "label": "Заголовок карточки 6",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text_card_6",
+          "label": "Текст карточки 6",
+          "value": "",
+          "type": "text"
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "type": "group",
