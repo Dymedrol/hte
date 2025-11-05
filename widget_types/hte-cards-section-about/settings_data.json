@@ -5,5 +5,9 @@
   "layout-pb": 0,
   "hide-mobile": false,
   "hide-desktop": false,
-  "align": "start"
+  "align": "start",
+  "super-title": "Надзаголовок",
+  "title": "Заголовок",
+  "text": "Текст",
+  "image": ""
 }

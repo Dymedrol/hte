@@ -2,16 +2,16 @@
   <div class="cards-container">
     <div class="card card-content">
       <div class="card-content-wrapper">
-        <div class="card-super-title">HOW TO GREEN</div>
+        <div class="card-super-title">{{ widget_settings.super-title }}</div>
         <div class="card-text-content">
-          <h2 class="card-title">Кто мы?</h2>
-          <p class="card-subtitle">How to Green — ваш сервис по доставке полезных рационов и экосистема для здоровой жизни. Вдохновляем на перемены через науку, устойчивые привычки и заботу о себе. </p>
+          <h2 class="card-title">{{ widget_settings.title }}</h2>
+          <p class="card-subtitle">{{ widget_settings.text }}</p>
         </div>
          <!--<button class="white-btn">Читать далее</button>-->
       </div>
     </div>
     <div class="card">
-      <img src="{{'about.jpg' | file_url}}" alt="Card background image" class="card-image">
+      <img src="{{ widget_settings.image | image_url: 1200, format: 'webp', resizing_type: 'fit_width' }}" alt="Card background image" class="card-image">
     </div>
   </div>
 </section>
