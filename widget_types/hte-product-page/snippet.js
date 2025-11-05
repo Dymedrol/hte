@@ -1043,13 +1043,18 @@ function selectDateInRange(date, calendarElement) {
     updatePopupInputs();
     
     // Переключаемся на выбор конечной даты
-    popupActiveInput = 'end';
+    //DateRange popupActiveInput = 'end';
     
     // Обновляем атрибут календаря
-    calendarElement.setAttribute('data-field-type', 'end');
+    //DateRange calendarElement.setAttribute('data-field-type', 'end');
     
     // Перерендериваем календарь
-    renderSimpleCalendar(calendarElement, 'end');
+    //DateRange renderSimpleCalendar(calendarElement, 'end');
+	
+	//DateRange (Удалить таймер)
+	setTimeout(() => {
+      calendarElement.classList.remove('active');
+    }, 300);
     
     console.log('✅ Начальная дата выбрана:', formatDateForInput(date), '| Режим: выбор конечной даты');
   } else {

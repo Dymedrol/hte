@@ -130,7 +130,10 @@
         <div class="popup-inputs">
           <div class="input-row">
             <div class="input-field">
+{% comment %}
               <input type="text" placeholder="Начало доставки" id="startDateInput" readonly />
+{% endcomment %}
+			  <input type="text" placeholder="Выберите дату доставки" id="startDateInput" readonly />
               <div class="calendar-dropdown" id="startDateCalendar">
                 <div class="calendar-header">
                   <button class="calendar-nav-btn prev-btn">
@@ -161,9 +164,11 @@
                 </div>
               </div>
             </div>
+{% comment %}
             <div class="input-field">
               <input type="text" placeholder="Последний день доставки" id="endDateInput" readonly />
             </div>
+{% endcomment %}
           </div>
           <div class="input-row">
             <div class="input-field with-icon">

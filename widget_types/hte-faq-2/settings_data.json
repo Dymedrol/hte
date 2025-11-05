@@ -6,8 +6,5 @@
   "hide-mobile": false,
   "hide-desktop": false,
   "align": "start",
-  "super-title": "Надзаголовок",
-  "title": "Заголовок",
-  "text": "Текст",
-  "image": ""
+  "title": "Заголовок"
 }

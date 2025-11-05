@@ -508,7 +508,6 @@ a.program-card {
     color: var(--hte-black);
     margin: 0;
     opacity: var(--opacity-high);
-    white-space: nowrap;
 }
 
 
@@ -613,7 +612,5 @@ a.program-card {
         font-size: var(--hte-h2-font-size);
     }
 
-    .program-description {
-        white-space: normal;
-    }
+
 } 

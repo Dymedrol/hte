@@ -2,31 +2,13 @@
   "content": [
     {
       "type": "group",
-      "name": "Настройки виджета",
+      "name": "{{ messages.delimiter }}",
       "items": [
-        {
-          "name": "super-title",
-          "label": "Надзаголовок",
-          "value": "",
-          "type": "text"
-        },
         {
           "name": "title",
           "label": "Заголовок",
           "value": "",
           "type": "text"
-        },
-        {
-          "name": "text",
-          "label": "Текст",
-          "value": "",
-          "type": "text"
-        },
-        {
-          "name": "image",
-          "label": "Изображение",
-          "value": "",
-          "type": "file"
         }
       ]
     }

@@ -4,6 +4,7 @@
  * Изолирован от других программ
  */
 
+
 class ReloadPopupAdapter {
   constructor() {
     this.isReloadProgram = false;
@@ -276,3 +277,4 @@ window.ReloadPopupAdapter = ReloadPopupAdapter;
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ReloadPopupAdapter;
 }
+;

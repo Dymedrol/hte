@@ -3,14 +3,14 @@
         <div class="card card-personalized">
             <div class="card-personalized-wrapper">
                 <div class="card-personalized-titles">
-                    <div class="card-personalized-super-title">ОСНОВАТЕЛЬ ПРОЕКТА</div>
-                    <div class="card-personalized-title">АЛЕКСАНДРА НОВИКОВА</div>
+                    <div class="card-personalized-super-title">{{ widget_settings.super-title }}</div>
+                    <div class="card-personalized-title">{{ widget_settings.title }}</div>
                 </div>
-                <div class="card-personalized-description">Визионер в области осознанной гастрономии, автор кулинарных книг и создательница wellness-проекта How to Green. Ее цель — вдохновить людей на формирование новых здоровых привычек в питании.</div>
+                <div class="card-personalized-description">{{ widget_settings.text }}</div>
             </div>
         </div>
         <div class="card">
-            <img src="{{'about-sasha.jpg' | file_url}}" alt="Саша Новикова" class="card-image">
+            <img src="{{ widget_settings.image | image_url: 1200, format: 'webp', resizing_type: 'fit_width' }}" alt="Саша Новикова" class="card-image">
         </div>
     </div>
 </section>

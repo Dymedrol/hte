@@ -4,6 +4,7 @@
  * Изолирован от других программ
  */
 
+
 class ReloadProgramAdapter {
   constructor() {
     this.form = null;
@@ -340,3 +341,4 @@ window.ReloadProgramAdapter = ReloadProgramAdapter;
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ReloadProgramAdapter;
 }
+;

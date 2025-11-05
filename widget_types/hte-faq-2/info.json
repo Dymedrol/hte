@@ -1,0 +1,23 @@
+{
+  "type": "BlockListWidgetType",
+  "name": {
+    "ru": "HTE faq 2"
+  },
+  "handle": "hte-faq-2",
+  "description": {
+    "ru": "HTE faq"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "drugie",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ],
+  "block_template_handle": "hte-faq-item"
+}
