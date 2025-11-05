@@ -1,0 +1,23 @@
+{
+  "type": "BlockListWidgetType",
+  "name": {
+    "ru": "HTE Delivery page 2"
+  },
+  "handle": "hte-delivery-page12",
+  "description": {
+    "ru": "HTE Delivery page 2"
+  },
+  "page_kinds": [
+    "all"
+  ],
+  "widget_list_kinds": [
+    "content"
+  ],
+  "generation": 4,
+  "widget_category_handle": "headers",
+  "libraries": [
+    "commonjs_v2",
+    "my-layout"
+  ],
+  "block_template_handle": "hte-faq-item"
+}

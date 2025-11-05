@@ -1,0 +1,53 @@
+<!-- Delivery & Payment Section -->
+<section class="delivery-payment-section">
+  <div class="delivery-payment-container">
+    <h1 class="delivery-payment-title">{{ widget_settings.title }}</h1>
+    
+    <div class="delivery-payment-layout">
+      <!-- Левая колонка с вопросами -->
+      <div class="delivery-payment-list">
+        {% for block in data.blocks %}
+            <div class="delivery-payment-item" data-open="false">
+              <div class="delivery-payment-header">
+                <h3 class="delivery-payment-question">{{ block.item-title }}</h3>
+                <div class="delivery-payment-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 1.5V16.5M1.5 9H16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="delivery-payment-content">
+                <p>{{ block.item-text }}</p>
+              </div>
+            </div>
+        {% endfor %}
+      </div>
+
+      <!-- Правая колонка с program-card -->
+      <div class="delivery-payment-sidebar">
+        <div class="program-card program-card-large" data-category="individual">
+          <div class="program-content">
+            <div class="program-text-content">
+              <h3 class="program-large-title">Есть вопросы?</h3>
+              <p class="program-description">Наш менеджер готов уточнить все детали</p>
+            </div>
+            <button class="add-to-cart-btn open-feedback-popup">Заказать звонок</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Карта -->
+    <div class="map">
+      <!--
+      <div class="map-hint">
+          <p class="map-hint__text">МКАД + 35 км</p>
+          <p class="map-hint__text map-hint__text--normal">Бесплатно при заказе от 1900 ₽</p>
+      </div>
+      -->
+      <!--<div style="position:relative;overflow:hidden;"><a href="https://yandex.ru/maps?utm_medium=mapframe&amp;utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Яндекс.Карты</a><a href="https://yandex.ru/maps/?ll=37.790425%2C55.709099&amp;mode=usermaps&amp;source=constructorLink&amp;um=constructor%3A77a1329b53539d9a56911de9cbc860212063d0c4258af71373b49ea95cb90279&amp;utm_medium=mapframe&amp;utm_source=maps&amp;z=9" style="color:#eee;font-size:12px;position:absolute;top:14px;">Яндекс.Карты — транспорт, навигация, поиск мест</a><iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Af3ad55c87f711b102697daf499f193a52350b4ccac734bc733b00c1d0a4d51b4&amp;source=constructor" width="100%" height="611" frameborder="0" allowfullscreen="true" style="position:relative;"></iframe></div>-->
+      
+      <div style="position:relative;overflow:hidden;"><a href="https://yandex.com/maps/213/moscow/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Moscow</a><a href="https://yandex.com/maps/213/moscow/?from=mapframe&ll=37.640013%2C55.740297&mode=usermaps&source=mapframe&um=constructor%3Ab7c011523f0bfe4df0c9c23a4120fb6c02427514727945fea5ca12f8e7239ccc&utm_medium=mapframe&utm_source=maps&z=10" style="color:#eee;font-size:12px;position:absolute;top:14px;">Yandex Maps: search for places, transport, and routes</a><iframe src="https://yandex.com/map-widget/v1/?from=mapframe&ll=37.640013%2C55.740297&mode=usermaps&source=mapframe&um=constructor%3Ab7c011523f0bfe4df0c9c23a4120fb6c02427514727945fea5ca12f8e7239ccc&utm_source=mapframe&z=10" width="560" height="400" frameborder="1" allowfullscreen="true" style="position:relative;"></iframe></div>
+    </div>
+  </div>
+</section>
