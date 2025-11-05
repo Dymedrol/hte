@@ -1,4 +1,30 @@
 {
+  "content": [
+    {
+      "type": "group",
+      "name": "Настройки виджета",
+      "items": [
+        {
+          "name": "title",
+          "label": "Заголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text",
+          "label": "Текст",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image",
+          "label": "Изображение",
+          "value": "",
+          "type": "file"
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "type": "group",

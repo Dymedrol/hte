@@ -1,7 +1,7 @@
 <section class="cards-section personalized-menu-section about-how-we-create-menu cards-light-color">
   <div class="cards-container">
     <div class="card">
-      <img src="{{'zero.jpg' | file_url}}" alt="Шеф-повар" class="card-image">  
+      <img src="{{ widget_settings.image | image_url: 1200, format: 'webp', resizing_type: 'fit_width' }}" alt="Шеф-повар" class="card-image">  
     </div>
     <div class="card card-personalized">
       <div class="card-personalized-wrapper">
@@ -9,10 +9,10 @@
         
         <div class="card-personalized-titles">
           <div class="card-personalized-super-title"> </div>
-          <div class="card-personalized-title">КАК МЫ СОЗДАЕМ МЕНЮ</div>
+          <div class="card-personalized-title">{{ widget_settings.title }}</div>
           
         </div>
-        <div class="card-personalized-description">Команда нутрициологов и шеф-поваров спроектировала рационы с идеальным балансом микроэлементов. Каждое меню — это точный расчет КБЖУ. Мы совершенствуем наши программы с учетом научных исследований в области питания, добавляем сезонные ингредиенты и не используем полуфабрикаты.</div>
+        <div class="card-personalized-description">{{ widget_settings.text }}</div>
       </div>
     </div>
     
