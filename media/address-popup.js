@@ -2818,6 +2818,90 @@ class AddressPopupManager {
     }
     
     /**
+     * Получает все уникальные даты доставки ПРОГРАММ
+     * Используется для определения бесплатных дней доставки в зонах МКАД
+     */
+    getProgramDeliveryDates() {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.log('❌ Виртуальная корзина или товары не найдены');
+            return [];
+        }
+        
+        console.log('🔍 Анализируем даты доставки программ в корзине...');
+        
+        const programDates = new Set();
+        
+        this.virtualCart.items.forEach((item, index) => {
+            // Проверяем, является ли товар программой
+            if (!this.isProgramItem(item)) {
+                return; // Пропускаем не программы
+            }
+            
+            console.log(`📦 Программа ${index + 1}: "${item.title}"`);
+            
+            // Получаем комментарий из DOM, если его нет в виртуальной корзине
+            let comment = item.comment;
+            if (!comment) {
+                comment = this.getCommentFromDOM(item);
+            }
+            
+            if (comment) {
+                const dates = this.parseDatesFromComment(comment);
+                console.log(`📅 Найдены даты доставки программы "${item.title}":`, dates);
+                dates.forEach(date => programDates.add(date));
+            } else {
+                console.log(`❌ У программы "${item.title}" нет комментария с датами`);
+            }
+        });
+        
+        const uniqueProgramDates = Array.from(programDates).sort();
+        console.log('📅 Все уникальные даты доставки программ:', uniqueProgramDates);
+        return uniqueProgramDates;
+    }
+    
+    /**
+     * Получает все уникальные даты доставки ПРОГРАММ
+     * Используется для определения бесплатных дней доставки в зонах МКАД
+     */
+    getProgramDeliveryDates() {
+        if (!this.virtualCart || !this.virtualCart.items) {
+            console.log('❌ Виртуальная корзина или товары не найдены');
+            return [];
+        }
+        
+        console.log('🔍 Анализируем даты доставки программ в корзине...');
+        
+        const programDates = new Set();
+        
+        this.virtualCart.items.forEach((item, index) => {
+            // Проверяем, является ли товар программой
+            if (!this.isProgramItem(item)) {
+                return; // Пропускаем не программы
+            }
+            
+            console.log(`📦 Программа ${index + 1}: "${item.title}"`);
+            
+            // Получаем комментарий из DOM, если его нет в виртуальной корзине
+            let comment = item.comment;
+            if (!comment) {
+                comment = this.getCommentFromDOM(item);
+            }
+            
+            if (comment) {
+                const dates = this.parseDatesFromComment(comment);
+                console.log(`📅 Найдены даты доставки программы "${item.title}":`, dates);
+                dates.forEach(date => programDates.add(date));
+            } else {
+                console.log(`❌ У программы "${item.title}" нет комментария с датами`);
+            }
+        });
+        
+        const uniqueProgramDates = Array.from(programDates).sort();
+        console.log('📅 Все уникальные даты доставки программ:', uniqueProgramDates);
+        return uniqueProgramDates;
+    }
+    
+    /**
      * Получает комментарий товара из DOM элементов корзины
      */
     getCommentFromDOM(item) {
@@ -3292,23 +3376,38 @@ class AddressPopupManager {
     /**
      * Расчет доставки для зон МКАД
      * Анализирует каждый день отдельно: если сумма >= 3000, то день бесплатный
+     * ВАЖНО: Дни доставки программ всегда бесплатные (даже если сумма < 3000)
      */
     calculateMKADZoneDelivery(deliveryZone, uniqueDates) {
         console.log('🚛 Расчет для зон МКАД:', deliveryZone);
+        
+        // Получаем все даты доставки программ
+        const programDates = this.getProgramDeliveryDates();
+        console.log('📅 Даты доставки программ (бесплатные):', programDates);
         
         const paidDays = [];
         const freeDays = [];
         
         // Анализируем каждый уникальный день
         uniqueDates.forEach(date => {
-            const dayCost = this.calculateItemsCostForDate(date);
+            // Проверяем, является ли эта дата датой доставки программы
+            const isProgramDate = programDates.includes(date);
             
-            if (dayCost >= 3000) {
+            if (isProgramDate) {
+                // Дни доставки программ всегда бесплатные
                 freeDays.push(date);
-                console.log(`✅ ${date}: бесплатная доставка (${dayCost} ₽ >= 3000)`);
+                console.log(`✅ ${date}: бесплатная доставка (день доставки программы)`);
             } else {
-                paidDays.push(date);
-                console.log(`💰 ${date}: платная доставка (${dayCost} ₽ < 3000)`);
+                // Для остальных дней применяем стандартную логику
+                const dayCost = this.calculateItemsCostForDate(date);
+                
+                if (dayCost >= 3000) {
+                    freeDays.push(date);
+                    console.log(`✅ ${date}: бесплатная доставка (${dayCost} ₽ >= 3000)`);
+                } else {
+                    paidDays.push(date);
+                    console.log(`💰 ${date}: платная доставка (${dayCost} ₽ < 3000)`);
+                }
             }
         });
         
