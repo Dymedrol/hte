@@ -5,15 +5,15 @@
       <div class="card-content-wrapper">
         <div class="card-super-title">HOW TO GREEN</div>
         <div class="card-text-content">
-          <h2 class="card-title">Есть нюансы?</h2>
-          <p class="card-subtitle">У вас есть особенности питания, которые важно учесть? Мы создадим рацион, который будет идеален именно для вас. Обсудите детали с персональным менеджером.</p>
+          <h2 class="card-title">{{ widget_settings.title }}</h2>
+          <p class="card-subtitle">{{ widget_settings.subtitle }}</p>
         </div>
-        <button class="white-btn open-feedback-popup">Связаться с нами</button>
+        <button class="white-btn open-feedback-popup">{{ widget_settings.button_text }}</button>
       </div>
     </div>
     
     <div class="card">
-      <img src="{{ 'zaputalis.jpg' | file_url }}" alt="Card background image" class="card-image">
+      <img src="{{ widget_settings.image | image_url: 1130, format: 'webp', resizing_type: 'fit_width' }}" alt="Card background image" class="card-image">
     </div>
   </div>
 </section> 
