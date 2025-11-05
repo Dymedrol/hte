@@ -5,29 +5,40 @@
       "name": "{{ messages.delimiter }}",
       "items": [
         {
-          "name": "delemeter",
-          "options": [
-            [
-              "/",
-              "1"
-            ],
-            [
-              "-",
-              "2"
-            ],
-            [
-              ">",
-              "3"
-            ],
-            [
-             ".",
-             "4"
-           ]
-          ],
-          "value": null,
-          "label": "{{ messages.delimiter }}",
-          "general": true,
-          "type": "select"
+          "name": "title",
+          "label": "Заголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "step1-title",
+          "label": "Заголовок первого шага",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "step2-title",
+          "label": "Заголовок второго шага",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "step3-title",
+          "label": "Заголовок третьего шага",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "button-text",
+          "label": "Текст кнопки",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image",
+          "label": "Изображение",
+          "value": "",
+          "type": "file"
         }
       ]
     }
