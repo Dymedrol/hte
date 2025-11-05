@@ -24,6 +24,12 @@
           "value":"Подзаголовок",
           "help":"",
           "type":"text"
+        },
+        {
+          "name": "image",
+          "label": "Изображение",
+          "value": "",
+          "type": "file"
         }
       ]
     }

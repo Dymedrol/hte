@@ -5,5 +5,10 @@
   "layout-pb": 0,
   "hide-mobile": false,
   "hide-desktop": false,
-  "align": "start"
+  "align": "start",
+  "title": "Надзаголовок",
+  "subtitle": "Заголовок",
+  "text": "Текст",
+  "button-text": "Текст кнопки",
+  "image": ""
 }
