@@ -1,4 +1,72 @@
 {
+  "content": [
+    {
+      "type": "group",
+      "name": "Настройки виджета",
+      "items": [
+        {
+          "name": "title1",
+          "label": "Заголовок карточки 1",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text1",
+          "label": "Текст карточки 1",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image1",
+          "label": "Изображение карточки 1",
+          "value": "",
+          "type": "file"
+        },
+        {
+          "name": "title2",
+          "label": "Заголовок карточки 2",  
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text2",
+          "label": "Текст карточки 2",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "title3",
+          "label": "Заголовок карточки 3",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text3",
+          "label": "Текст карточки 3",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "title4",
+          "label": "Заголовок карточки 4",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "text4",
+          "label": "Текст карточки 4",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image4",
+          "label": "Изображение карточки 4",
+          "value": "",
+          "type": "file"
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "type": "group",
