@@ -4,35 +4,35 @@
             <div class="how-it-works-card">
                 <div class="how-it-works-inner">
                     <div class="how-it-works-header">
-                        <h2 class="how-it-works-title">Каждый продукт используется на 100%</h2>
+                        <h2 class="how-it-works-title">{{ widget_settings.title }}</h2>
                     </div>
                     
                     <div class="how-it-works-steps">
                         <div class="step-item">
-                            <div class="step-number">Рыба</div>
-                            <p class="step-description">Филе — для стейков, остальные части — в фарш и су-вид. Кости и головы — для насыщенного рыбного бульона.</p>
+                            <div class="step-number">{{ widget_settings.label-title-1 }}</div>
+                            <p class="step-description">{{ widget_settings.label-text-1 }}</p>
                         </div>
                         
                         <div class="step-item">
-                            <div class="step-number">Овощи и зелень</div>
-                            <p class="step-description">Плодоножки перца, кабачков, стебли сельдерея, петрушки, укропа становятся основой для чистого овощного бульона и домашних соусов.</p>
+                            <div class="step-number">{{ widget_settings.label-title-2 }}</div>
+                            <p class="step-description">{{ widget_settings.label-text-2 }}</p>
                         </div>
                         
                         <div class="step-item">
-                            <div class="step-number">Птица</div>
-                            <p class="step-description">Цельные грудки индейки и курицы готовятся в су-виде, а все остальное идет на фарш для котлет.</p>
+                            <div class="step-number">{{ widget_settings.label-title-3 }}</div>
+                            <p class="step-description">{{ widget_settings.label-text-3 }}</p>
                         </div>
                         
                         <div class="step-item">
-                            <div class="step-number">Морепродукты</div>
-                            <p class="step-description">Очищенные креветки — в блюда. Панцири — в основу для ароматного соуса биск.</p>
+                            <div class="step-number">{{ widget_settings.label-title-4 }}</div>
+                            <p class="step-description">{{ widget_settings.label-text-4 }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="how-it-works-image">
-                <img src="{{'zero.jpg' | file_url}}" alt="Максимум вкуса и пользы">
+                <img src="{{ widget_settings.image | image_url: 1200, format: 'webp', resizing_type: 'fit_width' }}" alt="Максимум вкуса и пользы">
             </div>
         </div>
     </div>

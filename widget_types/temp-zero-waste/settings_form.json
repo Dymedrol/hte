@@ -1,4 +1,72 @@
 {
+  "content": [
+    {
+      "type": "group",
+      "name": "Настройки виджета",
+      "items": [
+        {
+          "name": "title",
+          "label": "Заголовок",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "image",
+          "label": "Изображение",
+          "value": "",
+          "type": "file"
+        },
+        {
+          "name": "label-title-1",
+          "label": "Текст лейбла 1",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-text-1",
+          "label": "Текст 1",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-title-2",
+          "label": "Текст лейбла 2",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-text-2",
+          "label": "Текст 2",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-title-3",
+          "label": "Текст лейбла 3",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-text-3",
+          "label": "Текст 3",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-title-4",
+          "label": "Текст лейбла 4",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "label-text-4",
+          "label": "Текст 4",
+          "value": "",
+          "type": "text"
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "type": "group",

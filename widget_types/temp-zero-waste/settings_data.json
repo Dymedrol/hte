@@ -5,5 +5,15 @@
   "layout-pb": 0,
   "hide-mobile": false,
   "hide-desktop": false,
-  "align": "start"
+  "align": "start",
+  "title": "Заголовок",
+  "image": "",
+  "label-title-1": "Текст лейбла 1",
+  "label-text-1": "Текст лейбла 1",
+  "label-title-2": "Текст лейбла 2",
+  "label-text-2": "Текст лейбла 2",
+  "label-title-3": "Текст лейбла 3",
+  "label-text-3": "Текст лейбла 3",
+  "label-title-4": "Текст лейбла 4",
+  "label-text-4": "Текст лейбла 4"
 }
