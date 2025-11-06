@@ -1,8 +1,65 @@
+// Управление overlay при загрузке
+let isRemovingItems = false;
+
+// Функция для показа overlay
+function showCartLoadingOverlay() {
+    isRemovingItems = true;
+    // Пытаемся найти overlay, если его еще нет - создаем
+    let overlay = document.getElementById('cartLoadingOverlay');
+    if (!overlay) {
+        // Создаем overlay, если его нет в DOM
+        overlay = document.createElement('div');
+        overlay.id = 'cartLoadingOverlay';
+        overlay.className = 'cart-loading-overlay';
+        overlay.innerHTML = '<div class="loading-spinner"></div>';
+        document.body.appendChild(overlay);
+    }
+    overlay.classList.add('active');
+}
+
+// Функция для скрытия overlay
+function hideCartLoadingOverlay() {
+    const overlay = document.getElementById('cartLoadingOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        overlay.classList.add('hidden');
+    }
+}
+
+// Проверяем при загрузке страницы, нужно ли показывать overlay
+// Overlay видим по умолчанию в HTML, скрывается через inline скрипт если нет удаления
+// Этот скрипт обрабатывает случай, когда есть процесс удаления
+(function() {
+    // Проверяем, есть ли флаг в sessionStorage о процессе удаления
+    const wasRemovingItems = sessionStorage.getItem('cartRemovingItems');
+    
+    // Если флаг был установлен, overlay уже видим (inline скрипт его не скрыл)
+    if (wasRemovingItems === 'true') {
+        // Очищаем флаг
+        sessionStorage.removeItem('cartRemovingItems');
+        
+        // Ждем загрузки и скрываем overlay
+        function hideOverlayAfterLoad() {
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    hideCartLoadingOverlay();
+                }, 300);
+            });
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hideOverlayAfterLoad);
+        } else {
+            hideOverlayAfterLoad();
+        }
+    }
+    // Если флага нет, overlay уже скрыт inline скриптом, ничего не делаем
+})();
+
 EventBus.subscribe('delete_items:insales:cart', function(data) {
+    showCartLoadingOverlay();
     window.location.reload();
 });
-
-
 
 // Функция для определения ближайшего времени доставки
 function updateDeliveryNoteSummary() {

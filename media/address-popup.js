@@ -152,24 +152,42 @@ class AddressPopupManager {
             if (expiredItems.length > 0) {
                 console.log(`🗑️ Найдено товаров с просроченными датами: ${expiredItems.length}`);
                 
+                // Показываем overlay перед началом удаления
+                const overlay = document.getElementById('cartLoadingOverlay');
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+                
                 // Удаляем каждый просроченный товар
+                let removedCount = 0;
                 for (const expiredItem of expiredItems) {
                     console.log(`🗑️ Удаляем товар "${expiredItem.item.title}" (variant_id: ${expiredItem.variantId})`);
                     
                     const success = await this.removeCartItemByVariantId(expiredItem.variantId);
                     
                     if (success) {
+                        removedCount++;
                         console.log(`✅ Товар "${expiredItem.item.title}" успешно удален`);
                     } else {
                         console.error(`❌ Не удалось удалить товар "${expiredItem.item.title}"`);
                     }
                 }
                 
-                // Перезагружаем страницу после удаления всех просроченных товаров
-                console.log('🔄 Перезагрузка страницы после удаления просроченных товаров...');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
+                // Устанавливаем флаг о процессе удаления только если что-то было удалено
+                if (removedCount > 0) {
+                    sessionStorage.setItem('cartRemovingItems', 'true');
+                    
+                    // Перезагружаем страницу после удаления всех просроченных товаров
+                    console.log('🔄 Перезагрузка страницы после удаления просроченных товаров...');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    // Если ничего не удалилось, скрываем overlay
+                    if (overlay) {
+                        overlay.classList.remove('active');
+                    }
+                }
             } else {
                 console.log('✅ Просроченных товаров не найдено');
             }
@@ -426,26 +444,45 @@ class AddressPopupManager {
         });
         
         if (deliveryVariantsToRemove.length === 0) {
+            console.log('ℹ️ Товары доставки не найдены в корзине');
             return;
         }
         
         console.log(`🗑️ Найдено товаров доставки для удаления: ${deliveryVariantsToRemove.length}`);
         
+        // Показываем overlay перед началом удаления
+        const overlay = document.getElementById('cartLoadingOverlay');
+        if (overlay) {
+            overlay.classList.add('active');
+        }
+        
         // Удаляем каждый товар доставки по variant_id
+        let removedCount = 0;
         for (const variantId of deliveryVariantsToRemove) {
             const success = await this.removeCartItemByVariantId(variantId);
             if (success) {
+                removedCount++;
                 console.log(`✅ Товар доставки удален (variant_id: ${variantId})`);
             } else {
                 console.error('❌ Не удалось удалить товар по variant_id:', variantId);
             }
         }
         
-        // Перезагружаем страницу после удаления товаров доставки
-        console.log('🔄 Перезагрузка страницы после удаления товаров доставки...');
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+        // Устанавливаем флаг о процессе удаления только если что-то было удалено
+        if (removedCount > 0) {
+            sessionStorage.setItem('cartRemovingItems', 'true');
+            
+            // Перезагружаем страницу после удаления товаров доставки
+            console.log('🔄 Перезагрузка страницы после удаления товаров доставки...');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        } else {
+            // Если ничего не удалилось, скрываем overlay
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+        }
     }
     
     // Удаление существующих товаров доставки из корзины (при смене зоны)

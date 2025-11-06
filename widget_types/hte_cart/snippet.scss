@@ -1909,4 +1909,52 @@
     line-height: 120%;
     text-align: right;
   }
+
+  /* Overlay для блюра при удалении товаров */
+  /* По умолчанию видим, скрывается через JS если нет удаления */
+  .cart-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, backdrop-filter 0.3s ease, visibility 0.3s ease;
+    opacity: 1;
+    visibility: visible;
+    
+    &:not(.active) {
+      display: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    /* Если overlay не имеет класса active, скрываем его */
+    &.hidden {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-top-color: var(--hte-primary, #000);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
   

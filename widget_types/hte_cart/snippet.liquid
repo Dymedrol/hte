@@ -777,6 +777,30 @@
     {% endif %}
 </div>
 
+<!-- Overlay для блюра при удалении товаров -->
+<!-- Overlay видим по умолчанию, скрывается через JS если нет удаления -->
+<div class="cart-loading-overlay active" id="cartLoadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Inline скрипт для раннего скрытия overlay если нет удаления -->
+<script>
+(function() {
+  // Проверяем флаг о процессе удаления
+  var wasRemovingItems = sessionStorage.getItem('cartRemovingItems');
+  
+  if (wasRemovingItems !== 'true') {
+    // Если нет процесса удаления, скрываем overlay сразу
+    var overlay = document.getElementById('cartLoadingOverlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+      overlay.classList.add('hidden');
+    }
+  }
+  // Если флаг есть, overlay остается видимым, флаг очистит основной скрипт
+})();
+</script>
+
 <!-- Попап для выбора адреса доставки -->
 <div class="address-popup" id="addressPopup">
   <div class="popup-overlay"></div>
