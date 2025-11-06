@@ -695,20 +695,38 @@
           <!-- Правая колонка с итогами -->
           <div class="cart-summary">
             <div class="summary-card">
-              <div class="promo-code-section" style="display: none;">
-                <input type="text" class="promo-code-input" placeholder="Ввести промокод" />
-              </div>
+
+              <div class="cart__area-coupon">
+                <div class="coupon-notice" data-cart-discounts-error></div>
+                <div class="coupon-content">
+                  <div class="coupon-input">
+                    <input
+                      type="text"
+                      placeholder="Ввести промокод"
+                      class="form-control form-control_size-m form-control_wide promo-code-input"
+                      name="cart[coupon]"
+                      value="{{ cart.coupon }}" />
+                    <button data-remove-coupon>
+                      <span class="icon icon-times"></span>
+                    </button>
+                  </div>
+                  <button
+                    type="submit"
+                    class="coupon-button button button-link_size-m promo-code-input-btn"
+                    data-coupon-submit>
+                    <span class="icon icon-check"></span>
+                  </button>
+                </div>
+              </div>  
               
               <div class="summary-prices">
                 <div class="summary-row">
                   <div><span data-cart-item-count></span> товара</div>
                   <div data-cart-total-price style="display: none;"></div>
+                  <div data-cart-full-total-price style="display: none;"></div>
                   <div id="cart-total-price"></div>
                 </div>
-                <div class="summary-row" style="display: none">
-                  <div>Скидка:</div>
-                  <div class="discount">TODO</div>
-                </div>
+                <div class="discount" data-cart-discounts-ajax></div>
                 <div class="summary-row">
                   <div>Доставка:</div>
                   <div id="delivery-price"> - </div>
@@ -723,7 +741,7 @@
                 <div class="total-row">
                   <span class="total-label">Итого:</span>
                   <div class="total-amount">
-                    <span class="total-price" data-cart-full-total-price></span>
+                    <span class="total-price" data-cart-total-price></span>
                     {% comment %} <span class="total-period">/ день</span> {% endcomment %}
                   </div>
                 </div>

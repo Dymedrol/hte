@@ -43,10 +43,6 @@
     order: 3;
 }
 
-
-
-
-
 .cart-title-container {
     display: flex;
     justify-content: space-between;
@@ -442,23 +438,34 @@
     gap: 4px;
 }
 
+
 .promo-code-input {
+    flex-grow: 1 !important;
     align-self: stretch;
     height: 44px;
     padding: 16px 2px 16px 16px;
     background: var(--hte-white);
-    border-radius: 100px;
+    border-radius: 100px !important;
     outline: var(--border-width-thin) solid var(--hte-dark-accent);
     outline-offset: calc(-1 * var(--border-width-thin));
     border: none;
-    font-family: var(--hte-small-text-16-font-family);
-    font-size: var(--hte-small-text-16-font-size);
-    font-weight: var(--hte-small-text-16-font-weight);
-    line-height: var(--hte-small-text-16-line-height);
+    font-family: var(--hte-small-text-16-font-family) !important;
+    font-size: var(--hte-small-text-16-font-size) !important;
+    font-weight: var(--hte-small-text-16-font-weight) !important;
+    line-height: var(--hte-small-text-16-line-height) !important;
 }
 
 .promo-code-input::placeholder {
     color: var(--hte-grey-text);
+    font-family: var(--hte-small-text-16-font-family) !important;
+    font-size: var(--hte-small-text-16-font-size) !important;
+    font-weight: var(--hte-small-text-16-font-weight) !important;
+    line-height: var(--hte-small-text-16-line-height) !important;
+}
+
+.promo-code-input-btn {
+    margin-left: 10px;
+    border-radius: 50% !important;
 }
 
 /* Цены в итогах */
@@ -1801,3 +1808,105 @@
         margin-top: var(--spacing-30);
     }
 }
+
+// Coupons
+
+.cart__area-coupon {
+    display: grid;
+    gap: 1rem;
+    @media screen and (max-width: 768px) {
+      border-radius: 0;
+    }
+    background-color: var(--bg-minor-shade);
+    .coupon-notice {
+      color: red;
+      font-size: 0.9rem;
+    }
+  
+    .coupon-notice[data-cart-discounts-error="false"]{
+      display: none;
+    }
+
+    .coupon-content {
+      display: flex;
+      input {
+        border: 1px solid var(--bg);
+        height: 48px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        @media screen and (max-width: 768px) {
+          border: var(--controls-border-width) solid var(--color-form-controls-border-color);
+        }
+      }
+  
+      .coupon-input {
+        display: flex;
+        flex-grow: 1;
+        position: relative;
+  
+        [data-remove-coupon] {
+          position: absolute;
+          right: 5px;
+          height: 100%;
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: #9d9d9d;
+          cursor: pointer;
+          display: none;
+        }
+  
+        .show-btn {
+          display: inline-block;
+        }
+      }
+  
+      .coupon-button {
+        min-width: 48px;
+        font-size: 1.5rem;
+        height: 48px;
+        padding: 0;
+        opacity: 0.7;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+
+  .insales-ui-discount-item {
+    align-self: stretch;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .insales-ui-discount-description {
+    color: var(--hte-black);
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: 120%;
+    text-align: right;
+  }
+
+  .insales-ui-discount-amount {
+    color: rgba(157, 157, 157, 1);
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: 120%;
+    text-align: right;
+  }
+
+  .insales-ui-discount-amount::before {
+    display: inline-block;
+    content: '-';
+    margin-right: 5px;
+    color: rgba(157, 157, 157, 1);
+    font-family: var(--hte-body-18-font-family);
+    font-size: var(--hte-body-18-font-size);
+    font-weight: var(--hte-body-18-font-weight);
+    line-height: 120%;
+    text-align: right;
+  }
+  

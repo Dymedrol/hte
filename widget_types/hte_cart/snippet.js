@@ -2,6 +2,8 @@ EventBus.subscribe('delete_items:insales:cart', function(data) {
     window.location.reload();
 });
 
+
+
 // Функция для определения ближайшего времени доставки
 function updateDeliveryNoteSummary() {
     const deliveryNoteElement = document.querySelector('.delivery-note-summary');
@@ -957,6 +959,24 @@ $(document).ready(function() {
             }
         });
     });
+});
+
+
+// Промокоды
+const $removeCouponBtn = $widget.find('[data-remove-coupon]');
+
+$removeCouponBtn.on('click', function(e) {
+    e.preventDefault();
+
+    Cart.setCoupon({coupon: ' '});
+    $(this).parents('.coupon-input').find('input').val('');
+    $(this).removeClass('show-btn');
+})
+
+EventBus.subscribe('update_items:insales:cart', function(data) {
+    if (data.coupon) {
+      $removeCouponBtn.addClass('show-btn')
+    }
 });
 
 
