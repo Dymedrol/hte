@@ -105,6 +105,19 @@ class DishesManager {
   }
 
   /**
+   * Возвращает длительность программы на основе данных блюд
+   * @param {Object} dishesData - данные блюд
+   * @returns {number}
+   */
+  getProgramDurationFromData(dishesData) {
+    if (!dishesData?.dishesByDay || typeof dishesData.dishesByDay !== 'object') {
+      return 0;
+    }
+
+    return Object.keys(dishesData.dishesByDay).length;
+  }
+
+  /**
    * Получает выбранную калорийность
    */
   getSelectedCalories() {
@@ -307,6 +320,18 @@ class DishesManager {
       return;
     }
     
+    const currentDishesData = this.getCurrentDishesData();
+    if (!currentDishesData) {
+      console.warn('⚠️ Текущие данные блюд недоступны, пропускаем обновление');
+      return;
+    }
+
+    // Синхронизируем длительность программы с актуальными данными блюд
+    const programDuration = this.getProgramDurationFromData(currentDishesData);
+    if (programDuration > 0 && this.dateManager?.setProgramDuration) {
+      this.dateManager.setProgramDuration(programDuration);
+    }
+
     // Получаем отфильтрованные блюда
     const filteredDishes = this.getFilteredDishes();
     

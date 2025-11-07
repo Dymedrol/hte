@@ -70,6 +70,30 @@ class DateManager {
   }
 
   /**
+   * Обновляет длительность программы и пересобирает массив дней
+   * @param {number} duration - новое количество дней
+   */
+  setProgramDuration(duration) {
+    const parsedDuration = parseInt(duration, 10);
+
+    if (!parsedDuration || parsedDuration <= 0) {
+      return;
+    }
+
+    if (parsedDuration === this.programDuration) {
+      return;
+    }
+
+    this.programDuration = parsedDuration;
+
+    // После изменения длительности пересоздаем массив дней,
+    // чтобы индексы программы соответствовали новым данным
+    if (this.programStartDate) {
+      this.generateDaysArray();
+    }
+  }
+
+  /**
    * Форматирует дату в формат "Понедельник, 1 сентября"
    * @param {Date} date - дата для форматирования
    * @returns {string} - отформатированная дата

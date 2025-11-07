@@ -228,12 +228,21 @@ class ProductSectionInitializer {
 
     // Пытаемся получить актуальную длительность из выбранной программы
     let actualDuration = 0;
-    
-    // Если есть доступ к ProductSection, получаем актуальную длительность
-    if (window.productSection && window.productSection.isReady()) {
-      const systemInfo = window.productSection.getSystemInfo();
-      if (systemInfo.programDuration > 0) {
-        actualDuration = systemInfo.programDuration;
+
+    if (window.productSection) {
+      const currentDishesData = window.productSection.dishesManager?.getCurrentDishesData?.();
+      const currentDishesByDay = currentDishesData?.dishesByDay;
+
+      if (currentDishesByDay && typeof currentDishesByDay === 'object') {
+        actualDuration = Object.keys(currentDishesByDay).length;
+      }
+
+      // Фолбэк на системную информацию, если данные еще не готовы
+      if (actualDuration === 0 && window.productSection.isReady && window.productSection.isReady()) {
+        const systemInfo = window.productSection.getSystemInfo?.();
+        if (systemInfo?.programDuration > 0) {
+          actualDuration = systemInfo.programDuration;
+        }
       }
     }
     
