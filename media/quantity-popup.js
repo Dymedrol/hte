@@ -867,6 +867,8 @@ function validateDeliverySelection() {
   // Проверяем выбор даты
   const startDateInput = document.getElementById('startDateInput');
   const hasDateSelected = startDateInput && startDateInput.value.trim() !== '';
+  const endDateInput = document.getElementById('endDateInput');
+  const hasEndDateSelected = endDateInput && endDateInput.value.trim() !== '';
   
   // Проверяем выбор времени
   const deliveryTimeInput = document.getElementById('deliveryTimeInput');
@@ -880,9 +882,24 @@ function validateDeliverySelection() {
   const selectedTimeSlot = document.querySelector('.time-slot.selected');
   const hasTimeSlotSelected = selectedTimeSlot !== null;
   
-  const isValid = (hasDateSelected || hasGlobalDate) && (hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
+  const config = window.PRODUCT_CONFIG || window.PROGRAM_CONFIG || {};
+  const deliverySchedule = config.deliverySchedule || 'every-day';
+  let hasValidDateSelection;
   
-  console.log('📅 Дата выбрана:', hasDateSelected || hasGlobalDate);
+  if (deliverySchedule === 'every-other-day') {
+    const hasCalendarRange = window.calendarStartDate && window.calendarEndDate;
+    const hasGlobalRange = hasGlobalDate && !!window.calendarEndDate;
+    hasValidDateSelection = (hasDateSelected && hasEndDateSelected) || hasCalendarRange || hasGlobalRange;
+  } else {
+    hasValidDateSelection = hasDateSelected || hasGlobalDate;
+  }
+  
+  const isValid = hasValidDateSelection && (hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
+  
+  console.log('📅 Дата выбрана:', hasValidDateSelection);
+  if (deliverySchedule === 'every-other-day') {
+    console.log('📅 Требуется конечная дата, выбрана ли она:', hasEndDateSelected || (window.calendarEndDate && hasGlobalDate));
+  }
   console.log('⏰ Время выбрано:', hasTimeSelected || hasGlobalTime || hasTimeSlotSelected);
   console.log('✅ Валидация пройдена:', isValid);
   
@@ -1218,7 +1235,7 @@ function initQuantityPopup() {
             
             // Используем функции из DateAvailability для проверки доступности даты
             if (typeof DateAvailability !== 'undefined' && DateAvailability.isDateAvailable) {
-              if (DateAvailability.isDateAvailable(currentDate, currentTime, 6, deliverySchedule)) {
+              if (DateAvailability.isDateAvailable(currentDate, currentTime, 6, deliverySchedule, start)) {
                 window.selectedDeliveryDates.push(new Date(currentDate));
               }
             } else {

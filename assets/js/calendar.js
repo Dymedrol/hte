@@ -307,7 +307,16 @@ class Calendar {
     
     // Используем глобальную функцию проверки доступности
     if (typeof DateAvailability !== 'undefined' && DateAvailability.isDateAvailable) {
-      const result = DateAvailability.isDateAvailable(date, this.currentDate, this.maxMonthsAhead, deliverySchedule);
+      const parityBaseDate = (this.activeInput === 'start' || !this.startDate)
+        ? null
+        : this.startDate;
+      const result = DateAvailability.isDateAvailable(
+        date,
+        this.currentDate,
+        this.maxMonthsAhead,
+        deliverySchedule,
+        parityBaseDate
+      );
       return result;
     }
     

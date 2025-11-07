@@ -11,11 +11,18 @@
  * @param {Date} currentTime - Текущее время (обычно из глобальной переменной currentTime)
  * @param {number} maxMonthsAhead - Максимальное количество месяцев вперед (по умолчанию 6)
  * @param {string} deliverySchedule - График доставки ("every-day" или "every-other-day")
+ * @param {Date|null} selectedStartDate - выбранная пользователем начальная дата (для графика "через день")
  * @returns {boolean} - true если день доступен, false если недоступен
  */
 
 
-function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule = "every-day") {
+function isDateAvailable(
+  date,
+  currentTime,
+  maxMonthsAhead = 6,
+  deliverySchedule = "every-day",
+  selectedStartDate = null
+) {
   // Рассчитываем первый доступный день с учетом времени заказа
   const currentHour = currentTime.getHours();
   const currentMinutes = currentTime.getMinutes();
@@ -45,7 +52,12 @@ function isDateAvailable(date, currentTime, maxMonthsAhead = 6, deliverySchedule
   
   // Проверка графика доставки
   if (deliverySchedule === "every-other-day") {
-    return isDeliveryDay(date, firstAvailableDay);
+    if (selectedStartDate) {
+      const baseDeliveryDay = new Date(selectedStartDate);
+      baseDeliveryDay.setHours(0, 0, 0, 0);
+      return isDeliveryDay(date, baseDeliveryDay);
+    }
+    return true;
   }
   
   // Для "every-day" все дни в диапазоне доступны
@@ -135,12 +147,12 @@ function getLastAvailableDay(currentTime, maxMonthsAhead = 6) {
  * Проверяет, является ли день днем доставки для графика "через день"
  * 
  * @param {Date} date - Дата для проверки
- * @param {Date} firstDeliveryDay - Первый день доставки (завтрашний день)
+ * @param {Date} baseDeliveryDay - Базовый день доставки (первый день или выбранный старт)
  * @returns {boolean} - true если это день доставки, false если нет
  */
-function isDeliveryDay(date, firstDeliveryDay) {
-  // Вычисляем количество дней от первого дня доставки
-  const timeDiff = date.getTime() - firstDeliveryDay.getTime();
+function isDeliveryDay(date, baseDeliveryDay) {
+  // Вычисляем количество дней от базового дня доставки (первого дня или выбранного старта)
+  const timeDiff = date.getTime() - baseDeliveryDay.getTime();
   const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
   
   // Для графика "через день" доступны только четные дни (0, 2, 4, 6...)
