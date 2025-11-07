@@ -29,39 +29,35 @@
         </div> -->
         <div class="menu-column">
           <ul>
-            
-            <li><a href="/collection/programmy">ВСЕ ПРОГРАММЫ</a></li>
-            <li><a href="/page/about">О НАС</a></li>
-            <li><a href="/blogs/blog">БЛОГ</a></li>
-            <li><a href="/page/faq">FAQ</a></li>
-            
-            
+            {% for link in linklists.footer-1.links %}
+              <li>
+                <a href="{{ link.url }}">{{ link.title }}</a> 
+              </li>
+            {% endfor %}
           </ul>
         </div>
-        <div class="menu-column">
-          <ul>
-            
-            <li><a href="/page/eco">ЭКОПОДХОД</a></li>
-            <li><a href="/page/contacts">КОНТАКТЫ</a></li>
-            <li><a href="/page/delivery-payment">ДОСТАВКА И ОПЛАТА</a></li>
-            <li><a href="/page/individual-program">ИНДИВИДУАЛЬНАЯ ПРОГРАММА</a></li>
-            <!--<li><a href="/page/loyalty-program">ПРОГРАММА ЛОЯЛЬНОСТИ</a></li>-->
-            
-          </ul>
+        <div class="menu-column">       
+            <ul>
+              {% for link in linklists.footer-2.links %}
+                <li>
+                  <a href="{{ link.url }}">{{ link.title }}</a> 
+                </li>
+              {% endfor %}
+            </ul>
         </div>
       </div>
       <div class="contact-info">
-        <a style="font-family: var(--hte-micro-text-14-font-family);font-size: var(--hte-micro-text-14-font-size); font-weight: var(--hte-micro-text-14-font-weight); color: var(--hte-white); text-decoration:none;" href="tel:+74951502883">+7 495 150 28 83</a>
-        <a style="font-family: var(--hte-micro-text-14-font-family);font-size: var(--hte-micro-text-14-font-size); font-weight: var(--hte-micro-text-14-font-weight); color: var(--hte-white); text-decoration:none;" href="mailto:INFO@HOWTOGREEN.RU">INFO@HOWTOGREEN.RU</a>
+        <a style="font-family: var(--hte-micro-text-14-font-family);font-size: var(--hte-micro-text-14-font-size); font-weight: var(--hte-micro-text-14-font-weight); color: var(--hte-white); text-decoration:none;" href="tel:{{ widget_settings.phone }}">+7 495 150 28 83 </a>
+        <a style="font-family: var(--hte-micro-text-14-font-family);font-size: var(--hte-micro-text-14-font-size); font-weight: var(--hte-micro-text-14-font-weight); color: var(--hte-white); text-decoration:none;" href="mailto:{{ widget_settings.email }}">{{ widget_settings.email }}</a>
         <div class="legal-links">
-          <a href="/page/oferta">ПУБЛИЧНАЯ ОФЕРТА</a>
-          <a href="/page/privacy-policy">ПОЛИТИКА ОБРАБОТКИ ПЕРСОНАЛЬНЫХ ДАННЫХ</a>
-          <a href="/page/agreement">СОГЛАСИЕ НА ОБРАБОТКУ ПЕРСОНАЛЬНЫХ ДАННЫХ</a>
+          {% for link in linklists.footer-3.links %}
+            <a href="{{ link.url }}">{{ link.title }}</a> 
+          {% endfor %}
         </div>
       </div>
     </div>
     <div class="company-info">
-      <p>ООО "ХАУ ТУ" ИНН 7713462339 ОГРН 1187746887020 Москва, Садовая-Кудринская улица, 7</p>
+      <p>{{ widget_settings.address }}</p>
     </div>
   </div>
 </footer> 
