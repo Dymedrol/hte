@@ -550,18 +550,14 @@ class PetsQuiz {
         const currentValue = parseFloat(input.value) || 0;
         
         // Определяем шаг и минимальное значение в зависимости от типа питомца
-        let step = 0.1; // По умолчанию 100 гр для кошек
+        let step = index === 2 ? 0.1 : 0.5;
         let minWeight = 0.1; // Минимум для всех питомцев (положительный вес)
-        
-        if (index === 0) {
-          step = 0.5; // Щенки - 500 гр
-        } else if (index === 1) {
-          step = 0.5; // Взрослые собаки - 500 гр
-        }
-        
+
         const newValue = Math.max(minWeight, currentValue - step);
-        input.value = newValue.toFixed(1);
-        this.petWeight = newValue;
+        const normalizedValue = this.normalizeWeightValue(newValue, step);
+
+        input.value = this.formatWeightValue(normalizedValue);
+        this.petWeight = normalizedValue;
       });
     });
 
@@ -571,19 +567,36 @@ class PetsQuiz {
         const currentValue = parseFloat(input.value) || 0;
         
         // Определяем шаг в зависимости от типа питомца
-        let step = 0.1; // По умолчанию 100 гр для кошек
-        
-        if (index === 0) {
-          step = 0.5; // Щенки - 500 гр
-        } else if (index === 1) {
-          step = 0.5; // Взрослые собаки - 500 гр
-        }
-        
+        let step = index === 2 ? 0.1 : 0.5;
+
         const newValue = currentValue + step;
-        input.value = newValue.toFixed(1);
-        this.petWeight = newValue;
+        const normalizedValue = this.normalizeWeightValue(newValue, step);
+
+        input.value = this.formatWeightValue(normalizedValue);
+        this.petWeight = normalizedValue;
       });
     });
+  }
+
+  normalizeWeightValue(value, step) {
+    if (!step) {
+      return value;
+    }
+
+    const precision = Math.round(1 / step);
+    return Math.round(value * precision) / precision;
+  }
+
+  isApproximatelyInteger(value) {
+    return Math.abs(value - Math.round(value)) < 1e-9;
+  }
+
+  formatWeightValue(value) {
+    if (this.isApproximatelyInteger(value)) {
+      return Math.round(value).toString();
+    }
+
+    return value.toFixed(1);
   }
 
   validateWeightInput(input, petIndex) {
@@ -620,16 +633,14 @@ class PetsQuiz {
       numValue = minWeight;
     }
     
-    // Определяем точность в зависимости от типа питомца
-    let precision = 1; // По умолчанию 1 знак для кошек (0.1 кг)
-    if (petIndex === 0 || petIndex === 1) {
-      // Для щенков и взрослых собак - точность до 0.5
-      numValue = Math.round(numValue * 2) / 2;
-      precision = 1;
-    }
+    // Определяем шаг в зависимости от типа питомца
+    const step = petIndex === 2 ? 0.1 : 0.5;
+
+    // Нормализуем значение в соответствии с шагом
+    numValue = this.normalizeWeightValue(numValue, step);
     
     // Обновляем значение в поле
-    input.value = numValue.toFixed(precision);
+    input.value = this.formatWeightValue(numValue);
     
     // Сохраняем вес
     this.petWeight = numValue;

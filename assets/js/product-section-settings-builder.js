@@ -452,7 +452,11 @@ class SettingsPanelBuilder {
     pricePeriod.textContent = '/ день';
 
     priceDisplay.appendChild(totalPrice);
-    priceDisplay.appendChild(pricePeriod);
+
+    // Для программы Перезагрузка отображаем только итоговую цену без периода
+    if (!this.config.isReloadProgram) {
+      priceDisplay.appendChild(pricePeriod);
+    }
 
     priceInfo.appendChild(priceLabel);
     priceInfo.appendChild(priceDisplay);
