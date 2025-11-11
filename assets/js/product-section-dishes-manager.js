@@ -326,6 +326,17 @@ class DishesManager {
       return;
     }
 
+    // Обновляем дату начала программы на основе выбранных данных (если доступна)
+    const datasetStartDate = currentDishesData.startDate ||
+      currentDishesData.programStartDate ||
+      currentDishesData.menuStartDate ||
+      currentDishesData?.meta?.startDate ||
+      currentDishesData?.schedule?.startDate;
+    
+    if (datasetStartDate && this.dateManager?.setProgramStartDate) {
+      this.dateManager.setProgramStartDate(datasetStartDate);
+    }
+
     // Синхронизируем длительность программы с актуальными данными блюд
     const programDuration = this.getProgramDurationFromData(currentDishesData);
     if (programDuration > 0 && this.dateManager?.setProgramDuration) {

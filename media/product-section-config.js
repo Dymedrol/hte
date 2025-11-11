@@ -278,6 +278,15 @@ class ProductSectionConfig {
       return new Date(this.dishesData.startDate);
     }
     
+    // Для программ с несколькими наборами данных (Premium и др.)
+    if (this.dishesData && typeof this.dishesData === 'object' && !Array.isArray(this.dishesData)) {
+      const firstDataKey = Object.keys(this.dishesData)[0];
+      const firstData = this.dishesData[firstDataKey];
+      if (firstData?.startDate) {
+        return new Date(firstData.startDate);
+      }
+    }
+    
     return null; // нет данных
   }
 }

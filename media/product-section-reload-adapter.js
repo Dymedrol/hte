@@ -110,13 +110,15 @@ class ReloadProgramAdapter {
 
     const config = {
       programName: programConfig.programName || 'ПЕРЕЗАГРУЗКА',
+      startDate: programConfig.startDate || null,
       calorieOptions: daysOptions, // ВАЖНО: используем опции дней вместо калорий
       dietTypes: [], // Пустой массив - диеты не используются
       mealOptions: programConfig.mealOptions || [],
       allergens: programConfig.allergens || { enabled: false },
       basePrice: 0, // Будет обновляться из формы
       deliverySchedule: programConfig.deliverySchedule,
-      deliveryTimeSlots: programConfig.deliveryTimeSlots
+      deliveryTimeSlots: programConfig.deliveryTimeSlots,
+      duration: programConfig.duration || (programConfig.totalDays ?? null)
     };
 
     console.log('📋 RELOAD ADAPTER: Конфигурация создана:', config);

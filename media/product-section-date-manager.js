@@ -4,13 +4,13 @@
  */
 
 
-
 class DateManager {
   constructor(config) {
     this.config = config;
     this.programStartDate = null;
     this.programDuration = 0;
     this.tomorrowDate = null;
+    this.firstDeliveryDate = null;
     this.currentIndex = 0;
     this.daysArray = [];
   }
@@ -47,14 +47,17 @@ class DateManager {
       
       // Устанавливаем время в 00:00:00 для корректного сравнения дат
       this.tomorrowDate.setHours(0, 0, 0, 0);
+      this.firstDeliveryDate = new Date(this.tomorrowDate);
     } else {
       console.error('DateManager: переменная currentTime не определена! Система дат не будет работать.');
       return;
     }
 
-    // ИСПРАВЛЕНИЕ: Программа начинается с первого доступного дня доставки, а не с фиксированной даты
-    // Это обеспечивает корректный расчет дней программы
-    this.programStartDate = new Date(this.tomorrowDate);
+    // Определяем дату запуска цикла меню из конфигурации
+    const configuredStartDate = this.getConfiguredProgramStartDate();
+    
+    // Если дата определена в конфиге, используем её как начало цикла, иначе стартуем с первой доставки
+    this.programStartDate = configuredStartDate || new Date(this.tomorrowDate);
     
     // Получаем длительность программы
     this.programDuration = this.config.getProgramDuration();
@@ -63,7 +66,8 @@ class DateManager {
     console.log('=== ПРОГРАММА ПОДКЛЮЧЕНА ===');
     console.log('Название программы:', this.config.getProgramName());
     console.log('Количество дней в программе:', this.programDuration);
-    console.log('Дата начала программы (исправлено):', this.programStartDate.toDateString());
+    console.log('Дата начала цикла меню (из конфигурации):', configuredStartDate ? configuredStartDate.toDateString() : 'Не указана (берём первый день доставки)');
+    console.log('Фактическая точка отсчёта меню:', this.programStartDate ? this.programStartDate.toDateString() : 'Не определена');
     console.log('Глобальная дата (currentTime):', typeof window.currentTime !== 'undefined' ? window.currentTime.toDateString() : 'Не определена');
     console.log('Первый доступный день доставки:', this.tomorrowDate.toDateString());
     console.log('================================');
@@ -118,26 +122,29 @@ class DateManager {
    * @returns {number} - индекс дня программы (0-based)
    */
   calculateProgramDayForDate(targetDate) {
-    if (!this.programStartDate || !this.programDuration) {
+    if (!this.programDuration) {
       console.error('Program start date or duration not initialized');
       return 0;
     }
     
-    // ИСПРАВЛЕНИЕ: Упрощенная логика - считаем дни от начала программы
-    // Программа начинается с первого дня доставки (tomorrowDate)
-    const timeDiff = targetDate.getTime() - this.programStartDate.getTime();
-    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-    
-    // Если дата раньше начала программы, возвращаем первый день
-    if (daysDiff < 0) {
+    const referenceStartDate = this.programStartDate || this.tomorrowDate;
+    if (!referenceStartDate) {
+      console.error('Reference start date not available');
       return 0;
     }
     
-    // Вычисляем остаток от деления для циклического повторения
-    const programDayIndex = daysDiff % this.programDuration;
+    const DAY_IN_MS = 1000 * 60 * 60 * 24;
     
-    // Убеждаемся, что индекс не превышает длительность программы
-    return Math.min(programDayIndex, this.programDuration - 1);
+    const normalizedTarget = new Date(targetDate);
+    normalizedTarget.setHours(0, 0, 0, 0);
+    
+    const timeDiff = normalizedTarget.getTime() - referenceStartDate.getTime();
+    const daysDiff = Math.floor(timeDiff / DAY_IN_MS);
+    
+    // Корректно обрабатываем отрицательные значения (даты до старта программы)
+    const normalizedIndex = ((daysDiff % this.programDuration) + this.programDuration) % this.programDuration;
+    
+    return normalizedIndex;
   }
 
   /**
@@ -174,6 +181,53 @@ class DateManager {
     
     this.daysArray = days;
     return days;
+  }
+
+  /**
+   * Возвращает дату начала программы из конфигурации (если есть)
+   * @returns {Date|null}
+   */
+  getConfiguredProgramStartDate() {
+    if (!this.config || typeof this.config.getProgramStartDate !== 'function') {
+      return null;
+    }
+    
+    const startDate = this.config.getProgramStartDate();
+    if (!(startDate instanceof Date) || isNaN(startDate)) {
+      return null;
+    }
+    
+    const normalizedStart = new Date(startDate);
+    normalizedStart.setHours(0, 0, 0, 0);
+    return normalizedStart;
+  }
+
+  /**
+   * Устанавливает дату начала программы динамически (например, при смене набора данных)
+   * @param {Date|string} startDate - новая дата начала цикла меню
+   */
+  setProgramStartDate(startDate) {
+    if (!startDate) {
+      return;
+    }
+    
+    const candidate = typeof startDate === 'string' ? new Date(startDate) : new Date(startDate);
+    if (isNaN(candidate)) {
+      console.warn('DateManager.setProgramStartDate: неверный формат даты', startDate);
+      return;
+    }
+    
+    candidate.setHours(0, 0, 0, 0);
+    
+    if (this.programStartDate && this.programStartDate.getTime() === candidate.getTime()) {
+      return;
+    }
+    
+    this.programStartDate = candidate;
+    
+    if (this.tomorrowDate) {
+      this.generateDaysArray();
+    }
   }
 
   /**
