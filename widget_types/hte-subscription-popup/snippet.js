@@ -390,14 +390,14 @@ class SubscriptionPopupAutoManager {
       operation: "SubscribeForm",
       data: {
         customer: {
-          email: email
-        },
-        subscriptions: [
-          {
-            "brand": "howtoeat",
-            "pointOfContact": "Email",
-          }
-        ]
+          email: email,
+          subscriptions: [
+            {
+              "brand": "howtoeat",
+              "pointOfContact": "Email",
+            }
+          ]
+        }
       },
       onSuccess: () => {
         console.log('✅ Подписка успешно отправлена на Mindbox API');
