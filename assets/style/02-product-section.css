@@ -1357,13 +1357,17 @@
     justify-content: flex-start;
   }
 
-  /* Отключаем эффекты наведения для dish-item на мобильных устройствах */
+  /* Отключаем эффекты наведения для dish-item на мобильных устройствах 
   .dish-item:hover .dish-overlay {
     opacity: 0;
   }
 
   .dish-item:hover img {
     filter: none;
+  }*/
+  .dish-overlay span {
+    font-size: var(--hte-micro-text-14-font-size);
+    line-height: var(--hte-micro-text-14-font-size);
   }
 }
 

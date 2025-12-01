@@ -5,6 +5,7 @@
 
 
 
+
 class ProductSectionConfig {
   constructor() {
     this.PRODUCT_CONFIG = null;

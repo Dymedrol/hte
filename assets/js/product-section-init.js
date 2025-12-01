@@ -4,6 +4,7 @@
  */
 
 
+
 class ProductSectionInitializer {
   constructor() {
     this.config = null;

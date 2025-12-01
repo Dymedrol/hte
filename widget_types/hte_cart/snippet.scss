@@ -1038,6 +1038,8 @@
         line-height: var(--hte-small-text-16-line-height);
         text-decoration: underline;
         text-decoration-color: var(--hte-grey-text);
+        background: transparent;
+        border: 0;
     }
 
     .price-row_hide_mobile {

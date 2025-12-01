@@ -32,7 +32,7 @@
       <!-- Product Gallery -->
       <div class="product-gallery">
         <div class="product-main-image">        
-          <img src="{{ product.first_image.large_url }}" alt="{{ product.title }}" />
+          <img src="{{ product.first_image | image_url: 1200, format: 'webp', resizing_type: 'fit_width'  }}" alt="{{ product.title }}" />
         </div>
 
         {% if product.images.size > 1 %}
@@ -43,7 +43,7 @@
             
             <div class="product-thumbnails">
               {% for image in product.images %}
-                <div class="product-thumbnail {% if forloop.first %}active{% endif %}" data-image="{{ image.large_url }}">
+                <div class="product-thumbnail {% if forloop.first %}active{% endif %}" data-image="{{ image | image_url: 1200, format: 'webp', resizing_type: 'fit_width' }}">
                   <img src="{{ image.thumb_url }}" alt="{{ image.title }}" />
                 </div>
               {% endfor %}

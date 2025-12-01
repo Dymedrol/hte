@@ -5,6 +5,7 @@
  */
 
 
+
 class ReloadProgramAdapter {
   constructor() {
     this.form = null;

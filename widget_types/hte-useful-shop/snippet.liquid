@@ -26,7 +26,7 @@
     <div class="products-grid">
       {% for product in collection.products %}
         <a href="{{ product.url }}" class="product-card" >
-          <div class="product-image" style="background-image: url('{{ product.first_image.medium_url  }}')"></div>
+          <div class="product-image" style="background-image: url('{{ product.first_image | image_url: 700, format: 'webp', resizing_type: 'fit_width'  }}')"></div>
           <div class="product-info">
             <h3>{{ product.title }}</h3>
             <button class="add-to-cart-btn">{{ product.price | money }}</button>
