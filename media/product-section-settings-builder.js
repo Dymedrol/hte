@@ -847,6 +847,11 @@ class SettingsPanelBuilder {
     if (window.productSection && window.productSection.priceManager) {
       window.productSection.priceManager.recalculateTotalPrice();
     }
+    
+    // Обновляем блюда при изменении калорийности
+    if (window.productSection && window.productSection.dishesManager) {
+      window.productSection.dishesManager.updateDishesAndNutrition();
+    }
   }
 
   /**
@@ -870,6 +875,11 @@ class SettingsPanelBuilder {
     // Пересчитываем цену
     if (window.productSection && window.productSection.priceManager) {
       window.productSection.priceManager.recalculateTotalPrice();
+    }
+    
+    // Обновляем блюда при изменении диеты
+    if (window.productSection && window.productSection.dishesManager) {
+      window.productSection.dishesManager.updateDishesAndNutrition();
     }
   }
 

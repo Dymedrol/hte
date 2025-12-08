@@ -73,6 +73,7 @@ class DishesManager {
       const selectedCalories = this.getSelectedCalories();
       const selectedDiet = this.getSelectedDiet();
       
+      // Случай 1: Есть и калорийность, и диета (Premium программа)
       if (selectedCalories && selectedDiet) {
         const dataKey = `${selectedCalories}-${selectedDiet}`;
         const currentData = window.PROGRAM_DISHES_DATA[dataKey];
@@ -84,7 +85,18 @@ class DishesManager {
         }
       }
       
-      // Если диеты нет, но есть калорийность - пытаемся найти по калорийности
+      // Случай 2: Есть только диета, нет калорийности (детокс и подобные программы)
+      if (!selectedCalories && selectedDiet) {
+        const currentData = window.PROGRAM_DISHES_DATA[selectedDiet];
+        
+        if (currentData) {
+          return currentData;
+        } else {
+          console.warn(`⚠️ Данные для диеты "${selectedDiet}" не найдены`);
+        }
+      }
+      
+      // Случай 3: Есть только калорийность, нет диеты
       if (selectedCalories && !selectedDiet) {
         const availableKeys = Object.keys(window.PROGRAM_DISHES_DATA);
         const matchingKey = availableKeys.find(key => key.startsWith(`${selectedCalories}-`));
@@ -95,7 +107,7 @@ class DishesManager {
         }
       }
       
-      // Если не найдены текущие данные, возвращаем первый файл
+      // Fallback: Если не найдены текущие данные, возвращаем первый файл
       const firstKey = Object.keys(window.PROGRAM_DISHES_DATA)[0];
       console.warn(`⚠️ Используются данные по умолчанию: ${firstKey}`);
       return window.PROGRAM_DISHES_DATA[firstKey];
